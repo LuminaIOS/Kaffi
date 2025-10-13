@@ -1,2 +1,2 @@
 # Kaffi
-Esta app esta destinada a brindar visibilización y trazabilidad a la producción de café. 
+La aplicación Kaffi está destinada tanto a productores y agricultores de café de pequeña escala, para que puedan registrar su ciclo de producción utilizando blockchain. También irá destinada a los consumidores para que puedan consultar los datos de producción del café que consumen, incluyendo el origen y las prácticas de agricultura de su producción. Esta aplicación busca crear un registro del proceso de producción de café a beneficio de los agricultores y mostrar con transparencia el proceso a los consumidores, y mostrando el compromiso ecológico. 
