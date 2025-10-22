@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var searchText = ""
+
     
     
     var body: some View {
@@ -18,16 +19,18 @@ struct TabBarView: View {
                 TDashboardView()
                     .navigationTitle("Dashboard")
                     .toolbarColorScheme(.dark, for: .navigationBar)
-                    .toolbarBackground(darkColor2, for: .navigationBar)
+                    .toolbarBackground(.darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
+            
             .tabItem { Label("Dashboard", systemImage: "house.fill") }
+            
             
             NavigationStack {
                 TFincasView()
                     .navigationTitle("Fincas").toolbarColorScheme(.dark, for: .navigationBar)
-                    .toolbarBackground(darkColor2, for: .navigationBar)
+                    .toolbarBackground(Color("darkColor2"), for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
@@ -36,23 +39,24 @@ struct TabBarView: View {
             NavigationStack {
                 TLotesView()
                     .navigationTitle("Lotes").toolbarColorScheme(.dark, for: .navigationBar)
-                    .toolbarBackground(darkColor2, for: .navigationBar)
+                    .toolbarBackground(Color("darkColor2"), for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Lotes", systemImage: "mappin") }
             
-            // configurations
             NavigationStack {
-                TPerfilView()
-                    .navigationTitle("Perfil").toolbarColorScheme(.dark, for: .navigationBar)
-                    .toolbarBackground(darkColor2, for: .navigationBar)
+                TAjustesView()
+                    .navigationTitle("Ajustes").toolbarColorScheme(.dark, for: .navigationBar)
+                    .toolbarBackground(Color("darkColor2"), for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
-            .tabItem { Label("Perfil", systemImage: "person") }
+            .tabItem { Label("Ajustes", systemImage: "gearshape.fill") }
+            
+            // configurations
         }
-        .tint(midColor1)
+        .tint(Color("midColor1"))
     }
 }
 
@@ -74,12 +78,18 @@ struct TLotesView: View {
         Text("Lotes")
     }
 }
-struct TPerfilView: View {
+
+
+struct TAjustesView: View {
     @State private var searchText = ""
     var body: some View {
-        Text("Perfil")
+        Text("Ajustes")
     }
 }
+
+  
+
+
 #Preview {
     TabBarView()
 }
