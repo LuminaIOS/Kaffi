@@ -25,7 +25,7 @@ struct TabBarView: View {
             .tabItem { Label("Dashboard", systemImage: "house.fill") }
             
             NavigationStack {
-                TFincasView()
+                DisplayFincasView()
                     .navigationTitle("Fincas").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
@@ -34,7 +34,7 @@ struct TabBarView: View {
             .tabItem { Label("Fincas", systemImage: "map.fill") }
             
             NavigationStack {
-                TLotesView()
+                DisplayLotesView()
                     .navigationTitle("Lotes").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
@@ -68,12 +68,7 @@ struct TFincasView: View {
         Text("Fincas")
     }
 }
-struct TLotesView: View {
-    @State private var searchText = ""
-    var body: some View {
-        Text("Lotes")
-    }
-}
+
 struct TPerfilView: View {
     @State private var searchText = ""
     var body: some View {
