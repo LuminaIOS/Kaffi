@@ -16,17 +16,21 @@ class Finca {
     var estado: String
     var descripcion: String
     var hectareas: Int
-    var lotes: Int
     var imagen: String
+    var latitud: Double
+    var longitud: Double
+    var altitud: Double
 
-    init(id: UUID = UUID(), nombre: String, ciudad: String, estado: String, descripcion: String, hectareas: Int, lotes: Int,  imagen: String) {
+    init(id: UUID = UUID(), nombre: String, ciudad: String, estado: String, descripcion: String, hectareas: Int, imagen: String, latitud: Double, longitud: Double, altitud: Double) {
         self.id = id
         self.nombre = nombre
         self.ciudad = ciudad
         self.estado = estado
         self.descripcion = descripcion
         self.hectareas = hectareas
-        self.lotes = lotes
         self.imagen = imagen
+        self.latitud = latitud
+        self.longitud = longitud
+        self.altitud = altitud
     }
 }
