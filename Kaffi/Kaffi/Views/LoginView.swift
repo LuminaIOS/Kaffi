@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct LoginView: View {
+    
     @State var email : String = ""
     @State var password : String = ""
     @State var showPassword : Bool = false
+    @Bindable var loginViewModel = AuthModel()
+    
     var body: some View {
         NavigationStack{
             ZStack{
@@ -18,20 +21,23 @@ struct LoginView: View {
                 VStack{
                     Spacer()
                     HStack{
+                            Spacer()
                         Image("Logo")
                             .resizable()
                             .frame(width: 50, height: 50)
                             .aspectRatio(contentMode: .fill)
                             .clipped()
                         Text("Kaffi")
-                            .font(.system(size: 35, weight: .semibold, design: .default))
+                            .font(.system(size: 60))
+                            .fontWeight(.light)
                             .fontWeight(.bold)
+                        Spacer()
                     }
                     .padding(.bottom,100)
                     
                     
                     Form{
-                        Section("\(Image(systemName: "mail")) Correo Electrónico") {
+                        Section("\(Image(systemName: "envelope")) Correo Electrónico") {
                             TextField("Email", text: $email)
                                 .textContentType(.emailAddress)
                                 .textInputAutocapitalization(.never)
@@ -76,9 +82,9 @@ struct LoginView: View {
                     }
                     .foregroundStyle(Color.darkColor1)
                     .frame(width: 200, height: 50)
-                    .background(Color.lightColor1)
+                    .background(Color.midColor2)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .disabled(email.isEmpty || password.isEmpty)
+                    .disabled(loginViewModel.userEmail.isEmpty || loginViewModel.userPassword.isEmpty)
                     
                     NavigationLink(destination:SignUpView()){
                         Text("¿No tienes cuenta? Registrate aquí")
@@ -102,9 +108,4 @@ struct LoginView: View {
 }
 
 
-struct SignUpView: View {
-    var body: some View{
-        Text("...")
-    }
-}
 
