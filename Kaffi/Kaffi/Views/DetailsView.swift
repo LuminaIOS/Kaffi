@@ -88,22 +88,26 @@ struct DetailsView: View {
                 .background(Color(.systemGreen).opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(spacing: 12) {
                     Text("Características del café")
                         .font(.headline)
-                    HStack {
-                        Label("1,500 msnm", systemImage: "mountain.2.fill")
+                    HStack{
+                        VStack {
+                            Label("1,500 msnm", systemImage: "mountain.2.fill")
+                            Spacer()
+                            Label("Arábica Typica", systemImage: "leaf.fill")
+                        }
                         Spacer()
-                        Label("Arábica Typica", systemImage: "leaf.fill")
+                        .font(.subheadline)
+                        VStack {
+                            Label("Lavado", systemImage: "drop.fill")
+                            Spacer()
+                            Label("Enero 2025", systemImage: "calendar")
+                        }
+                        .font(.subheadline)
                     }
-                    .font(.subheadline)
-                    HStack {
-                        Label("Lavado", systemImage: "drop.fill")
-                        Spacer()
-                        Label("Enero 2025", systemImage: "calendar")
-                    }
-                    .font(.subheadline)
                 }
+                .frame(maxWidth: .infinity)
                 .padding()
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
