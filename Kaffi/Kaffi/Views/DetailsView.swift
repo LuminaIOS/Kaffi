@@ -9,13 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct DetailsView: View {
-    var finca: Finca
+    var lote: Lote
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 
-                AsyncImage(url: URL(string: finca.imagen)) { image in
+                AsyncImage(url: URL(string: lote.imagen)) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -75,7 +75,7 @@ struct DetailsView: View {
                 .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
                 VStack {
-                    Text("Mapa de la finca")
+                    Text("Mapa del lote")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .padding(.bottom, 4)
@@ -172,17 +172,16 @@ struct DetailsView: View {
 
 #Preview {
     DetailsView(
-        finca: Finca(
-            usuario: "usuario1",
-            nombre: "Finca Santa Fé",
+        lote: Lote(
+            nombre: "Lote Santa Fé 3",
+            finca: "Finca Santa Fé",
             ciudad: "Motozintla",
             estado: "Chiapas",
-            descripcion: "Café de alta calidad cultivado en el corazón de Chiapas.",
+            cultivo: "cafe ",
             hectareas: 12,
+            estatus: "listo",
             imagen: "https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG",
-            latitud: 15.3654,
-            longitud: -92.2478,
-            altitud: 1500
+            
         )
     )
 }

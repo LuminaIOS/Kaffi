@@ -29,7 +29,9 @@ struct DisplayLotesView: View {
         
         
         ForEach(loteList) { lote in
-            LoteBox(lote: lote)
+            NavigationLink(destination: DetailsView(lote: lote)){
+                LoteBox(lote: lote)
+            }
         }
         Spacer()
     }
