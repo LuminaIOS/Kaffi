@@ -29,11 +29,14 @@ struct DisplayLotesView: View {
         
         
         ForEach(loteList) { lote in
-            LoteBox(lote: lote)
+            NavigationLink(destination: DetailsView(lote: lote)){
+                LoteBox(lote: lote)
+            }
         }
         Spacer()
     }
 }
+
 #Preview {
     DisplayLotesView(loteList: [
         Lote(nombre: "Lote-B1", finca: "La Esperanza", ciudad: "Motozintla", estado: "Chiapas", cultivo: "Café", hectareas: 5, estatus: "En produccion",imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg"),
