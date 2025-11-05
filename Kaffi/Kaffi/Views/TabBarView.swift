@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var searchText = ""
+    @Bindable var vm: AuthModel
     
     
     var body: some View {
@@ -76,5 +77,5 @@ struct TPerfilView: View {
     }
 }
 #Preview {
-    TabBarView()
+    TabBarView(vm: AuthModel())
 }

@@ -12,7 +12,7 @@ struct LoginView: View {
     @State var email : String = ""
     @State var password : String = ""
     @State var showPassword : Bool = false
-    @Bindable var loginViewModel = AuthModel()
+    @Bindable var vm: AuthModel
     
     var body: some View {
         NavigationStack{
@@ -38,7 +38,7 @@ struct LoginView: View {
                     
                     Form{
                         Section("\(Image(systemName: "envelope")) Correo Electrónico") {
-                            TextField("Email", text: $email)
+                            TextField("Email", text: $vm.userEmail)
                                 .textContentType(.emailAddress)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
@@ -48,7 +48,7 @@ struct LoginView: View {
                         Section("\(Image(systemName: "key")) Contraseña"){
                             if (showPassword){
                                 HStack{
-                                    TextField("Contraseña", text: $password)
+                                    TextField("Contraseña", text: $vm.userPassword)
                                     
                                     
                                     Button {
@@ -61,7 +61,7 @@ struct LoginView: View {
                                 
                             }else{
                                 HStack{
-                                    SecureField("Contraseña", text: $password)
+                                    SecureField("Contraseña", text: $vm.userPassword)
                                     Button {
                                         showPassword.toggle();
                                     } label: {
@@ -78,15 +78,15 @@ struct LoginView: View {
                     
                     
                     Button("Iniciar Sesión"){
-                        
+                        Task{await vm.signIn()}
                     }
                     .foregroundStyle(Color.darkColor1)
                     .frame(width: 200, height: 50)
                     .background(Color.midColor2)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .disabled(loginViewModel.userEmail.isEmpty || loginViewModel.userPassword.isEmpty)
+                    .disabled(vm.userEmail.isEmpty || vm.userPassword.isEmpty)
                     
-                    NavigationLink(destination:SignUpView()){
+                    NavigationLink(destination:SignUpView(vm: vm)){
                         Text("¿No tienes cuenta? Registrate aquí")
                     }
                     .padding(.top,10)
@@ -104,7 +104,7 @@ struct LoginView: View {
 
 
 #Preview {
-    LoginView()
+    LoginView( vm: AuthModel())
 }
 
 
