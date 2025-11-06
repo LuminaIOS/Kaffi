@@ -1,3 +1,4 @@
+
 //
 //  LoginViewModel.swift
 //  Kaffi
@@ -9,59 +10,22 @@ import SwiftUI
 import Supabase
 import Observation
 
+@MainActor
 @Observable
-<<<<<<< HEAD
-<<<<<<< HEAD
-class AuthModel{
-    var userEmail : String = ""
-    var userPassword : String = ""
-    var isLoading : Bool = false
-    var authResult : Result<Void,Error>?{
-        didSet{
-            if case .failure = authResult{
-                showAlert = true
-            }
-        }
-    }
-    var showAlert : Bool = false
-    var errorMessage : String?
-=======
-@MainActor
+
 final class AuthModel {
->>>>>>> login/signup
-    
+
     var userEmail: String = ""
     var userPassword: String = ""
     var message: String = ""
     var isLoggedIn: Bool = false
     var isLoading: Bool = false
-    
-
-<<<<<<< HEAD
-=======
-@MainActor
-final class AuthModel {
-    
-    var userEmail: String = ""
-    var userPassword: String = ""
-    var message: String = ""
-    var isLoggedIn: Bool = false
-    var isLoading: Bool = false
-    
-
-=======
->>>>>>> login/signup
-
     
     func signUp(username: String, fechaNacimiento: Date) async {
         guard !userEmail.isEmpty, !userPassword.isEmpty, !username.isEmpty else {
             message = "⚠️ Completa todos los campos"
             return
         }
-<<<<<<< HEAD
->>>>>>> 8e80fae (login funcional)
-=======
->>>>>>> login/signup
         
         isLoading = true
         
@@ -101,46 +65,6 @@ final class AuthModel {
         }
         
         isLoading = false
-<<<<<<< HEAD
-    }
-    
-    func signIn() async {
-        guard !userEmail.isEmpty, !userPassword.isEmpty else {
-            message = "⚠️ Ingresa email y contraseña"
-            return
-        }
-        
-        isLoading = true
-        
-        do {
-            try await auth.signIn(email: userEmail, password: userPassword)
-            message = "✅ Sesión iniciada correctamente"
-            isLoggedIn = true
-            print("Usuario logueado: \(userEmail)")
-        } catch {
-            message = "❌ Error: \(error.localizedDescription)"
-            print("Error de login: \(error)")
-        }
-        
-        isLoading = false
-    }
-    
-    func signOut() async {
-        isLoading = true
-        
-        do {
-            try await auth.signOut()
-            message = "✅ Sesión cerrada"
-            isLoggedIn = false
-            userEmail = ""
-            userPassword = ""
-        } catch {
-            message = "❌ Error al cerrar sesión: \(error.localizedDescription)"
-        }
-        
-        isLoading = false
-=======
->>>>>>> login/signup
     }
     
     func signIn() async {

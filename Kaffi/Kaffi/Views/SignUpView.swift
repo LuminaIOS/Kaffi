@@ -30,7 +30,6 @@ struct SignUpView: View {
                 Spacer(minLength: 50)
                 
                 VStack(spacing: 25) {
-                    // 🧾 Formulario
                     Form {
                         Section("\(Image(systemName: "envelope")) Correo Electrónico") {
                             TextField("Email", text: $vm.userEmail)
