@@ -12,20 +12,20 @@ struct FincaBox: View {
     var body: some View {
         VStack {
             // IMAGEN
-            AsyncImage(url: URL(string: finca.imagen)) { image in image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width:370, height: 120)
-                    .clipped()
-                    .cornerRadius(5)
-            } placeholder: {
-                ProgressView()
-                    .frame(width: 370, height: 120)
-            }
+            //AsyncImage(url: URL(string: finca.imagen)) { image in image
+                    //.resizable()
+            //.scaledToFill()
+            //.frame(width:370, height: 120)
+            //.clipped()
+            //.cornerRadius(5)
+            //} placeholder: {
+            //ProgressView()
+            //.frame(width: 370, height: 120)
+            //}
             //TEXTO
             HStack(){
                 VStack(alignment: .leading) {
-                    Text(finca.nombre)
+                    Text(finca.nombre_finca)
                         .font(.title3)
                         .bold()
                     
@@ -66,6 +66,20 @@ struct FincaBox: View {
 }
 
 
-#Preview{
-    FincaBox(finca: Finca(usuario: "usuario1", nombre: "Finca solecito", ciudad: "San Cristobal", estado: "Oaxaca", descripcion: "Cafe de altisima calidad crecido en el corazon de Chiapas", hectareas: 10, imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg", latitud: 1.2, longitud: 1.2, altitud: 1.2))
+#Preview {
+    FincaBox(
+        finca: Finca(
+            nombre_finca: "Finca Solecito",
+            productor: "usuario1",
+            estado: "Oaxaca",
+            ciudad: "San Cristóbal",
+            latitud: 1.2,
+            longitud: 1.2,
+            hectareas: 10,
+            altitud: 1.2,
+            suelo: "Volcánico",
+            descripcion: "Café de altísima calidad crecido en el corazón de Chiapas"
+        )
+    )
 }
+

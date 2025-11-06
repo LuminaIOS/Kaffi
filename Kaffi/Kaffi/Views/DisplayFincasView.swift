@@ -34,11 +34,33 @@ struct DisplayFincasView: View {
         Spacer()
     }
 }
+
 #Preview {
-
-    DisplayFincasView(fincasList: [Finca(usuario: "usuario1", nombre: "Finca solecito", ciudad: "San Cristobal", estado: "Oaxaca", descripcion: "Cafe de altisima calidad crecido en el corazon de Chiapas", hectareas: 10, imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg", latitud: 1.2, longitud: 1.2, altitud: 1.2),
-                                   Finca(usuario: "usuario1",nombre: "Finca Madre Tierra", ciudad: "San Cristobal", estado: "Oaxaca", descripcion: "Cafe delisioso de Mexico al mundo", hectareas: 6, imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg", latitud: 1.2, longitud: 1.2, altitud: 1.2)
-
-
+    DisplayFincasView(fincasList: [
+        Finca(
+            nombre_finca: "Finca Solecito",
+            productor: "Juan Pérez",
+            estado: "Oaxaca",
+            ciudad: "San Cristóbal",
+            latitud: 16.736,
+            longitud: -92.637,
+            hectareas: 10,
+            altitud: 2100,
+            suelo: "Volcánico",
+            descripcion: "Café de altísima calidad crecido en el corazón de Chiapas"
+        ),
+        Finca(
+            nombre_finca: "Finca Madre Tierra",
+            productor: "María López",
+            estado: "Oaxaca",
+            ciudad: "San Cristóbal",
+            latitud: 16.745,
+            longitud: -92.642,
+            hectareas: 6,
+            altitud: 2050,
+            suelo: "Arenoso",
+            descripcion: "Café delicioso de México al mundo"
+        )
     ])
 }
+
