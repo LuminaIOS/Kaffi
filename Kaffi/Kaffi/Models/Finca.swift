@@ -9,8 +9,8 @@ import Foundation
 import SwiftData
 
 @Model
-class Finca: Codable {
-    //var id_finca: UUID
+class Finca: Codable, Identifiable {
+    var id_finca: Int?   // Make it optional
     var nombre_finca: String
     var productor: String
     var estado: String
@@ -22,10 +22,10 @@ class Finca: Codable {
     var suelo: String
     var descripcion: String
     var id_usuario: String?
-    //var imagen: String
-
+    var imagen: String?
+    
     init(
-        //id_finca: UUID = UUID(),
+        id_finca: Int? = nil, // optional here
         nombre_finca: String,
         productor: String,
         estado: String,
@@ -36,10 +36,10 @@ class Finca: Codable {
         altitud: Double,
         suelo: String,
         descripcion: String,
-        id_usuario: String? = nil
-        //imagen: String
+        id_usuario: String? = nil,
+        imagen: String? = nil
     ) {
-        //self.id_finca = id_finca
+        self.id_finca = id_finca
         self.nombre_finca = nombre_finca
         self.productor = productor
         self.estado = estado
@@ -51,18 +51,18 @@ class Finca: Codable {
         self.suelo = suelo
         self.descripcion = descripcion
         self.id_usuario = id_usuario
-        //self.imagen = imagen
+        self.imagen = imagen
     }
-
+    
     enum CodingKeys: String, CodingKey {
-        case nombre_finca, productor, estado, ciudad, latitud, longitud, hectareas, altitud, suelo, descripcion, id_usuario
-        //id_finca,
-        //case imagen
+        case id_finca, nombre_finca, productor, estado, ciudad, latitud, longitud, hectareas, altitud, suelo, descripcion, id_usuario,imagen
     }
-
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        //try container.encode(id_finca, forKey: .id_finca)
+        if let id = id_finca {   // only encode if it exists
+            try container.encode(id, forKey: .id_finca)
+        }
         try container.encode(nombre_finca, forKey: .nombre_finca)
         try container.encode(productor, forKey: .productor)
         try container.encode(estado, forKey: .estado)
@@ -74,12 +74,12 @@ class Finca: Codable {
         try container.encode(suelo, forKey: .suelo)
         try container.encode(descripcion, forKey: .descripcion)
         try container.encodeIfPresent(id_usuario, forKey: .id_usuario)
-        //try container.encode(imagen, forKey: .imagen)
+        try container.encodeIfPresent(imagen, forKey: .imagen)
     }
-
+    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        //id_finca = try container.decode(UUID.self, forKey: .id_finca)
+        id_finca = try container.decode(Int.self, forKey: .id_finca)
         nombre_finca = try container.decode(String.self, forKey: .nombre_finca)
         productor = try container.decode(String.self, forKey: .productor)
         estado = try container.decode(String.self, forKey: .estado)
@@ -91,6 +91,8 @@ class Finca: Codable {
         suelo = try container.decode(String.self, forKey: .suelo)
         descripcion = try container.decode(String.self, forKey: .descripcion)
         id_usuario = try container.decodeIfPresent(String.self, forKey: .id_usuario)
-        //imagen = try container.decode(String.self, forKey: .imagen)
+        imagen = try container.decodeIfPresent(String.self, forKey: .imagen)
+        
     }
 }
+

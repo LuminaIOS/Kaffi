@@ -173,7 +173,7 @@ struct RegisterFincaView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { dismiss() }) {
-                        Image(systemName: "arrow.left")
+                        Image(systemName: "chevron.left")
                             .foregroundColor(.black)
                     }
                 }
@@ -185,6 +185,7 @@ struct RegisterFincaView: View {
                 Text(vm.mensajeAlerta)
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

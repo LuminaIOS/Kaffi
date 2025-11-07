@@ -63,6 +63,7 @@ struct TDashboardView: View {
         Text("dashboard")
     }
 }
+
 struct TFincasView: View {
     @State private var searchText = ""
     var body: some View {
