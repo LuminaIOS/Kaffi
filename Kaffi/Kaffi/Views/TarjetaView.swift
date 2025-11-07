@@ -19,7 +19,7 @@ struct TarjetaView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(height: 140)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: 190)
                 .clipped()
             LinearGradient(
                 colors: [Color.black.opacity(0.0), Color.black.opacity(0.80)],
@@ -27,7 +27,7 @@ struct TarjetaView: View {
                 endPoint: .bottom
             )
             .frame(height: 80)
-            .frame(maxWidth: .infinity, alignment: .bottom)
+            .frame(maxWidth: 190, alignment: .bottom)
             .allowsHitTesting(false)
 
             // Textos
