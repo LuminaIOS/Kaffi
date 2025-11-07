@@ -16,7 +16,7 @@ struct DashboardView: View {
             VStack {
                 ZStack {
                     RoundedRectangle(cornerRadius: 15)
-                        .fill(Color("darkColor1"))
+                        .fill(darkColor1)
                         .frame(height: 140)
                     
                     VStack(alignment: .leading, spacing: 10) {
@@ -53,7 +53,7 @@ struct DashboardView: View {
                 Spacer()
             }
             .padding(16)
-            .background(RoundedRectangle(cornerRadius: 16).fill(Color("midColor1")))
+            .background(RoundedRectangle(cornerRadius: 16).fill(midColor1))
             .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
             .padding(.horizontal, 16)
             
@@ -61,7 +61,7 @@ struct DashboardView: View {
         }
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
-                Image(systemName: "chart.bar.fill").foregroundStyle(Color("darkColor2"))
+                Image(systemName: "chart.bar.fill").foregroundStyle(darkColor2)
                 Text("Estadística 1").font(.headline)
                 Spacer()
             }
