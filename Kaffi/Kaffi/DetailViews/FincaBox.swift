@@ -8,21 +8,23 @@
 import SwiftUI
 struct FincaBox: View {
     let finca: Finca
-    
     var body: some View {
         VStack {
-            // IMAGEN
-            //AsyncImage(url: URL(string: finca.imagen)) { image in image
-                    //.resizable()
-            //.scaledToFill()
-            //.frame(width:370, height: 120)
-            //.clipped()
-            //.cornerRadius(5)
-            //} placeholder: {
-            //ProgressView()
-            //.frame(width: 370, height: 120)
-            //}
-            //TEXTO
+            AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:300, height: 120)
+                    .clipped()
+                    .cornerRadius(10)
+            } placeholder: {
+                Color.gray
+                    .scaledToFill()
+                    .frame(width:300, height: 120)
+                    .clipped()
+                    .cornerRadius(10)
+            }
+            .padding(5)
             HStack(){
                 VStack(alignment: .leading) {
                     Text(finca.nombre_finca)
@@ -40,8 +42,6 @@ struct FincaBox: View {
                         .foregroundStyle(.secondary)
                     
                     HStack() {
-                        
-                        
                         Text("\(finca.hectareas) hectáreas")
                             .padding(5)
                             .background(lightColor2)
@@ -52,18 +52,17 @@ struct FincaBox: View {
                 }
                 Spacer()
             }
-            .padding()
             
         }
+        .padding()
         
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 5)
-        .padding(.horizontal)
-        .padding(.vertical,10)
-        .frame(width: 370)
+        .frame(width: 320)
     }
 }
+
 
 
 #Preview {
@@ -78,7 +77,8 @@ struct FincaBox: View {
             hectareas: 10,
             altitud: 1.2,
             suelo: "Volcánico",
-            descripcion: "Café de altísima calidad crecido en el corazón de Chiapas"
+            descripcion: "Café de altísima calidad crecido en el corazón de Chiapas",
+            imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s"
         )
     )
 }

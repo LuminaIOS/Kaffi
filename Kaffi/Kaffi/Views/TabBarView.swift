@@ -16,7 +16,7 @@ struct TabBarView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                TDashboardView()
+                DashboardView()
                     .navigationTitle("Dashboard")
                     .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
@@ -54,19 +54,6 @@ struct TabBarView: View {
             .tabItem { Label("Perfil", systemImage: "person") }
         }
         .tint(midColor1)
-    }
-}
-
-struct TDashboardView: View {
-    @State private var searchText = ""
-    var body: some View {
-        Text("dashboard")
-    }
-}
-struct TFincasView: View {
-    @State private var searchText = ""
-    var body: some View {
-        Text("Fincas")
     }
 }
 

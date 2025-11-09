@@ -21,19 +21,16 @@ struct LoginView: View {
                 VStack{
                     Spacer()
                     HStack{
-                            Spacer()
+                        Spacer()
                         Image("Logo")
                             .resizable()
-                            .frame(width: 50, height: 50)
+                            .frame(width: 150, height: 150)
                             .aspectRatio(contentMode: .fill)
                             .clipped()
-                        Text("Kaffi")
-                            .font(.system(size: 60))
-                            .fontWeight(.light)
-                            .fontWeight(.bold)
+                        
                         Spacer()
                     }
-                    .padding(.bottom,100)
+                    .padding(.vertical)
                     
                     
                     Form{
