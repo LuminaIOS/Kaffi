@@ -19,4 +19,21 @@ struct KaffiTests {
         #expect(response.status == 200, "Expected status 200, got \(response.status)")
         
     }
+    
+    @Test @MainActor func FincaCamposOb() async throws {
+        let vm = FincaViewModel(fincaService: FincaService())
+        
+        vm.finca = "Las Nubes"
+        vm.productor = ""
+        vm.estado = "Nuevo Leon"
+        vm.ciudad = "Monterrey"
+        vm.hectareas = 10
+        
+        await vm.registrarFinca()
+        
+        #expect (vm.mensajeAlerta == "Por favor llena campos obligatorios.")
+        #expect (vm.tituloAlerta == "Campos obligatorios")
+        #expect (vm.mostrandoAlerta == true)
+
+    }
 }

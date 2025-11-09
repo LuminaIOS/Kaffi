@@ -5,17 +5,19 @@
 //  Created by Angela Rodriguez on 05/11/25.
 //
 
+// agregar campo de imagenes
+
 import SwiftUI
 
 
 
 struct RegisterFincaView: View {
     @Environment(\.dismiss) var dismiss
-    @State var vm = FincaViewModel(fincaService: FincaService())
+    @State private var vm = FincaViewModel(fincaService: FincaService())
     
     var body: some View {
         NavigationStack {
-            Form {
+            ScrollView {
                 VStack(spacing: 16) {
                     // Nombre de la finca
                     VStack(alignment: .leading, spacing: 4) {
@@ -126,7 +128,7 @@ struct RegisterFincaView: View {
                         .frame(maxWidth: .infinity)
                     }
                     
-                    // Tipo de suelo
+                    // Tipo de suelo - cambiar a picker
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Tipo de Suelo")
                             .font(.body)
@@ -166,7 +168,9 @@ struct RegisterFincaView: View {
                     .disabled(vm.isLoading)
                     
                 }
-                .padding()
+                .padding(.horizontal, 37)
+                .padding(.top, 20)
+                
             }
             .navigationTitle("Registrar Finca")
             .navigationBarTitleDisplayMode(.inline)

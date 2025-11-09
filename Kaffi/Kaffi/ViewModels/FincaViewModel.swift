@@ -37,6 +37,11 @@ class FincaViewModel {
     }
     
     func registrarFinca() async {
+        
+        mostrandoAlerta = false
+        tituloAlerta = ""
+        mensajeAlerta = ""
+
         // Validaciones
         if finca.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
             productor.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
