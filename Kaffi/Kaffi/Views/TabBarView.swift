@@ -16,7 +16,7 @@ struct TabBarView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                TDashboardView()
+                DashboardView()
                     .navigationTitle("Dashboard")
                     .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
