@@ -14,8 +14,7 @@ struct DetailsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                
-                AsyncImage(url: URL(string: lote.imagen)) { image in
+                AsyncImage(url: URL(string: lote.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -172,16 +171,6 @@ struct DetailsView: View {
 
 #Preview {
     DetailsView(
-        lote: Lote(
-            nombre: "Lote Santa Fé 3",
-            finca: "Finca Santa Fé",
-            ciudad: "Motozintla",
-            estado: "Chiapas",
-            cultivo: "cafe ",
-            hectareas: 12,
-            estatus: "listo",
-            imagen: "https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG",
-            
-        )
+        lote: Lote(id_lote:1, id_usuario:"testing-1",id_finca:1, nombre_finca:"Finca Guacamaya", nombre: "Lote-B2", cultivo: "Java", hectareas: 1, estatus: "En produccion", imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg")
     )
 }
