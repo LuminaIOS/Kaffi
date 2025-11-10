@@ -12,20 +12,6 @@ struct DetailsView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                
-                AsyncImage(url: URL(string: finca.imagen)) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 180)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            LinearGradient(
-                                colors: [.black.opacity(0.0), .black.opacity(0.5)],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
             if viewModel.isLoading {
                 ProgressView("Cargando detalles...")
                     .padding()
@@ -58,6 +44,7 @@ struct DetailsView: View {
     @ViewBuilder
     private func contenidoDetallado(detail: LoteDetail) -> some View {
         VStack(alignment: .leading, spacing: 20) {
+            // Imagen del lote
             AsyncImage(url: URL(string: detail.lote.imagen ?? detail.finca?.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
                 image
                     .resizable()
@@ -69,23 +56,6 @@ struct DetailsView: View {
                             colors: [.black.opacity(0.0), .black.opacity(0.5)],
                             startPoint: .top,
                             endPoint: .bottom
-
-                        )
-                        .overlay(
-                            VStack(alignment: .leading) {
-                                Spacer()
-                                Text("Café Santa Fé")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.white)
-                                Text("Finca Santa Fé")
-                                    .font(.subheadline)
-                                    .foregroundColor(.white.opacity(0.9))
-                            }
-                            .padding(.horizontal)
-                            .padding(.bottom, 12),
-                            alignment: .bottomLeading
-
                         )
                     )
                     .overlay(
@@ -109,11 +79,9 @@ struct DetailsView: View {
                     .frame(height: 180)
             }
 
-                VStack(spacing: 12) {
-
+            // Información del productor y ubicación
             VStack(spacing: 12) {
                 if let finca = detail.finca {
-
                     HStack {
                         Label {
                             Text(finca.productor)
@@ -138,16 +106,9 @@ struct DetailsView: View {
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
-                  
-                  
 
-                .padding()
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
-
-
-
+            // Coordenadas
+            if let finca = detail.finca {
                 VStack {
                     Text("Ubicación de la finca")
                         .font(.subheadline)
@@ -163,14 +124,7 @@ struct DetailsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
 
-                VStack(spacing: 12) {
-                    Text("Características del café")
-                        .font(.headline)
-                    HStack{
-                        VStack {
-                            Label("1,500 msnm", systemImage: "mountain.2.fill")
-                            Spacer()
-                            Label("Arábica Typica", systemImage: "leaf.fill")
+            // Características del café
             VStack(spacing: 12) {
                 Text("Características del lote")
                     .font(.headline)
@@ -179,15 +133,6 @@ struct DetailsView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         if let finca = detail.finca {
                             Label("\(Int(finca.altitud)) msnm", systemImage: "mountain.2.fill")
-
-                        }
-                        Spacer()
-                        .font(.subheadline)
-                        VStack {
-                            Label("Lavado", systemImage: "drop.fill")
-                            Spacer()
-                            Label("Enero 2025", systemImage: "calendar")
-
                         }
                         Label(detail.lote.cultivo, systemImage: "leaf.fill")
                     }
@@ -208,16 +153,12 @@ struct DetailsView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Prácticas sostenibles")
-                        .font(.headline)
-
-            if !detail.practicasSostenibles.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Prácticas sostenibles")
-                        .font(.headline)
-                    
-
+            // PRÁCTICAS SOSTENIBLES - SECCIÓN ACTUALIZADA
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Prácticas sostenibles")
+                    .font(.headline)
+                
+                if !detail.practicasSostenibles.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(detail.practicasSostenibles, id: \.self) { practica in
                             HStack(spacing: 10) {
@@ -234,6 +175,7 @@ struct DetailsView: View {
                         }
                     }
                 } else {
+                    // Mensaje cuando no hay prácticas sostenibles
                     HStack {
                         Image(systemName: "leaf.circle")
                             .foregroundColor(.gray)
@@ -251,12 +193,13 @@ struct DetailsView: View {
                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                     )
                 }
-                .padding()
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
             }
+            .padding()
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
+            // Descripción
             if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Descripción")
@@ -270,9 +213,27 @@ struct DetailsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
             }
-            .padding(.horizontal)
-            .padding(.bottom, 30)
 
+            // Botones de acción
+            HStack(spacing: 12) {
+                Button {
+                    // Acción para volver al inicio
+                } label: {
+                    Text("Volver al inicio")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.brown)
+
+                Button {
+                    // Acción para escanear otro
+                } label: {
+                    Text("Escanear otro")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+            }
+            .padding(.top, 10)
         }
         .padding(.horizontal)
         .padding(.bottom, 30)
