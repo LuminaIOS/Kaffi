@@ -8,7 +8,7 @@ import Supabase
 
 class LoteDetailService {
     func fetchLoteDetail(id_lote: Int) async throws -> LoteDetail {
-        // Obtener datos básicos del lote
+
         let loteResponse: [Lote] = try await client
             .from("Lote")
             .select()
@@ -20,7 +20,6 @@ class LoteDetailService {
             throw NSError(domain: "Lote no encontrado", code: 404)
         }
         
-        // Obtener datos de la finca relacionada
         let fincaResponse: [Finca] = try await client
             .from("Finca")
             .select()
@@ -30,19 +29,38 @@ class LoteDetailService {
         
         let finca = fincaResponse.first
         
-        // Obtener prácticas sostenibles de la finca
-        let practicasResponse: [Practica] = try await client
-            .from("unionPyF")
-            .select("""
-                Practicas (
-                    NombreP
-                )
-            """)
-            .eq("idFinca", value: lote.id_finca)
-            .execute()
-            .value
+        var practicas: [String] = []
         
-        let practicas = practicasResponse.map { $0.NombreP }
+        do {
+            let practicasResponse: [UnionPyF] = try await client
+                .from("unionPyF") 
+                .select("""
+                    Practicas (
+                        NombreP
+                    )
+                """)
+                .eq("idFinca", value: lote.id_finca)
+                .execute()
+                .value
+            
+            practicas = practicasResponse.compactMap { $0.Practicas?.NombreP }
+            
+            if practicas.isEmpty {
+                print("No se encontraron prácticas para la finca ID: \(lote.id_finca)")
+                
+                let debugResponse = try await client
+                    .from("unionPyF")
+                    .select()
+                    .eq("idFinca", value: lote.id_finca)
+                    .execute()
+                
+                print("Debug unionPyF: \(String(data: debugResponse.data, encoding: .utf8) ?? "sin datos")")
+            }
+            
+        } catch {
+            print("Error al cargar prácticas: \(error)")
+            practicas = []
+        }
         
         return LoteDetail(
             lote: lote,
@@ -52,12 +70,17 @@ class LoteDetailService {
     }
 }
 
-// Modelo para prácticas
+struct UnionPyF: Codable {
+    let idUnion: Int?
+    let idFinca: Int?
+    let idPractica: Int?
+    let Practicas: Practica?
+}
+
 struct Practica: Codable {
     let NombreP: String
 }
 
-// Modelo para los datos detallados del lote
 struct LoteDetail {
     let lote: Lote
     let finca: Finca?
