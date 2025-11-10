@@ -44,7 +44,6 @@ struct DetailsView: View {
     @ViewBuilder
     private func contenidoDetallado(detail: LoteDetail) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            // Imagen del lote
             AsyncImage(url: URL(string: detail.lote.imagen ?? detail.finca?.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
                 image
                     .resizable()
@@ -79,7 +78,6 @@ struct DetailsView: View {
                     .frame(height: 180)
             }
 
-            // Información del productor y ubicación
             VStack(spacing: 12) {
                 if let finca = detail.finca {
                     HStack {
@@ -106,8 +104,23 @@ struct DetailsView: View {
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+            
+            if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Descripción")
+                        .font(.headline)
+                    Text(descripcion)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+            }
+            
 
-            // Coordenadas
             if let finca = detail.finca {
                 VStack {
                     Text("Ubicación de la finca")
@@ -124,7 +137,6 @@ struct DetailsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
 
-            // Características del café
             VStack(spacing: 12) {
                 Text("Características del lote")
                     .font(.headline)
@@ -134,6 +146,8 @@ struct DetailsView: View {
                         if let finca = detail.finca {
                             Label("\(Int(finca.altitud)) msnm", systemImage: "mountain.2.fill")
                         }
+                        
+                        
                         Label(detail.lote.cultivo, systemImage: "leaf.fill")
                     }
                     .font(.subheadline)
@@ -145,7 +159,9 @@ struct DetailsView: View {
                         Label(detail.lote.estatus, systemImage: "chart.bar")
                     }
                     .font(.subheadline)
+                    
                 }
+                
             }
             .frame(maxWidth: .infinity)
             .padding()
@@ -153,7 +169,7 @@ struct DetailsView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
-            // PRÁCTICAS SOSTENIBLES - SECCIÓN ACTUALIZADA
+            
             VStack(alignment: .leading, spacing: 12) {
                 Text("Prácticas sostenibles")
                     .font(.headline)
@@ -175,7 +191,6 @@ struct DetailsView: View {
                         }
                     }
                 } else {
-                    // Mensaje cuando no hay prácticas sostenibles
                     HStack {
                         Image(systemName: "leaf.circle")
                             .foregroundColor(.gray)
@@ -199,41 +214,8 @@ struct DetailsView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
-            // Descripción
-            if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Descripción")
-                        .font(.headline)
-                    Text(descripcion)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
-            }
+        
 
-            // Botones de acción
-            HStack(spacing: 12) {
-                Button {
-                    // Acción para volver al inicio
-                } label: {
-                    Text("Volver al inicio")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.brown)
-
-                Button {
-                    // Acción para escanear otro
-                } label: {
-                    Text("Escanear otro")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-            }
-            .padding(.top, 10)
         }
         .padding(.horizontal)
         .padding(.bottom, 30)
