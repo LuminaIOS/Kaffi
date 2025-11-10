@@ -10,14 +10,30 @@
 		ABEC606B2EB00C28001519E7 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = ABEC606A2EB00C28001519E7 /* Supabase */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		BBEE7E2B2EC0664F00AA6B8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB8048C32EA7E6C700E7BA46 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB8048CA2EA7E6C700E7BA46;
+			remoteInfo = Kaffi;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		BB8048CB2EA7E6C700E7BA46 /* Kaffi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kaffi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBEE7E272EC0664F00AA6B8D /* KaffiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KaffiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BB8048CD2EA7E6C700E7BA46 /* Kaffi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Kaffi;
+			sourceTree = "<group>";
+		};
+		BBEE7E282EC0664F00AA6B8D /* KaffiTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KaffiTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -28,6 +44,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABEC606B2EB00C28001519E7 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BBEE7E242EC0664F00AA6B8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				BB8048CD2EA7E6C700E7BA46 /* Kaffi */,
+				BBEE7E282EC0664F00AA6B8D /* KaffiTests */,
 				ABEC60692EB00C28001519E7 /* Frameworks */,
 				BB8048CC2EA7E6C700E7BA46 /* Products */,
 			);
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				BB8048CB2EA7E6C700E7BA46 /* Kaffi.app */,
+				BBEE7E272EC0664F00AA6B8D /* KaffiTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,6 +109,29 @@
 			productReference = BB8048CB2EA7E6C700E7BA46 /* Kaffi.app */;
 			productType = "com.apple.product-type.application";
 		};
+		BBEE7E262EC0664F00AA6B8D /* KaffiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BBEE7E2D2EC0664F00AA6B8D /* Build configuration list for PBXNativeTarget "KaffiTests" */;
+			buildPhases = (
+				BBEE7E232EC0664F00AA6B8D /* Sources */,
+				BBEE7E242EC0664F00AA6B8D /* Frameworks */,
+				BBEE7E252EC0664F00AA6B8D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BBEE7E2C2EC0664F00AA6B8D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BBEE7E282EC0664F00AA6B8D /* KaffiTests */,
+			);
+			name = KaffiTests;
+			packageProductDependencies = (
+			);
+			productName = KaffiTests;
+			productReference = BBEE7E272EC0664F00AA6B8D /* KaffiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -96,6 +144,10 @@
 				TargetAttributes = {
 					BB8048CA2EA7E6C700E7BA46 = {
 						CreatedOnToolsVersion = 26.0.1;
+					};
+					BBEE7E262EC0664F00AA6B8D = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = BB8048CA2EA7E6C700E7BA46;
 					};
 				};
 			};
@@ -117,12 +169,20 @@
 			projectRoot = "";
 			targets = (
 				BB8048CA2EA7E6C700E7BA46 /* Kaffi */,
+				BBEE7E262EC0664F00AA6B8D /* KaffiTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		BB8048C92EA7E6C700E7BA46 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BBEE7E252EC0664F00AA6B8D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -139,7 +199,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BBEE7E232EC0664F00AA6B8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BBEE7E2C2EC0664F00AA6B8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB8048CA2EA7E6C700E7BA46 /* Kaffi */;
+			targetProxy = BBEE7E2B2EC0664F00AA6B8D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BB8048D42EA7E6CA00E7BA46 /* Debug */ = {
@@ -323,6 +398,48 @@
 			};
 			name = Release;
 		};
+		BBEE7E2E2EC0664F00AA6B8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S86Y8YKFL3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = name.Lumina.KaffiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kaffi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Kaffi";
+			};
+			name = Debug;
+		};
+		BBEE7E2F2EC0664F00AA6B8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S86Y8YKFL3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = name.Lumina.KaffiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kaffi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Kaffi";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -340,6 +457,15 @@
 			buildConfigurations = (
 				BB8048D72EA7E6CA00E7BA46 /* Debug */,
 				BB8048D82EA7E6CA00E7BA46 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BBEE7E2D2EC0664F00AA6B8D /* Build configuration list for PBXNativeTarget "KaffiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BBEE7E2E2EC0664F00AA6B8D /* Debug */,
+				BBEE7E2F2EC0664F00AA6B8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

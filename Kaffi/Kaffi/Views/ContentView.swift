@@ -7,17 +7,21 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
+    @State var vm = AuthModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if vm.isLoggedIn {
+                TabBarView(vm: vm)
+            } else {
+                LoginView(vm: vm)
+            }
         }
-        .padding()
     }
 }
+
 
 #Preview {
     ContentView()

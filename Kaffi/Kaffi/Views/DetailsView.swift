@@ -2,18 +2,16 @@
 //  DetailsView.swift
 //  Kaffi
 //
-//  Created by Alumno on 05/11/25.
-//
 
 import SwiftUI
 import SwiftData
 
 struct DetailsView: View {
-    var finca: Finca
-
+    let lote: Lote
+    @State private var viewModel = LoteDetailViewModel()
+    
     var body: some View {
         ScrollView {
-<<<<<<< Updated upstream
             VStack(alignment: .leading, spacing: 20) {
                 
                 AsyncImage(url: URL(string: finca.imagen)) { image in
@@ -28,7 +26,6 @@ struct DetailsView: View {
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
-=======
             if viewModel.isLoading {
                 ProgressView("Cargando detalles...")
                     .padding()
@@ -72,7 +69,7 @@ struct DetailsView: View {
                             colors: [.black.opacity(0.0), .black.opacity(0.5)],
                             startPoint: .top,
                             endPoint: .bottom
->>>>>>> Stashed changes
+
                         )
                         .overlay(
                             VStack(alignment: .leading) {
@@ -88,22 +85,38 @@ struct DetailsView: View {
                             .padding(.horizontal)
                             .padding(.bottom, 12),
                             alignment: .bottomLeading
-                        )
-                } placeholder: {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.systemGray5))
-                        .frame(height: 180)
-                }
 
-<<<<<<< Updated upstream
+                        )
+                    )
+                    .overlay(
+                        VStack(alignment: .leading) {
+                            Spacer()
+                            Text(detail.lote.nombre)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                            Text(detail.lote.nombre_finca)
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.9))
+                        }
+                        .padding(.horizontal)
+                        .padding(.bottom, 12),
+                        alignment: .bottomLeading
+                    )
+            } placeholder: {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.systemGray5))
+                    .frame(height: 180)
+            }
+
                 VStack(spacing: 12) {
-=======
+
             VStack(spacing: 12) {
                 if let finca = detail.finca {
->>>>>>> Stashed changes
+
                     HStack {
                         Label {
-                            Text("Gilberto García")
+                            Text(finca.productor)
                         } icon: {
                             Image(systemName: "person.fill")
                                 .foregroundColor(.brown)
@@ -112,7 +125,7 @@ struct DetailsView: View {
                     }
                     HStack {
                         Label {
-                            Text("Motozintla, Chiapas")
+                            Text("\(finca.ciudad), \(finca.estado)")
                         } icon: {
                             Image(systemName: "mappin.and.ellipse")
                                 .foregroundColor(.green)
@@ -120,43 +133,27 @@ struct DetailsView: View {
                         Spacer()
                     }
                 }
-<<<<<<< Updated upstream
-=======
             }
             .padding()
             .background(Color(.systemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
-            
-            if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Descripción")
-                        .font(.headline)
-                    Text(descripcion)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity)
->>>>>>> Stashed changes
+                  
+                  
+
                 .padding()
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
-<<<<<<< Updated upstream
-
-=======
-                
-            }
 
 
-            if let finca = detail.finca {
->>>>>>> Stashed changes
+
                 VStack {
-                    Text("Mapa de la finca")
+                    Text("Ubicación de la finca")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .padding(.bottom, 4)
-                    Text("15.3654, -92.2478")
+                    Text("\(String(format: "%.4f", finca.latitud)), \(String(format: "%.4f", finca.longitud))")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
@@ -164,8 +161,8 @@ struct DetailsView: View {
                 .padding()
                 .background(Color(.systemGreen).opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
+            }
 
-<<<<<<< Updated upstream
                 VStack(spacing: 12) {
                     Text("Características del café")
                         .font(.headline)
@@ -174,7 +171,6 @@ struct DetailsView: View {
                             Label("1,500 msnm", systemImage: "mountain.2.fill")
                             Spacer()
                             Label("Arábica Typica", systemImage: "leaf.fill")
-=======
             VStack(spacing: 12) {
                 Text("Características del lote")
                     .font(.headline)
@@ -183,7 +179,7 @@ struct DetailsView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         if let finca = detail.finca {
                             Label("\(Int(finca.altitud)) msnm", systemImage: "mountain.2.fill")
->>>>>>> Stashed changes
+
                         }
                         Spacer()
                         .font(.subheadline)
@@ -191,37 +187,39 @@ struct DetailsView: View {
                             Label("Lavado", systemImage: "drop.fill")
                             Spacer()
                             Label("Enero 2025", systemImage: "calendar")
-                        }
-                        .font(.subheadline)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
-<<<<<<< Updated upstream
+                        }
+                        Label(detail.lote.cultivo, systemImage: "leaf.fill")
+                    }
+                    .font(.subheadline)
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("\(detail.lote.hectareas) hectáreas", systemImage: "square.grid.2x2")
+                        Label(detail.lote.estatus, systemImage: "chart.bar")
+                    }
+                    .font(.subheadline)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Prácticas sostenibles")
                         .font(.headline)
-=======
 
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Prácticas sostenibles")
-                    .font(.headline)
-                
-                if !detail.practicasSostenibles.isEmpty {
->>>>>>> Stashed changes
+            if !detail.practicasSostenibles.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Prácticas sostenibles")
+                        .font(.headline)
+                    
+
                     VStack(alignment: .leading, spacing: 8) {
-                        ForEach([
-                            "Cultivo orgánico certificado",
-                            "Sombra natural con árboles nativos",
-                            "Conservación de suelos",
-                            "Uso eficiente del agua",
-                            "Comercio justo",
-                            "Biodiversidad protegida"
-                        ], id: \.self) { practica in
+                        ForEach(detail.practicasSostenibles, id: \.self) { practica in
                             HStack(spacing: 10) {
                                 Image(systemName: "leaf.circle.fill")
                                     .foregroundColor(.green)
@@ -253,64 +251,46 @@ struct DetailsView: View {
                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                     )
                 }
-<<<<<<< Updated upstream
                 .padding()
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+            }
 
-                HStack(spacing: 12) {
-                    Button {
-                    } label: {
-                        Text("Volver al inicio")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.brown)
-
-                    Button {
-                    } label: {
-                        Text("Escanear otro")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
+            if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Descripción")
+                        .font(.headline)
+                    Text(descripcion)
+                        .font(.body)
+                        .foregroundColor(.secondary)
                 }
-                .padding(.top, 10)
+                .padding()
+                .background(Color(.systemBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 14))
+                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
             }
             .padding(.horizontal)
             .padding(.bottom, 30)
-=======
-            }
-            .padding()
-            .background(Color(.systemBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14))
-            .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
-    
-            
-
-         
->>>>>>> Stashed changes
         }
-        .navigationTitle("Detalles del producto")
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color(.systemGroupedBackground))
+        .padding(.horizontal)
+        .padding(.bottom, 30)
     }
 }
 
 #Preview {
     DetailsView(
-        finca: Finca(
-            usuario: "usuario1",
-            nombre: "Finca Santa Fé",
-            ciudad: "Motozintla",
-            estado: "Chiapas",
-            descripcion: "Café de alta calidad cultivado en el corazón de Chiapas.",
-            hectareas: 12,
-            imagen: "https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG",
-            latitud: 15.3654,
-            longitud: -92.2478,
-            altitud: 1500
+        lote: Lote(
+            id_lote: 1,
+            id_usuario: "testing-1",
+            id_finca: 1,
+            nombre_finca: "Finca Guacamaya",
+            nombre: "Lote-B2",
+            cultivo: "Java",
+            hectareas: 1,
+            estatus: "En produccion",
+            imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg"
         )
     )
 }

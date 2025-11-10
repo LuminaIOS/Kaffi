@@ -8,24 +8,26 @@
 import SwiftUI
 struct FincaBox: View {
     let finca: Finca
-    
     var body: some View {
         VStack {
-            // IMAGEN
-            AsyncImage(url: URL(string: finca.imagen)) { image in image
+            AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
+                image
                     .resizable()
                     .scaledToFill()
-                    .frame(width:370, height: 120)
+                    .frame(width:300, height: 120)
                     .clipped()
-                    .cornerRadius(5)
+                    .cornerRadius(10)
             } placeholder: {
-                ProgressView()
-                    .frame(width: 370, height: 120)
+                Color.gray
+                    .scaledToFill()
+                    .frame(width:300, height: 120)
+                    .clipped()
+                    .cornerRadius(10)
             }
-            //TEXTO
+            .padding(5)
             HStack(){
                 VStack(alignment: .leading) {
-                    Text(finca.nombre)
+                    Text(finca.nombre_finca)
                         .font(.title3)
                         .bold()
                     
@@ -40,8 +42,6 @@ struct FincaBox: View {
                         .foregroundStyle(.secondary)
                     
                     HStack() {
-                        
-                        
                         Text("\(finca.hectareas) hectáreas")
                             .padding(5)
                             .background(lightColor2)
@@ -52,20 +52,34 @@ struct FincaBox: View {
                 }
                 Spacer()
             }
-            .padding()
             
         }
+        .padding()
         
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 5)
-        .padding(.horizontal)
-        .padding(.vertical,10)
-        .frame(width: 370)
+        .frame(width: 320)
     }
 }
 
 
-#Preview{
-    FincaBox(finca: Finca(usuario: "usuario1", nombre: "Finca solecito", ciudad: "San Cristobal", estado: "Oaxaca", descripcion: "Cafe de altisima calidad crecido en el corazon de Chiapas", hectareas: 10, imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg", latitud: 1.2, longitud: 1.2, altitud: 1.2))
+
+#Preview {
+    FincaBox(
+        finca: Finca(
+            nombre_finca: "Finca Solecito",
+            productor: "usuario1",
+            estado: "Oaxaca",
+            ciudad: "San Cristóbal",
+            latitud: 1.2,
+            longitud: 1.2,
+            hectareas: 10,
+            altitud: 1.2,
+            suelo: "Volcánico",
+            descripcion: "Café de altísima calidad crecido en el corazón de Chiapas",
+            imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s"
+        )
+    )
 }
+

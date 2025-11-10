@@ -8,6 +8,7 @@ import Supabase
 
 class LoteDetailService {
     func fetchLoteDetail(id_lote: Int) async throws -> LoteDetail {
+
         let loteResponse: [Lote] = try await client
             .from("Lote")
             .select()
@@ -44,11 +45,9 @@ class LoteDetailService {
             
             practicas = practicasResponse.compactMap { $0.Practicas?.NombreP }
             
-            // Si no encontramos prácticas, mostramos un log
             if practicas.isEmpty {
                 print("No se encontraron prácticas para la finca ID: \(lote.id_finca)")
                 
-                // Verificamos si hay datos en la tabla unionPyF para debug
                 let debugResponse = try await client
                     .from("unionPyF")
                     .select()
@@ -60,7 +59,6 @@ class LoteDetailService {
             
         } catch {
             print("Error al cargar prácticas: \(error)")
-            // Si hay error, simplemente dejamos el array vacío
             practicas = []
         }
         
@@ -72,7 +70,6 @@ class LoteDetailService {
     }
 }
 
-// Modelo para la tabla unionPyF
 struct UnionPyF: Codable {
     let idUnion: Int?
     let idFinca: Int?
@@ -80,12 +77,10 @@ struct UnionPyF: Codable {
     let Practicas: Practica?
 }
 
-// Modelo para prácticas
 struct Practica: Codable {
     let NombreP: String
 }
 
-// Modelo para los datos detallados del lote
 struct LoteDetail {
     let lote: Lote
     let finca: Finca?
