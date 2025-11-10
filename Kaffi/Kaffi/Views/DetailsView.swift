@@ -13,6 +13,7 @@ struct DetailsView: View {
 
     var body: some View {
         ScrollView {
+<<<<<<< Updated upstream
             VStack(alignment: .leading, spacing: 20) {
                 
                 AsyncImage(url: URL(string: finca.imagen)) { image in
@@ -27,6 +28,51 @@ struct DetailsView: View {
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
+=======
+            if viewModel.isLoading {
+                ProgressView("Cargando detalles...")
+                    .padding()
+            } else if let error = viewModel.errorMessage {
+                ContentUnavailableView(
+                    "Error al cargar",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(error)
+                )
+                .padding()
+            } else if let detail = viewModel.loteDetail {
+                contenidoDetallado(detail: detail)
+            } else {
+                ContentUnavailableView(
+                    "No hay datos",
+                    systemImage: "questionmark.circle",
+                    description: Text("No se pudieron cargar los detalles del lote")
+                )
+                .padding()
+            }
+        }
+        .navigationTitle("Detalles del Lote")
+        .navigationBarTitleDisplayMode(.inline)
+        .background(Color(.systemGroupedBackground))
+        .task {
+            await viewModel.cargarDetalles(lote: lote)
+        }
+    }
+    
+    @ViewBuilder
+    private func contenidoDetallado(detail: LoteDetail) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            AsyncImage(url: URL(string: detail.lote.imagen ?? detail.finca?.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        LinearGradient(
+                            colors: [.black.opacity(0.0), .black.opacity(0.5)],
+                            startPoint: .top,
+                            endPoint: .bottom
+>>>>>>> Stashed changes
                         )
                         .overlay(
                             VStack(alignment: .leading) {
@@ -49,7 +95,12 @@ struct DetailsView: View {
                         .frame(height: 180)
                 }
 
+<<<<<<< Updated upstream
                 VStack(spacing: 12) {
+=======
+            VStack(spacing: 12) {
+                if let finca = detail.finca {
+>>>>>>> Stashed changes
                     HStack {
                         Label {
                             Text("Gilberto García")
@@ -69,11 +120,37 @@ struct DetailsView: View {
                         Spacer()
                     }
                 }
+<<<<<<< Updated upstream
+=======
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+            
+            if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Descripción")
+                        .font(.headline)
+                    Text(descripcion)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+>>>>>>> Stashed changes
                 .padding()
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+<<<<<<< Updated upstream
 
+=======
+                
+            }
+
+
+            if let finca = detail.finca {
+>>>>>>> Stashed changes
                 VStack {
                     Text("Mapa de la finca")
                         .font(.subheadline)
@@ -88,6 +165,7 @@ struct DetailsView: View {
                 .background(Color(.systemGreen).opacity(0.2))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
+<<<<<<< Updated upstream
                 VStack(spacing: 12) {
                     Text("Características del café")
                         .font(.headline)
@@ -96,6 +174,16 @@ struct DetailsView: View {
                             Label("1,500 msnm", systemImage: "mountain.2.fill")
                             Spacer()
                             Label("Arábica Typica", systemImage: "leaf.fill")
+=======
+            VStack(spacing: 12) {
+                Text("Características del lote")
+                    .font(.headline)
+                
+                HStack{
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let finca = detail.finca {
+                            Label("\(Int(finca.altitud)) msnm", systemImage: "mountain.2.fill")
+>>>>>>> Stashed changes
                         }
                         Spacer()
                         .font(.subheadline)
@@ -113,9 +201,18 @@ struct DetailsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
                 .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
 
+<<<<<<< Updated upstream
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Prácticas sostenibles")
                         .font(.headline)
+=======
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Prácticas sostenibles")
+                    .font(.headline)
+                
+                if !detail.practicasSostenibles.isEmpty {
+>>>>>>> Stashed changes
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach([
                             "Cultivo orgánico certificado",
@@ -130,6 +227,7 @@ struct DetailsView: View {
                                     .foregroundColor(.green)
                                 Text(practica)
                                     .font(.subheadline)
+                                Spacer()
                             }
                             .padding(10)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -137,7 +235,25 @@ struct DetailsView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                         }
                     }
+                } else {
+                    HStack {
+                        Image(systemName: "leaf.circle")
+                            .foregroundColor(.gray)
+                        Text("No hay prácticas sostenibles registradas")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    .padding(15)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(.systemGray6))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                    )
                 }
+<<<<<<< Updated upstream
                 .padding()
                 .background(Color(.systemBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -163,6 +279,18 @@ struct DetailsView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 30)
+=======
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+
+    
+            
+
+         
+>>>>>>> Stashed changes
         }
         .navigationTitle("Detalles del producto")
         .navigationBarTitleDisplayMode(.inline)
