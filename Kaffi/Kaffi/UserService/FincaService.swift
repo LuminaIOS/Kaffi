@@ -16,6 +16,30 @@ class FincaService: ObservableObject {
     @Published var errorMessage: String?
     
     
+    func uploadImage(_ data: Data, fileName: String) async throws -> String {
+        let bucket = "Finca_imagenes"
+        let path = "uploads/\(fileName)"
+
+        try await client.storage
+            .from(bucket)
+            .upload(
+                path,
+                data: data,
+                options: FileOptions(
+                    cacheControl: "3600",
+                    contentType: "image/png",
+                    upsert: false
+                )
+            )
+
+
+        let publicUrl = "\(supabase_URL)/storage/v1/object/public/\(bucket)/\(path)"
+
+        return publicUrl
+    }
+
+
+    
     func insertFinca(_ finca: Finca) async throws {
         _ = try await client
             .from("Finca")

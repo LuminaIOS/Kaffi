@@ -5,20 +5,64 @@
 //  Created by Angela Rodriguez on 05/11/25.
 //
 
-// agregar campo de imagenes
-
 import SwiftUI
-
+import PhotosUI
 
 
 struct RegisterFincaView: View {
     @Environment(\.dismiss) var dismiss
     @State private var vm = FincaViewModel(fincaService: FincaService())
+    @State private var selectedImage: PhotosPickerItem?
+    @State private var imageData: Data?
+
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Foto de la finca")
+                            .font(.body)
+                            .foregroundColor(.black)
+                        
+                        PhotosPicker(selection: $selectedImage, matching: .images) {
+                            if let imageData, let uiImage = UIImage(data: imageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 180)
+                                    .clipped()
+                                    .cornerRadius(10)
+                            } else {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(.systemGray6))
+                                        .frame(height: 180)
+                                    
+                                    VStack(spacing: 12) {
+                                        
+                                        Image(systemName: "arrow.up.square")
+                                            .font(.system(size: 50))
+                                            .foregroundColor(Color(.systemGray3))
+                                        
+                                        Text("Toca para subir una foto")
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                            }
+                        }
+                        .onChange(of: selectedImage) { _, newItem in
+                            Task {
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    imageData = data
+                                    vm.selectedImage = UIImage(data: data)
+                                }
+                            }
+                        }
+                    }
+                    
+
                     // Nombre de la finca
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Nombre de la finca*")
@@ -156,7 +200,11 @@ struct RegisterFincaView: View {
                     
                     // registrar
                     Button {
-                        Task { await vm.registrarFinca() }
+                        Task {
+                            await vm.registrarFinca()
+                            selectedImage = nil
+                            imageData = nil
+                        }
                     } label: {
                         Text(vm.isLoading ? "Registrando..." : "Registrar Finca")
                             .frame(maxWidth: .infinity)
