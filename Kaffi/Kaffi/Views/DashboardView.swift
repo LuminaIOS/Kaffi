@@ -11,6 +11,8 @@ import SwiftUI
 
 struct DashboardView: View {
     @StateObject var viewModel = DashboardViewModel()
+    @Bindable var vm: AuthModel
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -21,12 +23,18 @@ struct DashboardView: View {
                             .frame(height: 140)
                         
                         VStack(alignment: .leading, spacing: 10) {
-                            
-                            Text("Bienvenida \(viewModel.nombre)" )
-                                .font(.title2
-                                    .weight(.semibold))
-                                .foregroundStyle(.white)
-                                .padding(5)
+                            if let user = vm.currentUser {
+                                Text("Bienvenido \(user.nombreCompleto)")
+                                    .font(.title2.weight(.semibold))
+                                    .foregroundStyle(.white)
+                                    .padding(5)
+                            } else {
+                                Text("Cargando usuario...")
+                                    .font(.title2.weight(.semibold))
+                                    .foregroundStyle(.white)
+                                    .padding(5)
+                            }
+
                             
                             HStack (spacing: 5) {
                                 Image(systemName: "magnifyingglass")
@@ -115,5 +123,5 @@ struct DashboardView: View {
        
 }
 #Preview {
-    DashboardView()
+    DashboardView(vm: AuthModel())
 }
