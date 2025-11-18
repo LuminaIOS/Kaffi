@@ -9,12 +9,12 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State var vm = AuthModel()
+    @Environment(AuthModel.self) private var vm
     
     var body: some View {
         Group {
             if vm.isLoggedIn {
-                TabBarView(vm: vm)
+                TabBarView()
             } else {
                 LoginView(vm: vm)
             }
@@ -25,4 +25,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(AuthModel())
 }

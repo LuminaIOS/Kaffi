@@ -17,6 +17,8 @@ final class AuthModel {
     var userEmail: String = ""
     var userPassword: String = ""
     var message: String = ""
+    var currentId : String = ""
+    var currentUser : Usuario? = nil
     var messageType: MessageType = .info
     var isLoggedIn: Bool = false
     var isLoading: Bool = false
@@ -25,10 +27,59 @@ final class AuthModel {
         case success, error, info
     }
     
-    func signUp(username: String, fechaNacimiento: Date) async {
+    func fetchUserData() async {
+        guard !currentId.isEmpty else {
+            print("No hay usuario logueado")
+            return
+        }
+        
+        isLoading = true
+        
+        do {
+            let response: [Usuario] = try await client
+                .from("usuario")
+                .select()
+                .eq("id_usuario", value: currentId)
+                .execute()
+                .value
+            
+            if let user = response.first {
+                currentUser = user
+                
+                print("Username: \(user.username)")
+                print("Nombre: \(user.nombreCompleto)")
+                print("ID: \(user.id)")
+            } else {
+                print("No se encontró usuario con id: \(currentId)")
+                message = "No se encontraron datos del usuario"
+                messageType = .error
+            }
+        } catch let error as NSError {
+            print("Error al obtener datos del usuario:")
+            print("Descripción: \(error.localizedDescription)")
+            print("Código: \(error.code)")
+            print("UserInfo: \(error.userInfo)")
+            message = "Error al cargar datos del usuario"
+            messageType = .error
+        } catch {
+            print("error desconocido: \(error)")
+            message = "Error al cargar datos del usuario"
+            messageType = .error
+        }
+        
+        isLoading = false
+    }
+    
+    func signUp(nombreCompleto : String, username: String, fechaNacimiento: Date) async {
         // Validaciones
         guard !userEmail.isEmpty else {
             message = "El correo electrónico es requerido"
+            messageType = .error
+            return
+        }
+        
+        guard !nombreCompleto.isEmpty else{
+            message = "El nombre completo es requerido"
             messageType = .error
             return
         }
@@ -82,11 +133,11 @@ final class AuthModel {
                 .insert([
                     "id_usuario": AnyJSON(userId.uuidString),
                     "username": AnyJSON(username),
-                    "birthdate": AnyJSON(fechaISO)
+                    "birthdate": AnyJSON(fechaISO),
+                    "nombreCompleto": AnyJSON(nombreCompleto)
                 ])
                 .execute()
             
-            message = "Registro exitoso. Revisa tu email para confirmar la cuenta."
             messageType = .success
             
             userEmail = ""
@@ -128,7 +179,11 @@ final class AuthModel {
         isLoading = true
         
         do {
-            try await auth.signIn(email: userEmail, password: userPassword)
+            let session = try await auth.signIn(email: userEmail, password: userPassword)
+            currentId = session.user.id.uuidString
+            
+            await fetchUserData()
+            
             message = "Sesión iniciada correctamente"
             messageType = .success
             isLoggedIn = true
@@ -150,6 +205,8 @@ final class AuthModel {
             message = "Sesión cerrada correctamente"
             messageType = .success
             isLoggedIn = false
+            currentUser = nil
+            currentId = ""
             userEmail = ""
             userPassword = ""
         } catch {
@@ -159,6 +216,19 @@ final class AuthModel {
         
         isLoading = false
     }
+    
+//    func checkSession() async {
+//        do {
+//            if let session = try await auth.session {
+//                currentId = session.user.id.uuidString
+//                await fetchUserData()
+//                isLoggedIn = true	
+//                print("Sesión restaurada para: \(currentId)")
+//            }
+//        } catch {
+//            print("No hay sesión activa: \(error)")
+//        }
+//    }
     
     // Función auxiliar para validar email
     private func isValidEmail(_ email: String) -> Bool {
