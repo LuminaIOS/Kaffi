@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Observation
+import Supabase
 
 @Observable
 @MainActor
@@ -36,9 +37,12 @@ class FincaViewModel {
     var mensajeAlerta = ""
     
     private let fincaService: FincaService
+    private let supabase: SupabaseClient
+
     
-    init(fincaService: FincaService) {
+    init(fincaService: FincaService, supabase: SupabaseClient) {
         self.fincaService = fincaService
+        self.supabase = supabase
     }
     
     func registrarFinca() async {
@@ -62,6 +66,16 @@ class FincaViewModel {
         isLoading = true
         
         do {
+        
+            guard let user = supabase.auth.currentUser else {
+                tituloAlerta = "Sesión expirada"
+                mensajeAlerta = "Debes iniciar sesión nuevamente."
+                mostrandoAlerta = true
+                isLoading = false
+                return
+            }
+            
+            let idUsuario = user.id.uuidString
             
             var imageUrl: String? = nil
             
@@ -72,8 +86,6 @@ class FincaViewModel {
                 imageUrl = try await fincaService.uploadImage(data, fileName: fileName)
             }
             
-            // Usuario temporal
-            let usuarioTemporal = "9be34306-96cd-4744-8960-680f6a7ec2c7"
             
             // Crear nueva finca
             let nuevaFinca = Finca(
@@ -87,8 +99,8 @@ class FincaViewModel {
                 altitud: altitud,
                 suelo: suelo,
                 descripcion: descripcion,
-                id_usuario: usuarioTemporal,
-                imagen: imageUrl   // 👈 ESTA ES TU PROPIEDAD REAL
+                id_usuario: idUsuario,
+                imagen: imageUrl
             )
             
             try await fincaService.insertFinca(nuevaFinca)

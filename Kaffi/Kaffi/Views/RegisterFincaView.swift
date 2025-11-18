@@ -11,7 +11,7 @@ import PhotosUI
 
 struct RegisterFincaView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var vm = FincaViewModel(fincaService: FincaService())
+    @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
     @State private var selectedImage: PhotosPickerItem?
     @State private var imageData: Data?
 
