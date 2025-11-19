@@ -5,9 +5,11 @@
 //  Created by Amparo Alcaraz Tonella on 22/10/25.
 //
 import SwiftUI
+import Supabase
 
 struct DisplayFincasView: View {
     @StateObject private var fincaService = FincaService()
+    let supabase = client
     var body: some View {
         VStack {
             HStack {
@@ -45,8 +47,14 @@ struct DisplayFincasView: View {
             Spacer()
         }
         .task {
-            await fincaService.fetchFincas()
+            if let user = supabase.auth.currentUser {
+                let userId = user.id.uuidString
+                await fincaService.fetchFincas(for: userId)
+            } else {
+                print("No hay usuario logueado")
+            }
         }
+
     }
 }
 
