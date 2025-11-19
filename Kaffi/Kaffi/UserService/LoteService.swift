@@ -16,29 +16,13 @@ class LoteService: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    
-    func fetchLotes() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            let response: PostgrestResponse<[Lote]> = try await client
-                .from("Lote")
-                .select()
-                .order("id_lote", ascending: true)
-                .execute()
-            lotes = response.value
-            if lotes.isEmpty {
-                print("Respuesta vacía:", response)
-                
-            } else {
-                print(response.data)
-                let raw = try await client.from("Lote").select().execute()
-                print(String(data: raw.data, encoding: .utf8)!)
-            }
-        } catch {
-            print(error)
-            errorMessage = "Error al cargar los Lotes."
-        }
-        isLoading = false
+    func fetchLotes(forUser userID: String) async throws -> [Lote] {
+        let response: PostgrestResponse<[Lote]> = try await client
+            .from("Lote")
+            .select()
+            .eq("id_usuario", value: userID)
+            .order("nombre", ascending: true)
+            .execute()
+        return response.value
     }
 }

@@ -35,6 +35,8 @@ class FincaViewModel {
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
+    var fincas: [Finca] = []
+    var errorMessage: String?
     
     private let fincaService: FincaService
     private let supabase: SupabaseClient
@@ -132,5 +134,26 @@ class FincaViewModel {
         suelo = ""
         descripcion = ""
         selectedImage = nil
+    }
+    func fetchFincas() async {
+        //let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
+        //do {
+        //  let fetched = try await LoteService.fetchLotes(forUser: user)
+        //  self.lotes = fetched
+        guard let user = supabase.auth.currentUser else {
+            errorMessage = "Sesión expirada. Inicia sesión nuevamente."
+            isLoading = false
+            return
+        }
+        do {
+            let fetched = try await fincaService.fetchFincas(forUser: user.id.uuidString)
+            self.fincas = fetched
+            
+        } catch {
+            print("Fetch error:", error)
+            errorMessage = "Error al cargar las fincas."
+        }
+        
+        isLoading = false
     }
 }

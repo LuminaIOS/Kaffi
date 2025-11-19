@@ -37,8 +37,6 @@ class FincaService: ObservableObject {
 
         return publicUrl
     }
-
-
     
     func insertFinca(_ finca: Finca) async throws {
         _ = try await client
@@ -47,27 +45,15 @@ class FincaService: ObservableObject {
             .execute()
     }
     
-    func fetchFincas(for userId: String) async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            let response: PostgrestResponse<[Finca]> = try await client
-                .from("Finca")
-                .select()
-                .eq("id_usuario", value: userId)
-                .order("nombre_finca", ascending: true)
-                .execute()
-            fincas = response.value
-            if fincas.isEmpty {
-                print("No hay fincas para este usuario.")
-            } else {
-                print("Fincas cargadas:", fincas.count)
-            }
-        } catch {
-            print(error)
-            errorMessage = "Error al cargar las fincas."
-        }
-        isLoading = false
+    func fetchFincas(forUser userID: String) async throws -> [Finca] {
+        let response: PostgrestResponse<[Finca]> = try await client
+            .from("Finca")
+            .select()
+            .eq("id_usuario", value: userID)
+            .order("nombre_finca", ascending: true)
+            .execute()
+        return response.value
+        
     }
 }
 

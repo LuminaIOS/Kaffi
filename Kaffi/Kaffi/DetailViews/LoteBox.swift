@@ -27,6 +27,8 @@ struct LoteBox: View {
                             Text(lote.nombre)
                                 .font(.title3)
                                 .bold()
+                                .frame(maxWidth: 170, alignment: .leading)
+                                .lineLimit(2)
                             
                             Text("\(lote.nombre_finca)")
                                 .font(.subheadline)
@@ -68,5 +70,5 @@ struct LoteBox: View {
 
 
 #Preview{
-    LoteBox(lote: Lote(id_lote:1, id_usuario:"testing-1", id_finca: 2, nombre_finca:"Finca La Luna", nombre: "Lote-B2", cultivo: "Java", hectareas: 1, estatus: "En produccion", imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg"))
+    LoteBox(lote: Lote(id_lote:1, id_usuario:"testing-1", id_finca: 2, nombre_finca:"Finca La Luna", nombre: "Lote-B2233243637544579643574356729110", cultivo: "Java", hectareas: 1, estatus: "En produccion", imagen: "https://content.elmueble.com/medio/2023/06/08/arbol-grano-cafe-frutos_83f4fed6_230608095908_900x900.jpg"))
 }
