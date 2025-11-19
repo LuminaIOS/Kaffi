@@ -136,10 +136,10 @@ class FincaViewModel {
         selectedImage = nil
     }
     func fetchFincas() async {
-        //let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
-        //do {
-        //  let fetched = try await LoteService.fetchLotes(forUser: user)
-        //  self.lotes = fetched
+ //       let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
+//        do {
+//          let fetched = try await fincaService.fetchFincas(forUser: user)
+//          self.fincas = fetched
         guard let user = supabase.auth.currentUser else {
             errorMessage = "Sesión expirada. Inicia sesión nuevamente."
             isLoading = false
