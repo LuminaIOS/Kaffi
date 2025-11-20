@@ -9,7 +9,8 @@ import SwiftUI
 
 struct DashboardView: View {
     @StateObject var viewModel = DashboardViewModel()
-    @StateObject private var recService = RecordatorioService()
+    @State private var rvm = RecViewModel(RecordatorioService: RecordatorioService(), supabase: client )
+    let supabase = client
     @Bindable var vm: AuthModel
     
     var body: some View {
@@ -46,10 +47,10 @@ struct DashboardView: View {
                 Text("Recordatorios")
                     .bold()
                 
-                if recService.isLoading {
+                if rvm.isLoading {
                     ProgressView("Cargando fincas...")
                         .padding()
-                } else if let error = recService.errorMessage {
+                } else if let error = rvm.errorMessage {
                     Text(error)
                         .foregroundColor(.red)
                         .padding()
@@ -79,7 +80,7 @@ struct DashboardView: View {
                         )
                         
                         //RECORDATORIOS DE DB
-                        ForEach(recService.recordatorios) { rec in
+                        ForEach(rvm.recordatorios) { rec in
                             ZStack {
                                 RecordatorioBox(recordatorio: rec)
                             }
@@ -88,7 +89,7 @@ struct DashboardView: View {
                 }
             }
             .task {
-                await recService.fetchRecordatorios()
+                await rvm.fetchRecordatorios()
             }
             Spacer()
         }

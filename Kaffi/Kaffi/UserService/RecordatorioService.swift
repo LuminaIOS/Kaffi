@@ -21,32 +21,17 @@ class RecordatorioService: ObservableObject {
             .insert([recordatorio])
             .execute()
     }
-    
-    func fetchRecordatorios() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            let response: PostgrestResponse<[Recordatorio]> = try await client
-                .from("Recordatorio")
-                .select()
-                .order("id_recordatorio", ascending: true)
-                .execute()
-            recordatorios = response.value
-            if recordatorios.isEmpty {
-                print("Respuesta vacía:", response)
-                
-            } else {
-                print(response.data)
-                let raw = try await client.from("Recordatorio").select().execute()
-                print(String(data: raw.data, encoding: .utf8)!)
-
-            }
-        } catch {
-            print(error)
-            errorMessage = "Error al cargar los recordatorios."
-        }
-        isLoading = false
+    func fetchRecordatorios(forUser userID: String) async throws -> [Recordatorio] {
+        let response: PostgrestResponse<[Recordatorio]> = try await client
+            .from("Recordatorio")
+            .select()
+            .eq("id_usuario", value: userID)
+            .order("id_recordatorio", ascending: true)
+            .execute()
+        return response.value
+        
     }
+    
     func deleteRecordatorio(_ recordatorio: Recordatorio) async {
         do {
             _ = try await client
@@ -55,10 +40,6 @@ class RecordatorioService: ObservableObject {
                 .eq("id_recordatorio", value: recordatorio.id_recordatorio)
                 .execute()
             
-            // Remove it locally too
-            DispatchQueue.main.async {
-                self.recordatorios.removeAll { $0.id_recordatorio == recordatorio.id_recordatorio }
-            }
         } catch {
             print("Error deleting recordatorio:", error)
             DispatchQueue.main.async {

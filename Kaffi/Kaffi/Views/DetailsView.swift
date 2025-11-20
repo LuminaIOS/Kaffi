@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct DetailsView: View {
     let lote: Lote
@@ -105,28 +106,30 @@ struct DetailsView: View {
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
             
-            if let descripcion = detail.finca?.descripcion, !descripcion.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Descripción")
-                        .font(.headline)
-                    Text(descripcion)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color(.systemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
-            }
             
-
             if let finca = detail.finca {
+                let fincalocation = CLLocationCoordinate2D(latitude: finca.latitud, longitude: finca.longitud)
                 VStack {
                     Text("Ubicación de la finca")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .padding(.bottom, 4)
+                    Map(position: .constant(
+                                MapCameraPosition.region(
+                                    MKCoordinateRegion(
+                                        center: fincalocation,
+                                        span: MKCoordinateSpan(
+                                            latitudeDelta: 12,
+                                            longitudeDelta: 12
+                                        )
+                                    )
+                                )
+                            )) {
+                                Marker("", coordinate: fincalocation)
+                            }
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                            .frame(width: 300, height: 200)
                     Text("\(String(format: "%.4f", finca.latitud)), \(String(format: "%.4f", finca.longitud))")
                         .font(.footnote)
                         .foregroundColor(.secondary)

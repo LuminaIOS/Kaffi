@@ -7,14 +7,15 @@
 import SwiftUI
 
 struct DisplayLotesView: View {
-    @StateObject private var loteService = LoteService()
+    @State private var vm = LoteViewModel(LoteService: LoteService(), supabase: client)
+    let supabase = client
     var body: some View {
         VStack(){
             HStack {
                 NavigationLink(destination: RegisterFincaView()) {
                     Spacer()
                     Image(systemName: "plus.app.fill")
-                    Text("Registrar nueva finca")
+                    Text("Registrar nuevo lote")
                     Spacer()
                 }
                 .foregroundColor(.white)
@@ -25,17 +26,17 @@ struct DisplayLotesView: View {
             .padding(.horizontal)
             .padding(.vertical, 10)
             
-            if loteService.isLoading {
+            if vm.isLoading {
                 ProgressView("Cargando lotes...")
                     .padding()
-            } else if let error = loteService.errorMessage {
+            } else if let error = vm.errorMessage {
                 Text(error)
                     .foregroundColor(.red)
                     .padding()
             } else {
                 ScrollView {
                     VStack(spacing: 15) {
-                        ForEach(loteService.lotes) { lote in
+                        ForEach(vm.lotes) { lote in
                             NavigationLink(destination: DetailsView(lote: lote)){
                                 LoteBox(lote: lote)
                             }
@@ -48,7 +49,7 @@ struct DisplayLotesView: View {
             }
             Spacer()
         }.task {
-            await loteService.fetchLotes()
+            await vm.fetchLotes()
         }
     }
 }
