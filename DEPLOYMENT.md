@@ -10,6 +10,8 @@
 - Funcionalidades con requisitos de iOS:
   - `FincaSpeechParser` está marcado `@available(iOS 18.1, *)`.
   - El modelo `Finca` usa `SwiftData`.
+  - AI transcriber requiere Apple Intelligence
+  - Pagina web requiere browser moderno
 
 ## 2 — Preparar el backend (Supabase) 
 - En el proyecto Supabase:
