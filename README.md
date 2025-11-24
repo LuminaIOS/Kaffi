@@ -15,7 +15,7 @@ La aplicación Kaffi está destinada tanto a productores y agricultores de café
 - iOS 18.1 o posterior (para pruebas en el simulador)  
 - Se recomienda una Mac con Apple Silicon (M1 o superior)
 
-## Comenzando
+## Guía
 
 ### Configuración para desarrollo
 
