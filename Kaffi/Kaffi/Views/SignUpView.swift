@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
-
-
-import SwiftUI
+	
 
 struct SignUpView: View {
     @State private var nombreUsuario: String = ""
     @State private var fechaDeNacimiento = Date()
+    @State private var nombreCompleto : String = ""
     @Bindable var vm: AuthModel
     @Environment(\.dismiss) var dismiss
     
@@ -31,6 +30,15 @@ struct SignUpView: View {
                 VStack(spacing: 25) {
                     Form {
                         Section {
+                            TextField("Nombre Completo", text: $nombreCompleto)
+                                .textContentType(.emailAddress)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                        } header: {
+                            Label("Nombre completo", systemImage: "figure.stand")
+                        }
+                        
+                        Section {	
                             TextField("Email", text: $vm.userEmail)
                                 .textContentType(.emailAddress)
                                 .textInputAutocapitalization(.never)
@@ -71,7 +79,7 @@ struct SignUpView: View {
                         }
                     }
                     .scrollContentBackground(.hidden)
-                    .frame(maxWidth: 350, maxHeight: 460)
+                    .frame(maxWidth: 350, maxHeight: 650)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .shadow(radius: 5)
                     
@@ -92,7 +100,7 @@ struct SignUpView: View {
                     // Botón de registro
                     Button {
                         Task {
-                            await vm.signUp(username: nombreUsuario, fechaNacimiento: fechaDeNacimiento)
+                            await vm.signUp(nombreCompleto: nombreCompleto, username: nombreUsuario, fechaNacimiento: fechaDeNacimiento)
                             if vm.messageType == .success {
                                 dismiss()
                             }
@@ -122,6 +130,7 @@ struct SignUpView: View {
     private var isFormValid: Bool {
         !vm.userEmail.isEmpty &&
         !vm.userPassword.isEmpty &&
+        !nombreCompleto.isEmpty &&
         !nombreUsuario.isEmpty &&
         nombreUsuario.count >= 3 &&
         vm.userPassword.count >= 6

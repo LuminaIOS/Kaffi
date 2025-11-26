@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State var vm = AuthModel()
+    @Environment(AuthModel.self) private var vm
     
     var body: some View {
         Group {
@@ -25,4 +25,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(AuthModel())
 }

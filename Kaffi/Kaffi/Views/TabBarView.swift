@@ -10,13 +10,13 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var searchText = ""
+    //@Environment(AuthModel.self) private var vm
     @Bindable var vm: AuthModel
-    
     
     var body: some View {
         TabView {
             NavigationStack {
-                DashboardView()
+                DashboardView(vm:vm)
                     .navigationTitle("Dashboard")
                     .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)

@@ -37,8 +37,8 @@ class Lote: Codable, Identifiable {
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        if let id_lote = id_lote {   // only encode if it exists
-            try container.encode(id_lote, forKey: .nombre_finca)
+        if let id_lote = id_lote {
+            try container.encode(id_lote, forKey: .id_lote) // <- CORREGIDO: era .nombre_finca
         }
         try container.encode(id_usuario, forKey: .id_usuario)
         try container.encode(id_finca, forKey: .id_finca)
