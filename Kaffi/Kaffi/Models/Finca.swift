@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class Finca: Codable, Identifiable {
+class Finca_old: Codable, Identifiable {
     var id_finca: Int?   // Make it optional
     var nombre_finca: String
     var productor: String

@@ -10,7 +10,7 @@ struct FincaBox: View {
     let finca: Finca
     var body: some View {
         VStack {
-            AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrind.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
+            AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrinnd.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -30,16 +30,16 @@ struct FincaBox: View {
                     Text(finca.nombre_finca)
                         .font(.title3)
                         .bold()
-                    
-                    HStack {
-                        Image(systemName: "mappin")
-                        Text("\(finca.ciudad), \(finca.estado)")
-                    }
-                    .font(.subheadline)
-                    
-                    Text(finca.descripcion)
-                        .textScale(.secondary)
-                        .foregroundStyle(.secondary)
+//                    
+//                    HStack {
+//                        Image(systemName: "mappin")
+//                        Text("\(finca.ciudad), \(finca.estado)")
+//                    }
+//                    .font(.subheadline)
+//                    
+//                    Text(finca.descripcion)
+//                        .textScale(.secondary)
+//                        .foregroundStyle(.secondary)
                     
                     HStack() {
                         Text("\(finca.hectareas) hectáreas")
@@ -68,18 +68,16 @@ struct FincaBox: View {
 #Preview {
     FincaBox(
         finca: Finca(
+            id_usuario: "usuario1",
             nombre_finca: "Finca Solecito",
-            productor: "usuario1",
-            estado: "Oaxaca",
-            ciudad: "San Cristóbal",
-            latitud: 1.2,
-            longitud: 1.2,
+            productor: 1,
             hectareas: 10,
             altitud: 1.2,
-            suelo: "Volcánico",
-            descripcion: "Café de altísima calidad crecido en el corazón de Chiapas",
+            variedades_cult: "Bourbon, Typica",
+            porte_planta: "Medio",
             imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s"
         )
     )
 }
+
 

@@ -1,5 +1,5 @@
 //
-//  FincaService.swift
+//  CosechaService.swift
 //  Trial
 //
 //  Created by Angela Rodriguez on 26/11/25.
@@ -10,14 +10,14 @@ import Supabase
 import Combine
 
 
-class FincaService: ObservableObject {
-    @Published var fincas: [Finca] = []
+class CosechaService: ObservableObject {
+    @Published var cosecha: [Cosecha] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     
     
     func uploadImage(_ data: Data, fileName: String) async throws -> String {
-        let bucket = "Finca_imagenes"
+        let bucket = "Cosecha_imagenes"
         let path = "uploads/\(fileName)"
 
         try await client.storage
@@ -38,21 +38,10 @@ class FincaService: ObservableObject {
         return publicUrl
     }
     
-    func insertFinca(_ finca: Finca) async throws {
+    func insertCosecha(_ cosecha: Cosecha) async throws {
         _ = try await client
-            .from("Finca")
-            .insert([finca])
+            .from("Cosecha")
+            .insert([cosecha])
             .execute()
-    }
-    
-    func fetchFincas(forUser userID: String) async throws -> [Finca] {
-        let response: PostgrestResponse<[Finca]> = try await client
-            .from("Finca")
-            .select()
-            .eq("id_usuario", value: userID)
-            .order("nombre_finca", ascending: true)
-            .execute()
-        return response.value
-        
     }
 }

@@ -5,11 +5,9 @@
 //  Created by Amparo Alcaraz Tonella on 22/10/25.
 //
 import SwiftUI
-import Supabase
 
 struct DisplayFincasView: View {
-    @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
-    let supabase = client
+    @StateObject private var fincaService = FincaService()
     var body: some View {
         VStack {
             HStack {
@@ -27,17 +25,17 @@ struct DisplayFincasView: View {
             .padding(.horizontal)
             .padding(.vertical, 10)
 
-            if vm.isLoading {
+            if fincaService.isLoading {
                 ProgressView("Cargando fincas...")
                     .padding()
-            } else if let error = vm.errorMessage {
+            } else if let error = fincaService.errorMessage {
                 Text(error)
                     .foregroundColor(.red)
                     .padding()
             } else {
                 ScrollView {
                     VStack(spacing: 15) {
-                        ForEach(vm.fincas) { finca in
+                        ForEach(fincaService.fincas) { finca in
                             FincaBox(finca: finca)
                         }
                     }
@@ -47,12 +45,17 @@ struct DisplayFincasView: View {
             Spacer()
         }
         .task {
-            await vm.fetchFincas()
+            do {
+                try await fincaService.fetchFincas(forUser: "0a3c579d-5237-426f-8bba-182b0813bcea")
+            } catch {
+                print("Error al cargar fincas: \(error.localizedDescription)")
+            }
         }
+
+
     }
 }
 
 #Preview {
     DisplayFincasView()
 }
-
