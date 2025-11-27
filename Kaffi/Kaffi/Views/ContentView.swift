@@ -7,15 +7,13 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
     @Environment(AuthModel.self) private var vm
     
     var body: some View {
         Group {
             if vm.isLoggedIn {
-                TabBarView()
-                    .environment(vm)
+                TabBarView(vm: vm)
                     .task {
                         if vm.currentUser == nil && !vm.currentId.isEmpty {
                             print("ContentView: Usuario logueado pero sin datos, cargando")

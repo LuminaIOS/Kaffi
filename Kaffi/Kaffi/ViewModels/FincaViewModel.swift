@@ -8,12 +8,13 @@
 import Foundation
 import SwiftUI
 import Observation
+import Supabase
 
 @Observable
 @MainActor
-
 class FincaViewModel {
     
+    // Campos del formulario
     var finca = ""
     var productor = ""
     var estado = ""
@@ -25,15 +26,25 @@ class FincaViewModel {
     var suelo = ""
     var descripcion = ""
     
+    // Imagen
+    var selectedImage: UIImage? = nil
+    var showingImagePicker = false
+    
+    // UI state
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
+    var fincas: [Finca] = []
+    var errorMessage: String?
     
     private let fincaService: FincaService
+    private let supabase: SupabaseClient
+
     
-    init(fincaService: FincaService) {
+    init(fincaService: FincaService, supabase: SupabaseClient) {
         self.fincaService = fincaService
+        self.supabase = supabase
     }
     
     func registrarFinca() async {
@@ -49,16 +60,36 @@ class FincaViewModel {
             ciudad.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
             hectareas <= 0 {
             tituloAlerta = "Campos obligatorios"
-            mensajeAlerta = "Por favor llena campos obligatorios."
+            mensajeAlerta = "Por favor llena los campos obligatorios."
             mostrandoAlerta = true
             return
         }
         
         isLoading = true
+        
         do {
+        
+            guard let user = supabase.auth.currentUser else {
+                tituloAlerta = "Sesión expirada"
+                mensajeAlerta = "Debes iniciar sesión nuevamente."
+                mostrandoAlerta = true
+                isLoading = false
+                return
+            }
             
-            let usuarioTemporal = "9be34306-96cd-4744-8960-680f6a7ec2c7"
+            let idUsuario = user.id.uuidString
             
+            var imageUrl: String? = nil
+            
+            if let selectedImage,
+               let data = selectedImage.jpegData(compressionQuality: 0.8) {
+                
+                let fileName = "\(UUID().uuidString).jpg"
+                imageUrl = try await fincaService.uploadImage(data, fileName: fileName)
+            }
+            
+            
+            // Crear nueva finca
             let nuevaFinca = Finca(
                 nombre_finca: finca,
                 productor: productor,
@@ -70,21 +101,24 @@ class FincaViewModel {
                 altitud: altitud,
                 suelo: suelo,
                 descripcion: descripcion,
-                id_usuario: usuarioTemporal
+                id_usuario: idUsuario,
+                imagen: imageUrl
             )
             
             try await fincaService.insertFinca(nuevaFinca)
             
-            tituloAlerta = "Exito"
+            tituloAlerta = "Éxito"
             mensajeAlerta = "Finca registrada correctamente."
             mostrandoAlerta = true
             
             resetFormulario()
+            
         } catch {
             tituloAlerta = "Error"
             mensajeAlerta = "No se pudo registrar la finca: \(error.localizedDescription)"
             mostrandoAlerta = true
         }
+        
         isLoading = false
     }
     
@@ -99,5 +133,27 @@ class FincaViewModel {
         altitud = 0
         suelo = ""
         descripcion = ""
+        selectedImage = nil
+    }
+    func fetchFincas() async {
+ //       let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
+//        do {
+//          let fetched = try await fincaService.fetchFincas(forUser: user)
+//          self.fincas = fetched
+        guard let user = supabase.auth.currentUser else {
+            errorMessage = "Sesión expirada. Inicia sesión nuevamente."
+            isLoading = false
+            return
+        }
+        do {
+            let fetched = try await fincaService.fetchFincas(forUser: user.id.uuidString)
+            self.fincas = fetched
+            
+        } catch {
+            print("Fetch error:", error)
+            errorMessage = "Error al cargar las fincas."
+        }
+        
+        isLoading = false
     }
 }

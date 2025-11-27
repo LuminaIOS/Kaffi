@@ -4,124 +4,104 @@
 //
 //  Created by Magda on 21/10/25.
 //
-
 import SwiftUI
-
-
 
 struct DashboardView: View {
     @StateObject var viewModel = DashboardViewModel()
+    @State private var rvm = RecViewModel(RecordatorioService: RecordatorioService(), supabase: client)
+    let supabase = client
     @Bindable var vm: AuthModel
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack {
+                VStack(spacing: 20) {
+                    
+                  
                     ZStack {
                         RoundedRectangle(cornerRadius: 15)
-                            .fill(darkColor1)
+                            .fill(midColor1)
                             .frame(height: 140)
                         
                         VStack(alignment: .leading, spacing: 10) {
                             if let user = vm.currentUser {
-                                Text("Bienvenido \(String(describing: user.nombreCompleto))")
+                                Text("Bienvenido \(user.nombreCompleto)")
                                     .font(.title2.weight(.semibold))
                                     .foregroundStyle(.white)
-                                    .padding(5)
+                                    .padding(.horizontal, 5)
                             } else {
                                 Text("Cargando usuario...")
                                     .font(.title2.weight(.semibold))
                                     .foregroundStyle(.white)
-                                    .padding(5)
+                                    .padding(.horizontal, 5)
                             }
-
                             
-                            HStack (spacing: 5) {
+                            // Search bar
+                            HStack(spacing: 5) {
                                 Image(systemName: "magnifyingglass")
                                 TextField("Buscar lote o finca", text: $viewModel.searchText)
-                                
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 10)
+                            .padding(10)
                             .background(RoundedRectangle(cornerRadius: 12).fill(.white))
-                            
-                            
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 12)
+                        .padding(10)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                }
-                
-                HStack(alignment: .top, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Finca de Santa Cruz").font(.headline).foregroundStyle(.white)
-                        Text("Recuerda visitar la Finca de Santa Cruz").font(.subheadline).foregroundStyle(.white.opacity(0.9))
+                    .padding(.horizontal, 15)
+                    
+                    
+                    // ===== RECORDATORIOS SECTION =====
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Recordatorios")
+                            .font(.headline)
+                        
+                        if rvm.isLoading {
+                            ProgressView("Cargando fincas...")
+                                .padding()
+                        } else if let error = rvm.errorMessage {
+                            Text(error)
+                                .foregroundColor(.red)
+                                .padding()
+                        } else {
+                            
+                            // NUEVO RECORDATORIO
+                            HStack {
+                                Text("Nuevo Recordatorio")
+                                    .foregroundColor(.white)
+                                
+                                Spacer()
+                                
+                                NavigationLink(destination: RegisterRecView()) {
+                                    Image(systemName: "plus.app.fill")
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 9)
+                                }
+                            }
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(midColor1))
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.darkColor1, lineWidth: 2)
+                            )
+                            
+                            
+                            // LISTA DE RECORDATORIOS
+                            ForEach(rvm.recordatorios) { rec in
+                                RecordatorioBox(recordatorio: rec)
+                            }
+                        }
                     }
-                    Spacer()
+                    .padding(.horizontal, 15)
                 }
-                .padding(16)
-                .background(RoundedRectangle(cornerRadius: 16).fill(midColor1))
-                .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-                .padding(.horizontal, 16)
-                
-                
             }
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 8) {
-                    Image(systemName: "chart.bar.fill").foregroundStyle(darkColor2)
-                    Text("Estadística 1").font(.headline)
-                    Spacer()
-                }
-                Image("testGrafica")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 160)
-                    .clipped()
+            .task {
+                await rvm.fetchRecordatorios()
             }
-            .padding(16)
-            .background(RoundedRectangle(cornerRadius: 16)
-                .fill(Color("AppBackground", bundle: .main)))
-            .shadow(color: .black.opacity(0.06), radius: 10, y: 6)
-            .padding(.horizontal, 16)
-            
-            .padding(.horizontal, 16)
-            .padding(.bottom, 20)
-            
-            
-            let columns: [GridItem] = [
-                .init(.flexible(), spacing: 20),
-                .init(.flexible(), spacing: 20)
-            ]
-            
-            LazyVGrid(columns: columns, spacing: 20) {
-                NavigationLink(destination: DisplayFincasView())  {
-                    TarjetaView(
-                        title: "Tus Fincas",
-                        subtitle: "\(viewModel.numFincas) registradas",
-                        imageName: "finca"
-                    )
-                }
-                .buttonStyle(.plain)
-                
-                NavigationLink(destination: DisplayLotesView()) {
-                    TarjetaView(
-                        title: "Tus Lotes",
-                        subtitle: "\(viewModel.numLotes) registrados",
-                        imageName: "lote"
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 20)
-            
-            
-            
-        }}
-       
+        }
+    }
 }
+
 #Preview {
     DashboardView(vm: AuthModel())
 }

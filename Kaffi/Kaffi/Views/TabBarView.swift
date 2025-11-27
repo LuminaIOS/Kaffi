@@ -10,13 +10,14 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var searchText = ""
-    @Environment(AuthModel.self) private var vm
-    
+    @Bindable var vm: AuthModel
     
     var body: some View {
         TabView {
+            
+            // DASHBOARD
             NavigationStack {
-                DashboardView(vm:vm)
+                DashboardView(vm: vm)
                     .navigationTitle("Dashboard")
                     .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
@@ -25,39 +26,47 @@ struct TabBarView: View {
             }
             .tabItem { Label("Dashboard", systemImage: "house.fill") }
             
+            
+            // FINCAS
             NavigationStack {
                 DisplayFincasView()
-                    .navigationTitle("Fincas").toolbarColorScheme(.dark, for: .navigationBar)
+                    .navigationTitle("Fincas")
+                    .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Fincas", systemImage: "map.fill") }
             
+            
+            // LOTES
             NavigationStack {
                 DisplayLotesView()
-                    .navigationTitle("Lotes").toolbarColorScheme(.dark, for: .navigationBar)
+                    .navigationTitle("Lotes")
+                    .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Lotes", systemImage: "mappin") }
             
-            // configurations
+            
+            // PERFIL
             NavigationStack {
                 ProfileView()
-                    .navigationTitle("Perfil").toolbarColorScheme(.dark, for: .navigationBar)
+                    .navigationTitle("Perfil")
+                    .toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Perfil", systemImage: "person") }
         }
-        .environment(vm)
+        .environment(vm)   
         .tint(midColor1)
     }
 }
 
 #Preview {
-    TabBarView()
+    TabBarView(vm: AuthModel())
 }

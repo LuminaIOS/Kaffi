@@ -5,9 +5,11 @@
 //  Created by Amparo Alcaraz Tonella on 22/10/25.
 //
 import SwiftUI
+import Supabase
 
 struct DisplayFincasView: View {
-    @StateObject private var fincaService = FincaService()
+    @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
+    let supabase = client
     var body: some View {
         VStack {
             HStack {
@@ -25,17 +27,17 @@ struct DisplayFincasView: View {
             .padding(.horizontal)
             .padding(.vertical, 10)
 
-            if fincaService.isLoading {
+            if vm.isLoading {
                 ProgressView("Cargando fincas...")
                     .padding()
-            } else if let error = fincaService.errorMessage {
+            } else if let error = vm.errorMessage {
                 Text(error)
                     .foregroundColor(.red)
                     .padding()
             } else {
                 ScrollView {
                     VStack(spacing: 15) {
-                        ForEach(fincaService.fincas) { finca in
+                        ForEach(vm.fincas) { finca in
                             FincaBox(finca: finca)
                         }
                     }
@@ -45,7 +47,7 @@ struct DisplayFincasView: View {
             Spacer()
         }
         .task {
-            await fincaService.fetchFincas()
+            await vm.fetchFincas()
         }
     }
 }
