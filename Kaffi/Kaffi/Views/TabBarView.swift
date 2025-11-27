@@ -45,7 +45,7 @@ struct TabBarView: View {
             
             // configurations
             NavigationStack {
-                TPerfilView()
+                ProfileView()
                     .navigationTitle("Perfil").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
@@ -53,16 +53,11 @@ struct TabBarView: View {
             }
             .tabItem { Label("Perfil", systemImage: "person") }
         }
+        .environment(vm)
         .tint(midColor1)
     }
 }
 
-struct TPerfilView: View {
-    @State private var searchText = ""
-    var body: some View {
-        Text("Perfil")
-    }
-}
 #Preview {
     TabBarView()
 }

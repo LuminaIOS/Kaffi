@@ -24,7 +24,7 @@ struct DashboardView: View {
                         
                         VStack(alignment: .leading, spacing: 10) {
                             if let user = vm.currentUser {
-                                Text("Bienvenido \(user.nombreCompleto)")
+                                Text("Bienvenido \(String(describing: user.nombreCompleto))")
                                     .font(.title2.weight(.semibold))
                                     .foregroundStyle(.white)
                                     .padding(5)

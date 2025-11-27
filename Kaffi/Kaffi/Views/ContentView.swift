@@ -15,13 +15,19 @@ struct ContentView: View {
         Group {
             if vm.isLoggedIn {
                 TabBarView()
+                    .environment(vm)
+                    .task {
+                        if vm.currentUser == nil && !vm.currentId.isEmpty {
+                            print("ContentView: Usuario logueado pero sin datos, cargando")
+                            await vm.fetchUserData()
+                        }
+                    }
             } else {
                 LoginView(vm: vm)
             }
         }
     }
 }
-
 
 #Preview {
     ContentView()
