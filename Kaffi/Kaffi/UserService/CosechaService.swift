@@ -44,4 +44,11 @@ class CosechaService: ObservableObject {
             .insert([cosecha])
             .execute()
     }
+    func fetchCosechas (forUser userID: String) async throws -> [Cosecha] {
+        let response: PostgrestResponse<[Cosecha]> = try await client
+            .from("Cosecha")
+            .select("*")
+            .execute()
+        return response.value
+    }
 }

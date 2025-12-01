@@ -35,7 +35,7 @@ struct TabBarView: View {
             .tabItem { Label("Fincas", systemImage: "map.fill") }
             
             NavigationStack {
-                DisplayLotesView()
+                DisplayCosechasView()
                     .navigationTitle("Lotes").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)

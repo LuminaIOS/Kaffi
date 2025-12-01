@@ -123,4 +123,18 @@ class FincaViewModel {
         arboles = nil
         selectedImageData = nil
     }
+    
+    func fetchFincas() async throws{
+        isLoading = true
+        let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
+        do{
+            let fetched = try await fincaService.fetchFincas(forUser: user)
+            self.fincas = fetched
+            
+        }catch{
+            print("Fetch error: ", error)
+            errorMessage = "Error al cargar las cosechas"
+        }
+        isLoading = false
+    }
 }

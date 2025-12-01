@@ -68,16 +68,21 @@ struct FincaBox: View {
 #Preview {
     FincaBox(
         finca: Finca(
+            id_finca: 1,
             id_usuario: "usuario1",
+            //fecha_creacion: Date(1000000000),
             nombre_finca: "Finca Solecito",
             productor: 1,
             hectareas: 10,
             altitud: 1.2,
             variedades_cult: "Bourbon, Typica",
             porte_planta: "Medio",
-            imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s"
+            imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s",
+            id_coop: 1,
+            lote: ["A123", "A124", "A126"],
+            //sombra_natural = 10,
+            especies: "Muchas",
+            arboles_mayores: 0
         )
     )
 }
-
-

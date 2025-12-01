@@ -1,20 +1,21 @@
 //
-//  DisplayFincasView.swift
+//  DisplayCosechasView.swift
 //  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 22/10/25.
+//  Created by Amparo Alcaraz Tonella on 21/10/25.
 //
 import SwiftUI
 
-struct DisplayFincasView: View {
-    @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
+struct DisplayCosechasView: View {
+    @State private var vm = CosechaViewModel(cosechaService: CosechaService(), supabase: client)
+    let supabase = client
     var body: some View {
-        VStack {
+        VStack(){
             HStack {
                 NavigationLink(destination: RegisterFincaView()) {
                     Spacer()
                     Image(systemName: "plus.app.fill")
-                    Text("Registrar nueva finca")
+                    Text("Registrar nuevo lote")
                     Spacer()
                 }
                 .foregroundColor(.white)
@@ -24,9 +25,9 @@ struct DisplayFincasView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 10)
-
+            
             if vm.isLoading {
-                ProgressView("Cargando fincas...")
+                ProgressView("Cargando lotes...")
                     .padding()
             } else if let error = vm.errorMessage {
                 Text(error)
@@ -35,20 +36,21 @@ struct DisplayFincasView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 15) {
-                        ForEach(vm.fincas) { finca in
-                            FincaBox(finca: finca)
+                        ForEach(vm.cosechas) { cosecha in
+                            //NavigationLink(destination: DetailsView(lote: lote)){
+                            CosechaBox(cosecha: cosecha)
+                            //}
+                            //.buttonStyle(.plain)
+                            
                         }
                     }
                     .padding()
                 }
             }
             Spacer()
-        }
-        .task {
+        }.task {
             do{
-                try await vm.fetchFincas()
-            }catch{
-                print(vm.errorMessage)
+                await vm.fetchCosechas()
             }
             
         }
@@ -56,5 +58,5 @@ struct DisplayFincasView: View {
 }
 
 #Preview {
-    DisplayFincasView()
+    DisplayCosechasView()
 }
