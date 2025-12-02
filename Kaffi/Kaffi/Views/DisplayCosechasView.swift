@@ -23,10 +23,10 @@ struct DisplayCosechasView: View {
                     ScrollView {
                         VStack(spacing: 15) {
                             ForEach(vm.cosechas) { cosecha in
-                                //NavigationLink(destination: DetailsView(lote: lote)){
+                                NavigationLink(destination: CosechaDetailView(cosecha: cosecha)){
                                 CosechaBox(cosecha: cosecha)
-                                //}
-                                //.buttonStyle(.plain)
+                                }
+                                .buttonStyle(.plain)
                                 
                             }
                         }
