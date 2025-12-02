@@ -4,17 +4,38 @@
 //
 //  Created by Amparo on 01/12/25.
 //
-
 import SwiftUI
 struct CosechaBox: View {
     let cosecha: Cosecha
     var body: some View {
-        VStack {
-            HStack{
-                Text(cosecha.volumen!)
-                    .padding(5)
-                    .background(lightColor1)
-                    .cornerRadius(5)
+        VStack{
+            VStack {
+                HStack{
+                    Text(cosecha.inicio_cosecha!)
+                    Text("-")
+                    Text(cosecha.fin_cosecha!)
+                    Spacer()
+                }
+                .font(.subheadline)
+                .padding()
+            }
+            Text("Nombre de la Finca")
+                .font(.headline)
+            HStack(){
+                AsyncImage(url: URL(string: cosecha.imagen_cosecha ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 120)
+                        .clipped()
+                        .cornerRadius(10)
+                } placeholder: {
+                    Color.gray
+                        .scaledToFill()
+                        .frame(height: 120)
+                        .clipped()
+                        .cornerRadius(10)
+                }
             }
             .padding()
         }
@@ -28,27 +49,27 @@ struct CosechaBox: View {
     CosechaBox(cosecha: Cosecha(
         id_cosecha: 2,
         created_at: Date(timeIntervalSinceNow: 0),
-        volumen: "String? = nil",
-        inicio_cosecha: "String? = nil",
-        fin_cosecha: "String? = nil",
-        procesamiento: "tring? = nil",
-        fermentacion: 2,
-        secado: "String? = nil",
-        subproductos: "tring? = nil",
-        tratamiento_agua: "String? = nil",
-        emisiones_carbono: 2,
-        emisiones_captura: 2,
-        emisiones_neto: 2,
+        volumen: "27 quintales de pergamino",
+        inicio_cosecha: "Noviembre 2024",
+        fin_cosecha: "Febrero 2024",
+        procesamiento: "Lavado Ecologico",
+        fermentacion: 18,
+        secado: "Camas africanas",
+        subproductos: "Pulpa",
+        tratamiento_agua: "Filtro",
+        emisiones_carbono: 2.08,
+        emisiones_captura: -2,
+        emisiones_neto: 0.08,
         agua_beneficio: 2,
         agua_riego: 2,
-        agua_huella: "String? = nil",
-        id_usuario: "String? = nil",
+        agua_huella: "4",
+        id_usuario: "1",
         id_finca: 2,
         id_coop: 2,
-        puntaje_catacion: 2,
-        perfil_sensorial: "",
-        empaque: "carton",
-        contenido_nutricional: "String? = nil",
-        imagen_cosecha: "String? = nil"))
+        puntaje_catacion: 8.7,
+        perfil_sensorial: "Notas de cacao",
+        empaque: "Bolsas ecologicas",
+        contenido_nutricional: "100mg de cafeina",
+        imagen_cosecha: "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png"))
     
 }
