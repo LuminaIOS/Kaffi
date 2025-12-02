@@ -34,6 +34,7 @@ class FincaViewModel {
     var mensajeAlerta = ""
     
     // Fincas cargadas
+    var fincaByID: Finca?
     var fincas: [Finca] = []
     var errorMessage: String?
     
@@ -137,4 +138,17 @@ class FincaViewModel {
         }
         isLoading = false
     }
+    
+    func getFincaByID(_ fincaID: Int) async {
+        isLoading = true
+        do {
+            let finca = try await fincaService.getFincaByID(fincaID)
+            self.fincaByID = finca
+        } catch {
+            print("Fetch error:", error)
+            errorMessage = "Error al cargar la finca"
+        }
+        isLoading = false
+    }
+
 }

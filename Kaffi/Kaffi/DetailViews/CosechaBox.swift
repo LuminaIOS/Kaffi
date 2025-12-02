@@ -7,6 +7,7 @@
 import SwiftUI
 struct CosechaBox: View {
     let cosecha: Cosecha
+    @State private var viewModel = FincaViewModel(fincaService: FincaService(), supabase: client)
     var body: some View {
         VStack{
             VStack {
@@ -17,10 +18,18 @@ struct CosechaBox: View {
                     Spacer()
                 }
                 .font(.subheadline)
-                .padding()
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
             }
-            Text("Nombre de la Finca")
-                .font(.headline)
+            if let finca = viewModel.fincaByID {
+                Text(finca.nombre_finca)
+                    .font(.headline)
+            } else if viewModel.isLoading {
+                ProgressView()
+            } else {
+                Text("No se encontro finca")
+                    .font(.headline)
+            }
             HStack(){
                 AsyncImage(url: URL(string: cosecha.imagen_cosecha ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
                     image
@@ -37,12 +46,17 @@ struct CosechaBox: View {
                         .cornerRadius(10)
                 }
             }
-            .padding()
+            .padding(10)
         }
         .background(Color.white)
         .cornerRadius(20)
         .padding(.horizontal)
         .shadow(radius: 5)
+        .task {
+            if let fincaID = cosecha.id_finca {
+                await viewModel.getFincaByID(fincaID)
+            }
+        }
     }
 }
 #Preview{
@@ -64,7 +78,7 @@ struct CosechaBox: View {
         agua_riego: 2,
         agua_huella: "4",
         id_usuario: "1",
-        id_finca: 2,
+        id_finca: 42,
         id_coop: 2,
         puntaje_catacion: 8.7,
         perfil_sensorial: "Notas de cacao",

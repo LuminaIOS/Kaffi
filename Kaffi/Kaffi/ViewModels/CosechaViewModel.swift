@@ -20,7 +20,7 @@ class CosechaViewModel {
     var finCosecha: String = ""
     
     var procesamiento: String = ""
-    var fermentacion: Int?            
+    var fermentacion: Int?
     var secado: String = ""
     var subproductos: String = ""
     var tratamientoAgua: String = ""
@@ -106,7 +106,7 @@ class CosechaViewModel {
                 inicio_cosecha: inicioCosecha,
                 fin_cosecha: finCosecha,
                 procesamiento: procesamiento,
-                fermentacion: fermentacion,   
+                fermentacion: fermentacion,
                 secado: secado,
                 subproductos: subproductos,
                 tratamiento_agua: tratamientoAgua,
@@ -154,7 +154,7 @@ class CosechaViewModel {
         finCosecha = ""
         
         procesamiento = ""
-        fermentacion = nil        
+        fermentacion = nil
         secado = ""
         subproductos = ""
         tratamientoAgua = ""
@@ -189,6 +189,7 @@ class CosechaViewModel {
         isLoading = false
     }
 }
+
 
 
 

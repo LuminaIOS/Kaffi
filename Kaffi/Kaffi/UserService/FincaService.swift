@@ -55,4 +55,15 @@ class FincaService: ObservableObject {
         return response.value
         
     }
+    
+    func getFincaByID(_ fincaID: Int) async throws -> Finca? {
+        let response: PostgrestResponse<Finca> = try await client
+            .from("Finca")
+            .select()
+            .eq("id_finca", value: fincaID)
+            .single()
+            .execute()
+        
+        return response.value
+    }
 }
