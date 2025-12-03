@@ -10,8 +10,7 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var searchText = ""
-    @Environment(AuthModel.self) private var vm
-    
+    @Bindable var vm: AuthModel
     
     var body: some View {
         TabView {
@@ -35,13 +34,13 @@ struct TabBarView: View {
             .tabItem { Label("Fincas", systemImage: "map.fill") }
             
             NavigationStack {
-                DisplayLotesView()
-                    .navigationTitle("Lotes").toolbarColorScheme(.dark, for: .navigationBar)
+                DisplayCosechasView()
+                    .navigationTitle("Cosechas").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
-            .tabItem { Label("Lotes", systemImage: "mappin") }
+            .tabItem { Label("Cosechas", systemImage: "leaf.fill") }
             
             // configurations
             NavigationStack {
@@ -64,5 +63,5 @@ struct TPerfilView: View {
     }
 }
 #Preview {
-    TabBarView()
+    TabBarView(vm: AuthModel())
 }

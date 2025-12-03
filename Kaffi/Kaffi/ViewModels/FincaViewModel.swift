@@ -1,103 +1,154 @@
 //
 //  FincaViewModel.swift
-//  Kaffi
+//  Trial
 //
-//  Created by Angela Rodriguez on 06/11/25.
+//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import Foundation
 import SwiftUI
 import Observation
+import Supabase
 
 @Observable
 @MainActor
-
 class FincaViewModel {
     
-    var finca = ""
-    var productor = ""
-    var estado = ""
-    var ciudad = ""
-    var latitud = 0.0
-    var longitud = 0.0
-    var hectareas = 0
-    var altitud = 0.0
-    var suelo = ""
-    var descripcion = ""
+    // Campos del formulario
+    var finca: String = ""
+    var hectareas: Int?
+    var altitud: Int?
+    var variedadesSeleccionadas: [String] = []
+    var portePlanta: String = ""
+    var sombra: Int?
+    var especieSeleccionadas: [String] = []
+    var arboles: Int?
     
+    // Imagen
+    var selectedImageData: Data? = nil
+    
+    // UI State
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
-    private let fincaService: FincaService
+    // Fincas cargadas
+    var fincaByID: Finca?
+    var fincas: [Finca] = []
+    var errorMessage: String?
     
-    init(fincaService: FincaService) {
+    private let fincaService: FincaService
+    private let supabase: SupabaseClient
+    
+    init(fincaService: FincaService, supabase: SupabaseClient) {
         self.fincaService = fincaService
+        self.supabase = supabase
     }
     
+
     func registrarFinca() async {
-        
         mostrandoAlerta = false
         tituloAlerta = ""
         mensajeAlerta = ""
+        
 
-        // Validaciones
-        if finca.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-            productor.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-            estado.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-            ciudad.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-            hectareas <= 0 {
-            tituloAlerta = "Campos obligatorios"
-            mensajeAlerta = "Por favor llena campos obligatorios."
-            mostrandoAlerta = true
+        guard !finca.trimmingCharacters(in: .whitespaces).isEmpty,
+              let hect = hectareas, hect > 0,
+              let alt = altitud, alt > 0,
+              !variedadesSeleccionadas.isEmpty,
+              !portePlanta.isEmpty,
+              let sombra = sombra,
+              !especieSeleccionadas.isEmpty,
+              let arboles = arboles else {
+            mostrarAlerta(titulo: "Campos obligatorios", mensaje: "Por favor llena todos los campos obligatorios.")
             return
         }
         
         isLoading = true
+        
         do {
+           
+            let userId = "0a3c579d-5237-426f-8bba-182b0813bcea"
             
-            let usuarioTemporal = "9be34306-96cd-4744-8960-680f6a7ec2c7"
+            let productorId = 1
             
+            var imageUrl: String? = nil
+            if let data = selectedImageData {
+                let fileName = "\(UUID().uuidString).jpg"
+                imageUrl = try await fincaService.uploadImage(data, fileName: fileName)
+            }
+            
+
             let nuevaFinca = Finca(
+                id_usuario: userId,
                 nombre_finca: finca,
-                productor: productor,
-                estado: estado,
-                ciudad: ciudad,
-                latitud: latitud,
-                longitud: longitud,
-                hectareas: hectareas,
-                altitud: altitud,
-                suelo: suelo,
-                descripcion: descripcion,
-                id_usuario: usuarioTemporal
+                id_productor: productorId,
+                hectareas: hect,
+                altitud: Double(alt),
+                variedades_cult: variedadesSeleccionadas.joined(separator: ", "),
+                porte_planta: portePlanta,
+                imagen: imageUrl,
+                sombra_natural: sombra,
+                especies: especieSeleccionadas.joined(separator: ", "),
+                arboles_mayores: arboles
             )
             
             try await fincaService.insertFinca(nuevaFinca)
-            
-            tituloAlerta = "Exito"
-            mensajeAlerta = "Finca registrada correctamente."
-            mostrandoAlerta = true
-            
+            mostrarAlerta(titulo: "Éxito", mensaje: "Finca registrada correctamente.")
             resetFormulario()
+            
         } catch {
-            tituloAlerta = "Error"
-            mensajeAlerta = "No se pudo registrar la finca: \(error.localizedDescription)"
-            mostrandoAlerta = true
+            mostrarAlerta(titulo: "Error", mensaje: "No se pudo registrar la finca: \(error.localizedDescription)")
+        }
+        
+        isLoading = false
+    }
+
+
+
+    private func mostrarAlerta(titulo: String, mensaje: String) {
+        self.tituloAlerta = titulo
+        self.mensajeAlerta = mensaje
+        self.mostrandoAlerta = true
+    }
+    
+    func resetFormulario() {
+        finca = ""
+        hectareas = nil
+        altitud = nil
+        variedadesSeleccionadas = []
+        portePlanta = ""
+        sombra = nil
+        especieSeleccionadas = []
+        arboles = nil
+        selectedImageData = nil
+    }
+    
+    func fetchFincas() async throws{
+        isLoading = true
+        let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
+        do{
+            let fetched = try await fincaService.fetchFincas(forUser: user)
+            self.fincas = fetched
+            
+        }catch{
+            print("Fetch error: ", error)
+            errorMessage = "Error al cargar las cosechas"
         }
         isLoading = false
     }
     
-    private func resetFormulario() {
-        finca = ""
-        productor = ""
-        estado = ""
-        ciudad = ""
-        latitud = 0
-        longitud = 0
-        hectareas = 0
-        altitud = 0
-        suelo = ""
-        descripcion = ""
+    func getFincaByID(_ fincaID: Int) async throws{
+        isLoading = true
+        do {
+            let finca = try await fincaService.getFincaByID(fincaID)
+            self.fincaByID = finca
+        } catch {
+            print("Fetch error:", error)
+            errorMessage = "Error al cargar la finca"
+        }
+        isLoading = false
     }
+
 }

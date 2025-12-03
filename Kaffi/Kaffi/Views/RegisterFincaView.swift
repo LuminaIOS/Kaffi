@@ -1,188 +1,288 @@
 //
-//  RegisterFincaView.swift
-//  Kaffi
+//  FincaView.swift
+//  Trial
 //
-//  Created by Angela Rodriguez on 05/11/25.
+//  Created by Angela Rodriguez on 24/11/25.
 //
-
-// agregar campo de imagenes
 
 import SwiftUI
-
-
+import PhotosUI
 
 struct RegisterFincaView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var vm = FincaViewModel(fincaService: FincaService())
     
+    @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
+    @State private var selectedImage: PhotosPickerItem?
+    
+    @State private var showDropdown = false
+    @State private var mostrarListaVariedades = false
+    @State private var mostrarListaEspecies = false
+
+    let variedadesDisponibles = ["Typica", "Bourbon", "Caturra"]
+    let porte = ["Mixto", "Bajo", "Alto"]
+    let tipos = ["Inga spp.", "Cedro rojo", "Plátano", "Chalum"]
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    // Nombre de la finca
+                    
+                    // FOTO
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Nombre de la finca*")
+                        Text("Foto del Rancho")
                             .font(.body)
                             .foregroundColor(.black)
-                        TextField("Ej: Finca Santa Fe", text: $vm.finca)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 12)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                        
+                        PhotosPicker(selection: $selectedImage, matching: .images) {
+                            if let data = vm.selectedImageData,
+                               let uiImage = UIImage(data: data) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 180)
+                                    .clipped()
+                                    .cornerRadius(10)
+                            } else {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(.systemGray6))
+                                        .frame(height: 180)
+                                    
+                                    VStack(spacing: 12) {
+                                        Image(systemName: "arrow.up.square")
+                                            .font(.system(size: 50))
+                                            .foregroundColor(Color(.systemGray3))
+                                        Text("Toca para subir una foto")
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                            }
+                        }
+                        .onChange(of: selectedImage) { _, newItem in
+                            Task {
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    await MainActor.run {
+                                        vm.selectedImageData = data
+                                    }
+                                }
+                            }
+                        }
                     }
                     
-                    // Productor
+                    // Nombre del Rancho
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Productor*")
-                            .font(.body)
-                            .foregroundColor(.black)
-                        TextField("Ej: Gilberto García", text: $vm.productor)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 12)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                    }
-                    
-                    // Estado y Ciudad
-                    HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Estado*")
-                                .font(.body)
-                                .foregroundColor(.black)
-                            TextField("Chiapas", text: $vm.estado)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                        }
-                        .frame(maxWidth: .infinity)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Ciudad*")
-                                .font(.body)
-                                .foregroundColor(.black)
-                            TextField("Motozintla", text: $vm.ciudad)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    
-                    // Latitud y Longitud
-                    HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Latitud")
-                                .font(.body)
-                                .foregroundColor(.black)
-                            TextField("15.3654", value: $vm.latitud, format: .number)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                                .keyboardType(.decimalPad)
-                        }
-                        .frame(maxWidth: .infinity)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Longitud")
-                                .font(.body)
-                                .foregroundColor(.black)
-                            TextField("-92.2478", value: $vm.longitud, format: .number)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
-                                .keyboardType(.decimalPad)
-                        }
-                        .frame(maxWidth: .infinity)
+                        Text("Nombre del Rancho*")
+                        TextField("Amanecer de la Sierra", text: $vm.finca)
+                            .padding().background(Color(.systemGray6)).cornerRadius(8)
                     }
                     
                     // Hectareas y Altitud
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Hectáreas*")
-                                .font(.body)
-                                .foregroundColor(.black)
+                            Text("Hectareas*")
                             TextField("0", value: $vm.hectareas, format: .number)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(8)
+                                .padding().background(Color(.systemGray6)).cornerRadius(8)
                                 .keyboardType(.decimalPad)
                         }
-                        .frame(maxWidth: .infinity)
-                        
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Altitud (msnm)*")
-                                .font(.body)
-                                .foregroundColor(.black)
                             TextField("1500", value: $vm.altitud, format: .number)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 12)
-                                .background(Color(.systemGray6))
+                                .padding().background(Color(.systemGray6)).cornerRadius(8)
+                                .keyboardType(.decimalPad)
+                        }
+                    }
+                    
+                    // Variedades
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Variedad Cultivada*")
+                            .font(.body)
+                            .foregroundColor(.black)
+
+                        Button {
+                            withAnimation { mostrarListaVariedades.toggle() }
+                        } label: {
+                            HStack {
+                                Text(vm.variedadesSeleccionadas.isEmpty
+                                     ? "Selecciona variedades"
+                                     : vm.variedadesSeleccionadas.joined(separator: ", "))
+                                    .foregroundColor(vm.variedadesSeleccionadas.isEmpty ? .gray : .black)
+                                Spacer()
+                                Image(systemName: mostrarListaVariedades ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+
+                        if mostrarListaVariedades {
+                            VStack(alignment: .leading, spacing: 12) {
+                                ForEach(variedadesDisponibles, id: \.self) { variedad in
+                                    Button {
+                                        if vm.variedadesSeleccionadas.contains(variedad) {
+                                            vm.variedadesSeleccionadas.removeAll { $0 == variedad }
+                                        } else {
+                                            vm.variedadesSeleccionadas.append(variedad)
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Image(systemName: vm.variedadesSeleccionadas.contains(variedad) ?
+                                                  "checkmark.square.fill" : "square")
+                                                .foregroundColor(.lightColor1)
+                                            Text(variedad)
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                            .transition(.opacity)
+                            .zIndex(10)
+                        }
+                    }
+
+                    // Porte de la Planta
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Porte de plantas*")
+                            .font(.body)
+                            .foregroundColor(.black)
+
+                        Button {
+                            withAnimation { showDropdown.toggle() }
+                        } label: {
+                            HStack {
+                                Text(vm.portePlanta.isEmpty ? "Selecciona una opción" : vm.portePlanta)
+                                    .foregroundColor(vm.portePlanta.isEmpty ? .gray : .black)
+                                Spacer()
+                                Image(systemName: showDropdown ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+
+                        if showDropdown {
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(porte, id: \.self) { variedad in
+                                    Button {
+                                        vm.portePlanta = variedad
+                                        withAnimation { showDropdown = false }
+                                    } label: {
+                                        HStack {
+                                            Text(variedad)
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                        }
+                                        .padding()
+                                    }
+                                    if variedad != porte.last {
+                                        Divider()
+                                    }
+                                }
+                            }
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                            .padding(.top, -4)
+                        }
+                    }
+                    
+                    // Especies
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Especie*")
+                            .font(.body)
+                            .foregroundColor(.black)
+
+                        Button {
+                            withAnimation { mostrarListaEspecies.toggle() }
+                        } label: {
+                            HStack {
+                                Text(vm.especieSeleccionadas.isEmpty
+                                     ? "Selecciona variedades"
+                                     : vm.especieSeleccionadas.joined(separator: ", "))
+                                    .foregroundColor(vm.especieSeleccionadas.isEmpty ? .gray : .black)
+                                Spacer()
+                                Image(systemName: mostrarListaEspecies ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+
+                        if mostrarListaEspecies {
+                            VStack(alignment: .leading, spacing: 12) {
+                                ForEach(tipos, id: \.self) { especie in
+                                    Button {
+                                        if vm.especieSeleccionadas.contains(especie) {
+                                            vm.especieSeleccionadas.removeAll { $0 == especie }
+                                        } else {
+                                            vm.especieSeleccionadas.append(especie)
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Image(systemName: vm.especieSeleccionadas.contains(especie) ?
+                                                  "checkmark.square.fill" : "square")
+                                                .foregroundColor(.lightColor1)
+                                            Text(especie)
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                            .transition(.opacity)
+                            .zIndex(10)
+                        }
+                    }
+                    
+                    // Sombra y Árboles
+                    HStack(spacing: 16) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Sombra Natural*")
+                            TextField("%", value: $vm.sombra, format: .number)
+                                .padding().background(Color(.systemGray6))
                                 .cornerRadius(8)
                                 .keyboardType(.decimalPad)
                         }
-                        .frame(maxWidth: .infinity)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Árboles > 8 años*")
+                            TextField("75", value: $vm.arboles, format: .number)
+                                .padding().background(Color(.systemGray6))
+                                .cornerRadius(8)
+                                .keyboardType(.decimalPad)
+                        }
                     }
                     
-                    // Tipo de suelo - cambiar a picker
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Tipo de Suelo")
-                            .font(.body)
-                            .foregroundColor(.black)
-                        TextField("Suave", text: $vm.suelo)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 12)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                    }
-                    
-                    // Descripcion
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Descripción")
-                            .font(.body)
-                            .foregroundColor(.black)
-                        TextField("Café de altura cultivado...", text: $vm.descripcion, axis: .vertical)
-                            .lineLimit(4, reservesSpace: true)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 12)
-                            .frame(height: 120)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
-                    }
-                    
-                    // registrar
+                    // Botón registrar
                     Button {
-                        Task { await vm.registrarFinca() }
+                        Task {
+                            await vm.registrarFinca()
+                            // limpiar selección de imagen
+                            selectedImage = nil
+                        }
                     } label: {
-                        Text(vm.isLoading ? "Registrando..." : "Registrar Finca")
+                        Text(vm.isLoading ? "Registrando..." : "Registrar")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(midColor1)
+                            .background(Color.midColor1)
                             .foregroundColor(.white)
                             .cornerRadius(8)
                     }
                     .disabled(vm.isLoading)
-                    
                 }
                 .padding(.horizontal, 37)
                 .padding(.top, 20)
-                
             }
-            .navigationTitle("Registrar Finca")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "chevron.left")
-                            .foregroundColor(.black)
-                    }
-                }
-            }
-            
             .alert(vm.tituloAlerta, isPresented: $vm.mostrandoAlerta) {
                 Button("OK", role: .cancel) {}
             } message: {
@@ -196,3 +296,7 @@ struct RegisterFincaView: View {
 #Preview {
     RegisterFincaView()
 }
+
+
+
+
