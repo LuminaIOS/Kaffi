@@ -8,16 +8,20 @@
 import SwiftUI
 struct FincaBox: View {
     let finca: Finca
-    
+    @State private var vm = ProductorViewModel(productorService: ProductorService(), supabase: client)
     var body: some View {
         VStack {
             VStack(){
                 Text(finca.nombre_finca)
                     .font(.title2)
                     .font(.headline)
-            
-                Text("productor.Nombre")
-                    .bold()
+                if let productor = vm.productorByID{
+                    VStack(alignment: .leading){
+                        Text(productor.Nombre)
+                            .bold()
+                    }
+                
+                }
             }
             AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrinnd.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
                 image
@@ -42,6 +46,15 @@ struct FincaBox: View {
         .cornerRadius(20)
         .shadow(radius: 5)
         .frame(width: 320)
+        .task {
+            if let proID = finca.id_productor {
+                do{
+                    try await vm.getProByID(proID)
+                }catch{
+                    print("Error fetching productor:", error)
+                }
+            }
+        }
     }
 }
 
