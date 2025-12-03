@@ -32,6 +32,14 @@ struct TabBarView: View {
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Fincas", systemImage: "map.fill") }
+            NavigationStack {
+                ScrollBarView()
+                    .navigationTitle("Registros").toolbarColorScheme(.dark, for: .navigationBar)
+                    .toolbarBackground(darkColor2, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .tabItem { Label("Registros", systemImage: "plus.app.fill") }
             
             NavigationStack {
                 DisplayCosechasView()
