@@ -54,7 +54,12 @@ struct CosechaBox: View {
         .shadow(radius: 5)
         .task {
             if let fincaID = cosecha.id_finca {
-                await viewModel.getFincaByID(fincaID)
+                do{
+                    try await viewModel.getFincaByID(fincaID)
+                }catch{
+                    print("Error fetching finca:", error)
+                }
+                
             }
         }
     }

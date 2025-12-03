@@ -160,7 +160,11 @@ struct CosechaDetailView: View {
         Spacer()
             .task {
                 if let fincaID = cosecha.id_finca {
-                    await viewModel.getFincaByID(fincaID)
+                    do{
+                        try await viewModel.getFincaByID(fincaID)
+                    }catch{
+                        print("Error fetching finca:", error)
+                    }
                 }
             }
         

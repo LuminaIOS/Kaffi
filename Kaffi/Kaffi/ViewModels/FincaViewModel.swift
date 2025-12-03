@@ -83,7 +83,7 @@ class FincaViewModel {
             let nuevaFinca = Finca(
                 id_usuario: userId,
                 nombre_finca: finca,
-                productor: productorId,
+                id_productor: productorId,
                 hectareas: hect,
                 altitud: Double(alt),
                 variedades_cult: variedadesSeleccionadas.joined(separator: ", "),
@@ -139,7 +139,7 @@ class FincaViewModel {
         isLoading = false
     }
     
-    func getFincaByID(_ fincaID: Int) async {
+    func getFincaByID(_ fincaID: Int) async throws{
         isLoading = true
         do {
             let finca = try await fincaService.getFincaByID(fincaID)

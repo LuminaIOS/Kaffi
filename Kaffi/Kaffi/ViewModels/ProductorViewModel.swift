@@ -39,6 +39,10 @@ class ProductorViewModel {
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
+    var errorMessage: String?
+    var productorByID: Productor?
+    var productores: [Productor]=[]
+    
     private let productorService: ProductorService
     private let supabase: SupabaseClient
     
@@ -136,6 +140,32 @@ class ProductorViewModel {
         testimonio = ""
         selectedImageData = nil
         selectedVideoData = nil
+    }
+    
+    func fetchProductores() async throws{
+        isLoading = true
+        do{
+            let fetched = try await productorService.fetchProductores()
+            self.productores = fetched
+            
+        }catch{
+            print("Fetch error: ", error)
+            errorMessage = "Error al cargar los productores"
+        }
+        isLoading = false
+    }
+    
+    func getProByID(_ proID: Int) async throws{
+        isLoading = true
+        do {
+            let productor = try await productorService.getProByID(proID)
+            print("API returned:", productor as Any)
+            self.productorByID = productor
+        } catch {
+            print("Fetch error:", error)
+            errorMessage = "Error al cargar el productor"
+        }
+        isLoading = false
     }
 }
 

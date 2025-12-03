@@ -10,10 +10,6 @@ import Supabase
 import Combine
 
 class ProductorService: ObservableObject {
-    @Published var productor: [Productor] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    
     func uploadImage(_ data: Data, fileName: String) async throws -> String {
         let bucket = "Productor_imagenes"
         let path = "uploads/\(fileName)"
@@ -62,5 +58,22 @@ class ProductorService: ObservableObject {
             .execute()
     }
     
+    func fetchProductores() async throws -> [Productor] {
+        let response: PostgrestResponse<[Productor]> = try await client
+            .from("Productor")
+            .select("*")
+            .execute()
+        return response.value
+    }
+    
+    func getProByID(_ proID: Int) async throws -> Productor? {
+        let response: PostgrestResponse<[Productor]> = try await client
+            .from("Productor")
+            .select("*")
+            .eq("idProductor", value: proID)
+            .execute()
+        return response.value.first
+        
+    }
 }
 
