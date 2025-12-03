@@ -10,164 +10,165 @@ struct CosechaDetailView: View {
     let cosecha: Cosecha
     @State private var viewModel = FincaViewModel(fincaService: FincaService(), supabase: client)
     var body: some View {
-        VStack{
-            HStack(){
-                AsyncImage(url: URL(string: cosecha.imagen_cosecha ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(height: 120)
-                        .clipped()
-                } placeholder: {
-                    Color.gray
-                        .scaledToFill()
-                        .frame(height: 120)
-                        .clipped()
-                }
-            }
-            VStack {
-                VStack{
-                    if let finca = viewModel.fincaByID {
-                        Text(finca.nombre_finca)
-                            .font(.title)
-                            .font(.headline)
-                    } else if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        Text("No se encontro finca")
-                            .font(.headline)
+        ScrollView{
+            VStack{
+                HStack(){
+                    AsyncImage(url: URL(string: cosecha.imagen_cosecha ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 120)
+                            .clipped()
+                    } placeholder: {
+                        Color.gray
+                            .scaledToFill()
+                            .frame(height: 120)
+                            .clipped()
                     }
                 }
-                .padding(5)
-                HStack{
-                    Text("Cosecha de")
-                    Text(cosecha.inicio_cosecha!)
-                    Text("-")
-                    Text(cosecha.fin_cosecha!)
-                }
-                .font(.subheadline)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 2)
-            }
-            
-            VStack(alignment: .leading, spacing: 4) {
-                VStack(alignment: .leading){
-                    HStack{
-                        Image(systemName:"star.fill")
-                            .foregroundColor(.yellow)
-                        Text("Calidad y Producto Final")
-                            .font(.headline)
-                    }
-                    VStack(alignment: .leading){
-                        if let puntaje = cosecha.puntaje_catacion {
-                            Text("Puntaje de catación: \(String(format: "%.2f", puntaje))/10")
+                VStack {
+                    VStack{
+                        if let finca = viewModel.fincaByID {
+                            Text(finca.nombre_finca)
+                                .font(.title)
+                                .font(.headline)
+                        } else if viewModel.isLoading {
+                            ProgressView()
                         } else {
-                            Text("Puntaje de catación: No disponible")
+                            Text("No se encontro finca")
+                                .font(.headline)
                         }
-                        Text("Perfil sensorial: \(cosecha.perfil_sensorial ?? "Perfil sensorial no disponible")")
-                        
-                        
                     }
-                    .padding(.horizontal, 15)
+                    .padding(5)
+                    HStack{
+                        Text("Cosecha de")
+                        Text(cosecha.inicio_cosecha!)
+                        Text("-")
+                        Text(cosecha.fin_cosecha!)
+                    }
+                    .font(.subheadline)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 2)
                 }
-                .padding(5)
                 
-                
-                
-                VStack(alignment: .leading){
-                    //Emisiones de carbono
-                    if let emisiones = cosecha.emisiones_carbono,
-                       let emisiones2 = cosecha.emisiones_captura{
+                VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading){
                         HStack{
-                            Image(systemName:"leaf.fill")
-                                .foregroundColor(.green)
-                            Text("Huella de Carbono")
+                            Image(systemName:"star.fill")
+                                .foregroundColor(.yellow)
+                            Text("Calidad y Producto Final")
                                 .font(.headline)
                         }
                         VStack(alignment: .leading){
-                            Text("Emisiones creadas: \(String(format: "%.2f", emisiones)) kg CO₂e/kg")
-                            Text("Emisiones capturadas: \(String(format: "%.2f", emisiones2)) kg CO₂e/kg")
-                            Text("Emisiones netas: \(String(format: "%.2f", (emisiones+emisiones2))) kg CO₂e/kg")
+                            if let puntaje = cosecha.puntaje_catacion {
+                                Text("Puntaje de catación: \(String(format: "%.2f", puntaje))/10")
+                            } else {
+                                Text("Puntaje de catación: No disponible")
+                            }
+                            Text("Perfil sensorial: \(cosecha.perfil_sensorial ?? "Perfil sensorial no disponible")")
+                            
+                            
                         }
                         .padding(.horizontal, 15)
                     }
-                }
-                .padding(5)
-                
-                VStack(alignment: .leading){
-                    if let aguab = cosecha.agua_beneficio,
-                       let aguar = cosecha.agua_riego{
+                    .padding(5)
+                    
+                    
+                    
+                    VStack(alignment: .leading){
+                        //Emisiones de carbono
+                        if let emisiones = cosecha.emisiones_carbono,
+                           let emisiones2 = cosecha.emisiones_captura{
+                            HStack{
+                                Image(systemName:"leaf.fill")
+                                    .foregroundColor(.green)
+                                Text("Huella de Carbono")
+                                    .font(.headline)
+                            }
+                            VStack(alignment: .leading){
+                                Text("Emisiones creadas: \(String(format: "%.2f", emisiones)) kg CO₂e/kg")
+                                Text("Emisiones capturadas: \(String(format: "%.2f", emisiones2)) kg CO₂e/kg")
+                                Text("Emisiones netas: \(String(format: "%.2f", (emisiones+emisiones2))) kg CO₂e/kg")
+                            }
+                            .padding(.horizontal, 15)
+                        }
+                    }
+                    .padding(5)
+                    
+                    VStack(alignment: .leading){
+                        if let aguab = cosecha.agua_beneficio,
+                           let aguar = cosecha.agua_riego{
+                            HStack{
+                                Image(systemName:"drop.fill")
+                                    .foregroundColor(.blue)
+                                Text("  Huella Hídrica")
+                                    .font(.headline)
+                                Spacer()
+                            }
+                            VStack(alignment: .leading){
+                                Text("Emisiones creadas: \(String(format: "%.2f", aguab))L/kg")
+                                Text("Emisiones capturadas: \(String(format: "%.2f", aguar)) L/kg")
+                                Text("Emisiones netas: \(String(format: "%.2f", (aguab+aguar))) kg CO₂e/kg")
+                            }
+                            .padding(.horizontal, 15)
+                        }
+                    }
+                    .padding(5)
+                    
+                    VStack(alignment: .leading){
                         HStack{
-                            Image(systemName:"drop.fill")
-                                .foregroundColor(.blue)
-                            Text("  Huella Hídrica")
+                            Image(systemName:"message.fill")
+                                .foregroundColor(.pink)
+                            Text("Sobre el producto")
                                 .font(.headline)
-                            Spacer()
                         }
                         VStack(alignment: .leading){
-                            Text("Emisiones creadas: \(String(format: "%.2f", aguab))L/kg")
-                            Text("Emisiones capturadas: \(String(format: "%.2f", aguar)) L/kg")
-                            Text("Emisiones netas: \(String(format: "%.2f", (aguab+aguar))) kg CO₂e/kg")
+                            Text("Empaque: \(cosecha.empaque ?? "Empaque no disponible")")
+                            Text("Contenido nutricional: \(cosecha.contenido_nutricional ?? "Contenido nutricional no disponible")")
                         }
                         .padding(.horizontal, 15)
                     }
-                }
-                .padding(5)
-                
-                VStack(alignment: .leading){
-                    HStack{
-                        Image(systemName:"message.fill")
-                            .foregroundColor(.pink)
-                        Text("Sobre el producto")
-                            .font(.headline)
-                    }
+                    .padding(5)
+                    
                     VStack(alignment: .leading){
-                        Text("Empaque: \(cosecha.empaque ?? "Empaque no disponible")")
-                        Text("Contenido nutricional: \(cosecha.contenido_nutricional ?? "Contenido nutricional no disponible")")
-                    }
-                    .padding(.horizontal, 15)
-                }
-                .padding(5)
-                
-                VStack(alignment: .leading){
-                    HStack{
-                        Image(systemName:"star.fill")
-                            .foregroundColor(.yellow)
-                        Text("Sobre la cosecha")
-                            .font(.headline)
-                    }
-                    VStack(alignment: .leading){
-                        Text("Volumen de cosecha: \(cosecha.volumen ?? "Volumen no disponible")")
-                        Text("Método de procesamiento: \(cosecha.procesamiento ?? "Procesamiento no disponible")")
-                        if let dias = cosecha.fermentacion {
-                            Text("Fermentado por \(dias) días")
-                        } else {
-                            Text("Fermentación no disponible")
+                        HStack{
+                            Image(systemName:"star.fill")
+                                .foregroundColor(.yellow)
+                            Text("Sobre la cosecha")
+                                .font(.headline)
                         }
-                        Text("Secado: \(cosecha.secado ?? "Secado no disponible")")
-                        Text("Subproductos: \(cosecha.subproductos ?? "Subproductos no disponible")")
-                        Text("Tratamiento de agua: \(cosecha.tratamiento_agua ?? "Tratamiento de agua no disponible")")
+                        VStack(alignment: .leading){
+                            Text("Volumen de cosecha: \(cosecha.volumen ?? "Volumen no disponible")")
+                            Text("Método de procesamiento: \(cosecha.procesamiento ?? "Procesamiento no disponible")")
+                            if let dias = cosecha.fermentacion {
+                                Text("Fermentado por \(dias) días")
+                            } else {
+                                Text("Fermentación no disponible")
+                            }
+                            Text("Secado: \(cosecha.secado ?? "Secado no disponible")")
+                            Text("Subproductos: \(cosecha.subproductos ?? "Subproductos no disponible")")
+                            Text("Tratamiento de agua: \(cosecha.tratamiento_agua ?? "Tratamiento de agua no disponible")")
+                        }
+                        .padding(.horizontal, 15)
+                        
                     }
-                    .padding(.horizontal, 15)
+                    .padding(5)
                     
                 }
-                .padding(5)
                 
             }
-            
-        }
             .padding()
-        Spacer()
-            .task {
-                if let fincaID = cosecha.id_finca {
-                    do{
-                        try await viewModel.getFincaByID(fincaID)
-                    }catch{
-                        print("Error fetching finca:", error)
+            Spacer()
+                .task {
+                    if let fincaID = cosecha.id_finca {
+                        do{
+                            try await viewModel.getFincaByID(fincaID)
+                        }catch{
+                            print("Error fetching finca:", error)
+                        }
                     }
                 }
-            }
-        
+        }
     
     }
 }

@@ -36,7 +36,9 @@ struct DisplayFincasView: View {
                 ScrollView {
                     VStack(spacing: 15) {
                         ForEach(vm.fincas) { finca in
-                            FincaBox(finca: finca)
+                            NavigationLink(destination: FincaDetailView(finca: finca)) {
+                                FincaBox(finca: finca)
+                            }
                         }
                     }
                     .padding()
