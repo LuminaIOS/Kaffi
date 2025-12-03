@@ -13,7 +13,7 @@ class Finca: Codable, Identifiable {
     var id_usuario: String?
     var fecha_creacion: Date = Date()
     var nombre_finca: String
-    var productor: Int?
+    var id_productor: Int?
     var hectareas: Int
     var altitud: Double
     var variedades_cult: String
@@ -29,7 +29,7 @@ class Finca: Codable, Identifiable {
         id_finca: Int? = nil,
         id_usuario: String,
         nombre_finca: String,
-        productor: Int? = nil,
+        id_productor: Int? = nil,
         hectareas: Int,
         altitud: Double,
         variedades_cult: String,
@@ -44,7 +44,7 @@ class Finca: Codable, Identifiable {
         self.id_finca = id_finca
         self.id_usuario = id_usuario
         self.nombre_finca = nombre_finca
-        self.productor = productor
+        self.id_productor = id_productor
         self.hectareas = hectareas
         self.altitud = altitud
         self.variedades_cult = variedades_cult
@@ -59,7 +59,7 @@ class Finca: Codable, Identifiable {
 
 
     enum CodingKeys: String, CodingKey {
-        case id_finca, id_usuario, fecha_creacion, nombre_finca, productor, hectareas, altitud
+        case id_finca, id_usuario, fecha_creacion, nombre_finca, id_productor, hectareas, altitud
         case variedades_cult, porte_planta, imagen, id_coop, lote, sombra_natural, especies, arboles_mayores
     }
 
@@ -69,7 +69,7 @@ class Finca: Codable, Identifiable {
         try container.encode(id_usuario, forKey: .id_usuario)
         try container.encode(fecha_creacion, forKey: .fecha_creacion)
         try container.encode(nombre_finca, forKey: .nombre_finca)
-        try container.encode(productor, forKey: .productor)
+        try container.encode(id_productor, forKey: .id_productor)
         try container.encode(hectareas, forKey: .hectareas)
         try container.encode(altitud, forKey: .altitud)
         try container.encode(variedades_cult, forKey: .variedades_cult)
@@ -88,7 +88,7 @@ class Finca: Codable, Identifiable {
         id_usuario = try container.decode(String.self, forKey: .id_usuario)
         fecha_creacion = try container.decodeIfPresent(Date.self, forKey: .fecha_creacion) ?? Date()
         nombre_finca = try container.decode(String.self, forKey: .nombre_finca)
-        productor = try container.decode(Int.self, forKey: .productor)
+        id_productor = try container.decode(Int.self, forKey: .id_productor)
         hectareas = try container.decode(Int.self, forKey: .hectareas)
         altitud = try container.decode(Double.self, forKey: .altitud)
         variedades_cult = try container.decode(String.self, forKey: .variedades_cult)

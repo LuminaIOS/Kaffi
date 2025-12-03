@@ -8,8 +8,17 @@
 import SwiftUI
 struct FincaBox: View {
     let finca: Finca
+    
     var body: some View {
         VStack {
+            VStack(){
+                Text(finca.nombre_finca)
+                    .font(.title2)
+                    .font(.headline)
+            
+                Text("productor.Nombre")
+                    .bold()
+            }
             AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrinnd.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
                 image
                     .resizable()
@@ -25,33 +34,6 @@ struct FincaBox: View {
                     .cornerRadius(10)
             }
             .padding(5)
-            HStack(){
-                VStack(alignment: .leading) {
-                    Text(finca.nombre_finca)
-                        .font(.title3)
-                        .bold()
-//                    
-//                    HStack {
-//                        Image(systemName: "mappin")
-//                        Text("\(finca.ciudad), \(finca.estado)")
-//                    }
-//                    .font(.subheadline)
-//                    
-//                    Text(finca.descripcion)
-//                        .textScale(.secondary)
-//                        .foregroundStyle(.secondary)
-                    
-                    HStack() {
-                        Text("\(finca.hectareas) hectáreas")
-                            .padding(5)
-                            .background(lightColor2)
-                            .cornerRadius(5)
-                    }
-                    .font(.caption)
-                    
-                }
-                Spacer()
-            }
             
         }
         .padding()
@@ -72,7 +54,7 @@ struct FincaBox: View {
             id_usuario: "usuario1",
             //fecha_creacion: Date(1000000000),
             nombre_finca: "Finca Solecito",
-            productor: 1,
+            id_productor: 1,
             hectareas: 10,
             altitud: 1.2,
             variedades_cult: "Bourbon, Typica",
@@ -80,7 +62,7 @@ struct FincaBox: View {
             imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s",
             id_coop: 1,
             lote: ["A123", "A124", "A126"],
-            //sombra_natural = 10,
+            sombra_natural: 10,
             especies: "Muchas",
             arboles_mayores: 0
         )
