@@ -58,14 +58,6 @@ class ProductorService: ObservableObject {
             .execute()
     }
     
-    func fetchProductores() async throws -> [Productor] {
-        let response: PostgrestResponse<[Productor]> = try await client
-            .from("Productor")
-            .select("*")
-            .execute()
-        return response.value
-    }
-    
     func getProByID(_ proID: Int) async throws -> Productor? {
         let response: PostgrestResponse<[Productor]> = try await client
             .from("Productor")

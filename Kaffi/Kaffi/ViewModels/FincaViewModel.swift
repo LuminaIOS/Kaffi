@@ -127,16 +127,20 @@ class FincaViewModel {
     
     func fetchFincas() async throws{
         isLoading = true
-        let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
-        do{
-            let fetched = try await fincaService.fetchFincas(forUser: user)
+        guard let user = supabase.auth.currentUser else {
+            errorMessage = "Sesión expirada. Inicia sesión nuevamente."
+            isLoading = false
+            return
+        }
+        do {
+            let fetched = try await fincaService.fetchFincas(forUser: user.id.uuidString)
             self.fincas = fetched
-            
         }catch{
             print("Fetch error: ", error)
             errorMessage = "Error al cargar las cosechas"
         }
         isLoading = false
+        
     }
     
     func getFincaByID(_ fincaID: Int) async throws{

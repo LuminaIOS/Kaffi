@@ -13,7 +13,7 @@ struct DisplayCosechasView: View {
             VStack(){
                 
                 if vm.isLoading {
-                    ProgressView("Cargando lotes...")
+                    ProgressView("Cargando cosechas...")
                         .padding()
                 } else if let error = vm.errorMessage {
                     Text(error)

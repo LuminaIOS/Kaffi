@@ -175,18 +175,21 @@ class CosechaViewModel {
         
         selectedImageData = nil
     }
-    func fetchCosechas() async{
+    func fetchCosechas() async {
         isLoading = true
-        let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
-        do{
-            let fetched = try await cosechaService.fetchCosechas(forUser: user)
-            self.cosechas = fetched
-            
-        }catch{
-            print("Fetch error: ", error)
+        defer { isLoading = false }
+        
+        guard let user = supabase.auth.currentUser else {
+            errorMessage = "Sesión expirada. Inicia sesión nuevamente."
+            return
+        }
+        print(user)
+
+        do {
+            cosechas = try await cosechaService.fetchCosechas(forUser: user.id.uuidString)
+        } catch {
             errorMessage = "Error al cargar las cosechas"
         }
-        isLoading = false
     }
 }
 
