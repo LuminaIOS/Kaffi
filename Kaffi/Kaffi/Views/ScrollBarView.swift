@@ -16,8 +16,7 @@ struct ScrollBarView: View {
         "Finca",
         "Técnico y Control Interno",
         "Prácticas de Producción",
-        "Cosecha y Producto Final",
-        "Certificaciones"
+        "Cosecha y Producto Final" 
     ]
     
     var body: some View {
@@ -82,8 +81,8 @@ struct ScrollBarView: View {
             RegisterProduccionView()
         case "Cosecha y Producto Final":
             RegisterCosechaView()
-        case "Certificaciones":
-            RegisterCertificacionesView()
+//        case "Certificaciones":
+//            RegisterCertificacionesView()
 
 
         default:

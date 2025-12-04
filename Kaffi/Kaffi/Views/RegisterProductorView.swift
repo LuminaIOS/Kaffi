@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import AVFoundation
 
 struct RegisterProductorView: View {
     @Environment(\.dismiss) var dismiss
@@ -75,17 +76,26 @@ struct RegisterProductorView: View {
                             matching: .videos
                         ) {
                             ZStack {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(.systemGray6))
-                                    .frame(height: 180)
-                                
-                                VStack(spacing: 12) {
-                                    Image(systemName: "video.badge.plus")
-                                        .font(.system(size: 44))
-                                        .foregroundColor(Color(.systemGray3))
+                                if let data = vm.selectedVideoData, let image = thumbnailImage(for: data) {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 180)
+                                        .cornerRadius(12)
+                                        .clipped()
+                                } else {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color(.systemGray6))
+                                        .frame(height: 180)
                                     
-                                    Text("Toca para subir un video")
-                                        .foregroundColor(.gray)
+                                    VStack(spacing: 12) {
+                                        Image(systemName: "video.badge.plus")
+                                            .font(.system(size: 44))
+                                            .foregroundColor(Color(.systemGray3))
+                                        
+                                        Text("Toca para subir un video")
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             }
                         }
@@ -248,3 +258,17 @@ struct RegisterProductorView: View {
     RegisterProductorView()
 }
 
+
+func thumbnailImage(for data: Data) -> UIImage? {
+    let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mov")
+    try? data.write(to: tempURL)
+    
+    let asset = AVAsset(url: tempURL)
+    let imageGenerator = AVAssetImageGenerator(asset: asset)
+    imageGenerator.appliesPreferredTrackTransform = true
+    
+    if let cgImage = try? imageGenerator.copyCGImage(at: .zero, actualTime: nil) {
+        return UIImage(cgImage: cgImage)
+    }
+    return nil
+}

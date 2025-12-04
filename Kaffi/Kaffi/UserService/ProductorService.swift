@@ -67,5 +67,18 @@ class ProductorService: ObservableObject {
         return response.value.first
         
     }
+    
+    func getProductoresByUser(_ userId: String) async throws -> [Productor] {
+        let response: PostgrestResponse<[Productor]> = try await client
+            .from("Productor")
+            .select("*")
+            .eq("idTecnico", value: userId) 
+            .execute()
+        
+        return response.value
+    }
+
+    
+    
 }
 

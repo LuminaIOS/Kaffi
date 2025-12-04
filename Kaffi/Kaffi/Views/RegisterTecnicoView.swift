@@ -21,23 +21,91 @@ struct RegisterTecnicoView: View {
     
     @State private var vm = TecnicoViewModel(tecnicoService: TecnicoService(),supabase: client)
     
+    @State private var fincaVM = FincaViewModel(fincaService: FincaService(), supabase: client)
+    @State private var fincaSeleccionadaId: Int? = nil
+    @State private var showDropdownFinca = false
 
 
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Técnico Responsable de la Visita*")
+                        Text("Finca que se visito*")
                             .font(.body)
                             .foregroundColor(.black)
-                        TextField("Eduardo Gómez", text: $vm.tecnico)
+
+
+                        Button {
+                            withAnimation { showDropdownFinca.toggle() }
+                        } label: {
+                            HStack {
+                                Text(
+                                    fincaSeleccionadaId.flatMap { selectedId in
+                                        fincaVM.fincas.first { $0.id == selectedId }?.nombre_finca
+                                    } ?? "Selecciona una finca"
+                                )
+                                
+                                
+                                .foregroundColor(fincaSeleccionadaId == nil ? .gray : .black)
+
+                                Spacer()
+                                Image(systemName: showDropdownFinca ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+
+                        // Opciones desplegables
+                        if showDropdownFinca {
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(fincaVM.fincas) { finca in
+                                    Button {
+                                        fincaSeleccionadaId = finca.id
+                                        withAnimation { showDropdownFinca = false }
+                                    } label: {
+                                        HStack {
+                                            Text(finca.nombre_finca)
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                        }
+                                        .padding()
+                                    }
+
+                                    if finca.id != fincaVM.fincas.last?.id {
+                                        Divider()
+                                    }
+                                }
+                            }
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                            .padding(.top, -4)
+                        }
+                    }
+                    .task {
+                        do {
+                            try await fincaVM.fetchFincas()
+                        } catch {
+                            print("Error cargando fincas: \(error)")
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Nombre del responsable*")
+                            .font(.body)
+                            .foregroundColor(.black)
+                        TextField("Eduardo Gomenez Morin", text: $vm.tecnico)
                             .padding(.vertical, 12)
                             .padding(.horizontal, 12)
                             .background(Color(.systemGray6))
                             .cornerRadius(8)
                     }
+
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Cargo*")
@@ -127,8 +195,10 @@ struct RegisterTecnicoView: View {
                     // Botón registrar
                     Button {
                         Task {
-                            await vm.registrarTecnico()
+                            await vm.registrarTecnico(fincaId: fincaSeleccionadaId)
                             fechaSeleccionada = false
+                            
+                            fincaSeleccionadaId = nil
                         }
                     } label: {
                         Text(vm.isLoading ? "Registrando..." : "Registrar")

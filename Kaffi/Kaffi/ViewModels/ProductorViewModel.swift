@@ -59,8 +59,8 @@ class ProductorViewModel {
         
         do {
 
-            let idTecnico = "0a3c579d-5237-426f-8bba-182b0813bcea"
-            let idFinca = 41
+            let idTecnico = supabase.auth.currentUser!.id.uuidString
+            let idFinca: Int? = nil
             
             // Subir imagen
             var fotoURL: String? = nil
@@ -153,6 +153,19 @@ class ProductorViewModel {
             errorMessage = "Error al cargar el productor"
         }
         isLoading = false
+    }
+    
+    func fetchProductores() async {
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            let userId = supabase.auth.currentUser!.id.uuidString
+            self.productores = try await productorService.getProductoresByUser(userId)
+        } catch {
+            print("Error cargando productores:", error)
+            errorMessage = "No se pudieron cargar los productores"
+        }
     }
 }
 

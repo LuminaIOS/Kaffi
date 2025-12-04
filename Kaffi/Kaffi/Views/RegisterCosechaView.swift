@@ -19,6 +19,10 @@ struct RegisterCosechaView: View {
     @State private var expanded3 = false
     
     @State private var vm = CosechaViewModel(cosechaService: CosechaService(), supabase: client)
+    
+    @State private var fincaVM = FincaViewModel(fincaService: FincaService(), supabase: client)
+    @State private var fincaSeleccionadaId: Int? = nil
+    @State private var showDropdownFinca = false
 
     var body: some View {
         NavigationStack {
@@ -29,10 +33,10 @@ struct RegisterCosechaView: View {
                     DisclosureGroup("Datos de Cosecha", isExpanded: $expanded) {
 
                         VStack(spacing: 16) {
-
+                    
                             // foto
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Foto del Rancho")
+                                Text("Foto de la Cosecha")
                                     .font(.body)
                                     .foregroundColor(.black)
                                 
@@ -69,6 +73,67 @@ struct RegisterCosechaView: View {
                                             }
                                         }
                                     }
+                                }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Finca*")
+                                    .font(.body)
+                                    .foregroundColor(.black)
+
+
+                                Button {
+                                    withAnimation { showDropdownFinca.toggle() }
+                                } label: {
+                                    HStack {
+                                        Text(
+                                            fincaSeleccionadaId.flatMap { selectedId in
+                                                fincaVM.fincas.first { $0.id == selectedId }?.nombre_finca
+                                            } ?? "Selecciona una finca"
+                                        )
+                                        .foregroundColor(fincaSeleccionadaId == nil ? .gray : .black)
+
+                                        Spacer()
+                                        Image(systemName: showDropdownFinca ? "chevron.up" : "chevron.down")
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding()
+                                    .background(Color(.systemGray6))
+                                    .cornerRadius(8)
+                                }
+
+                                // Opciones desplegables
+                                if showDropdownFinca {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        ForEach(fincaVM.fincas) { finca in
+                                            Button {
+                                                fincaSeleccionadaId = finca.id
+                                                withAnimation { showDropdownFinca = false }
+                                            } label: {
+                                                HStack {
+                                                    Text(finca.nombre_finca)
+                                                        .foregroundColor(.black)
+                                                    Spacer()
+                                                }
+                                                .padding()
+                                            }
+
+                                            if finca.id != fincaVM.fincas.last?.id {
+                                                Divider()
+                                            }
+                                        }
+                                    }
+                                    .background(Color.white)
+                                    .cornerRadius(8)
+                                    .shadow(radius: 4)
+                                    .padding(.top, -4)
+                                }
+                            }
+                            .task {
+                                do {
+                                    try await fincaVM.fetchFincas()
+                                } catch {
+                                    print("Error cargando fincas: \(error)")
                                 }
                             }
 
@@ -265,7 +330,7 @@ struct RegisterCosechaView: View {
                         }
                     }
                     
-                    DisclosureGroup("Calidad y Producto Fina", isExpanded: $expanded3) {
+                    DisclosureGroup("Calidad y Producto Final", isExpanded: $expanded3) {
                         VStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Puntaje de catación (Q Grader)*")
@@ -320,8 +385,9 @@ struct RegisterCosechaView: View {
                     
                     Button {
                         Task {
-                            await vm.registrarCosecha()
+                            await vm.registrarCosecha(fincaId: fincaSeleccionadaId)
                             selectedImage = nil
+                            fincaSeleccionadaId = nil
                         }
                     } label: {
                         Text(vm.isLoading ? "Registrando..." : "Registrar")

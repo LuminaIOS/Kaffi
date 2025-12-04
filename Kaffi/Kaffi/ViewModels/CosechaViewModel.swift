@@ -65,42 +65,36 @@ class CosechaViewModel {
     }
     
 
-    func registrarCosecha() async {
-        
+    func registrarCosecha(fincaId: Int?) async {
+
         mostrandoAlerta = false
         tituloAlerta = ""
         mensajeAlerta = ""
-        
 
         guard !volumen.isEmpty,
               !procesamiento.isEmpty,
               fermentacion != nil,
               !secado.isEmpty,
               !subproductos.isEmpty,
-              !tratamientoAgua.isEmpty else {
+              !tratamientoAgua.isEmpty,
+              let fincaId = fincaId else {
             mostrarAlerta(titulo: "Campos obligatorios",
                           mensaje: "Por favor completa los campos requeridos.")
             return
         }
 
-        
         isLoading = true
-        
+
         do {
-            let userId = "0a3c579d-5237-426f-8bba-182b0813bcea"
-            
-            // Para futuro: id de finca o coop
-            let fincaId: Int? = nil
+            let userId = supabase.auth.currentUser!.id.uuidString
             let coopId: Int? = nil
-            
-            // Subir imagen si existe
+
             var imageUrl: String? = nil
             if let data = selectedImageData {
                 let fileName = "cosecha_\(UUID().uuidString).jpg"
                 imageUrl = try await cosechaService.uploadImage(data, fileName: fileName)
             }
-            
-            // Crear objeto Cosecha
+
             let nuevaCosecha = Cosecha(
                 volumen: volumen,
                 inicio_cosecha: inicioCosecha,
@@ -117,7 +111,7 @@ class CosechaViewModel {
                 agua_riego: aguaRiego,
                 agua_huella: huellaTotal,
                 id_usuario: userId,
-                id_finca: fincaId,
+                id_finca: fincaId,     // <-- aquí se asigna la finca seleccionada
                 id_coop: coopId,
                 puntaje_catacion: catacion,
                 perfil_sensorial: sensorial,
@@ -125,20 +119,21 @@ class CosechaViewModel {
                 contenido_nutricional: nutricional,
                 imagen_cosecha: imageUrl
             )
-            
+
             try await cosechaService.insertCosecha(nuevaCosecha)
             mostrarAlerta(titulo: "Éxito", mensaje: "Cosecha registrada correctamente.")
             resetFormulario()
-            
+
         } catch {
             mostrarAlerta(
                 titulo: "Error",
                 mensaje: "No se pudo registrar la cosecha: \(error.localizedDescription)"
             )
         }
-        
+
         isLoading = false
     }
+
     
 
     private func mostrarAlerta(titulo: String, mensaje: String) {

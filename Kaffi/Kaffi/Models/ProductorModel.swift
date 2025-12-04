@@ -105,3 +105,8 @@ class Productor: Codable, Identifiable {
     }
 }
 
+extension Productor {
+    var id: Int { idProductor ?? 0 }
+}
+
+
