@@ -29,12 +29,10 @@ struct FincaDetailView: View {
                         .cornerRadius(12)
                 }
                 
-                // Nombre de la finca
                 Text(finca.nombre_finca)
                     .font(.title)
                     .fontWeight(.bold)
                 
-                // Sección Productor
                 if let productor = vm.productorByID {
                     CardView {
                         SectionHeader(icon: "person.fill", title: "Productor")
