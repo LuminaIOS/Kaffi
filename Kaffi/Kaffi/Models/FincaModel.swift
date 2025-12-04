@@ -102,5 +102,9 @@ class Finca: Codable, Identifiable {
     }
 }
 
+extension Finca {
+    var id: Int { id_finca ?? 0 }
+}
+
 
 

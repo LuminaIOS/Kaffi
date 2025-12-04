@@ -16,6 +16,11 @@ struct RegisterFincaView: View {
     @State private var showDropdown = false
     @State private var mostrarListaVariedades = false
     @State private var mostrarListaEspecies = false
+    
+    @State private var productorSeleccionadoId: Int? = nil
+    @State private var showDropdownProductor = false
+    @State private var productorVM = ProductorViewModel(productorService: ProductorService(), supabase: client)
+
 
     let variedadesDisponibles = ["Typica", "Bourbon", "Caturra"]
     let porte = ["Mixto", "Bajo", "Alto"]
@@ -28,7 +33,7 @@ struct RegisterFincaView: View {
                     
                     // FOTO
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Foto del Rancho")
+                        Text("Foto del Finca")
                             .font(.body)
                             .foregroundColor(.black)
                         
@@ -68,9 +73,72 @@ struct RegisterFincaView: View {
                         }
                     }
                     
-                    // Nombre del Rancho
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Nombre del Rancho*")
+                        Text("Productor*")
+                            .font(.body)
+                            .foregroundColor(.black)
+                        
+                        Button {
+                            withAnimation { showDropdownProductor.toggle() }
+                        } label: {
+                            HStack {
+                                Text(
+                                    productorSeleccionadoId.flatMap { selectedId in
+                                        productorVM.productores.first { $0.id == selectedId }?.Nombre
+                                    } ?? "Selecciona un productor"
+                                )
+                                .foregroundColor(productorSeleccionadoId == nil ? .gray : .black)
+                                
+                                Spacer()
+                                Image(systemName: showDropdownProductor ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+                        
+                        if showDropdownProductor {
+                            VStack(alignment: .leading, spacing: 0) {
+                                ForEach(productorVM.productores) { productor in
+                                    Button {
+                                        productorSeleccionadoId = productor.idProductor
+                                        withAnimation { showDropdownProductor = false }
+                                    } label: {
+                                        HStack {
+                                            Text(productor.Nombre)
+                                                .foregroundColor(.black)
+                                            Spacer()
+                                        }
+                                        .padding()
+                                    }
+                                    
+                                    if productor.id != productorVM.productores.last?.id {
+                                        Divider()
+                                    }
+                                }
+                            }
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+                            .padding(.top, 4)
+                        }
+                    }
+                    
+                    
+                        .task {
+                            do {
+                                try await productorVM.fetchProductores()
+                            } catch {
+                                print("Error cargando productores: \(error)")
+                            }
+                        }
+
+                    
+                    
+                    // Nombre del Finca
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Nombre del Finca*")
                         TextField("Amanecer de la Sierra", text: $vm.finca)
                             .padding().background(Color(.systemGray6)).cornerRadius(8)
                     }
@@ -265,9 +333,10 @@ struct RegisterFincaView: View {
                     // Botón registrar
                     Button {
                         Task {
-                            await vm.registrarFinca()
+                            await vm.registrarFinca(productorId: productorSeleccionadoId)
                             // limpiar selección de imagen
                             selectedImage = nil
+                            productorSeleccionadoId = nil
                         }
                     } label: {
                         Text(vm.isLoading ? "Registrando..." : "Registrar")

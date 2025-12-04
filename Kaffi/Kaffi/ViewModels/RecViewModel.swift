@@ -89,10 +89,6 @@ class RecViewModel {
     func fetchRecordatorios() async {
         isLoading = true
         errorMessage = nil
-        //let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
-        //do {
-        //  let fetched = try await RecordatorioService.fetchRecordatorios(forUser: user)
-        //  self.recordatorios = fetched
         do {
             guard let user = supabase.auth.currentUser else {
                 errorMessage = "Sesión expirada. Inicia sesión nuevamente."

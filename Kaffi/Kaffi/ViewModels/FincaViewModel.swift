@@ -38,6 +38,9 @@ class FincaViewModel {
     var fincas: [Finca] = []
     var errorMessage: String?
     
+    
+
+    
     private let fincaService: FincaService
     private let supabase: SupabaseClient
     
@@ -47,12 +50,11 @@ class FincaViewModel {
     }
     
 
-    func registrarFinca() async {
+    func registrarFinca(productorId: Int?) async {
         mostrandoAlerta = false
         tituloAlerta = ""
         mensajeAlerta = ""
         
-
         guard !finca.trimmingCharacters(in: .whitespaces).isEmpty,
               let hect = hectareas, hect > 0,
               let alt = altitud, alt > 0,
@@ -60,7 +62,8 @@ class FincaViewModel {
               !portePlanta.isEmpty,
               let sombra = sombra,
               !especieSeleccionadas.isEmpty,
-              let arboles = arboles else {
+              let arboles = arboles,
+              let productorId = productorId else { // <- aquí validamos el productor
             mostrarAlerta(titulo: "Campos obligatorios", mensaje: "Por favor llena todos los campos obligatorios.")
             return
         }
@@ -68,22 +71,18 @@ class FincaViewModel {
         isLoading = true
         
         do {
-           
-            let userId = "0a3c579d-5237-426f-8bba-182b0813bcea"
-            
-            let productorId = 1
+            let userId = supabase.auth.currentUser!.id.uuidString
             
             var imageUrl: String? = nil
             if let data = selectedImageData {
                 let fileName = "\(UUID().uuidString).jpg"
                 imageUrl = try await fincaService.uploadImage(data, fileName: fileName)
             }
-            
 
             let nuevaFinca = Finca(
                 id_usuario: userId,
                 nombre_finca: finca,
-                id_productor: productorId,
+                id_productor: productorId, // <- usamos el seleccionado
                 hectareas: hect,
                 altitud: Double(alt),
                 variedades_cult: variedadesSeleccionadas.joined(separator: ", "),
@@ -107,6 +106,7 @@ class FincaViewModel {
 
 
 
+
     private func mostrarAlerta(titulo: String, mensaje: String) {
         self.tituloAlerta = titulo
         self.mensajeAlerta = mensaje
@@ -123,20 +123,26 @@ class FincaViewModel {
         especieSeleccionadas = []
         arboles = nil
         selectedImageData = nil
+
+        
     }
     
     func fetchFincas() async throws{
         isLoading = true
-        let user = "22dfed14-863f-454c-985f-16d7bc4afc84"
-        do{
-            let fetched = try await fincaService.fetchFincas(forUser: user)
+        guard let user = supabase.auth.currentUser else {
+            errorMessage = "Sesión expirada. Inicia sesión nuevamente."
+            isLoading = false
+            return
+        }
+        do {
+            let fetched = try await fincaService.fetchFincas(forUser: user.id.uuidString)
             self.fincas = fetched
-            
         }catch{
             print("Fetch error: ", error)
             errorMessage = "Error al cargar las cosechas"
         }
         isLoading = false
+        
     }
     
     func getFincaByID(_ fincaID: Int) async throws{
