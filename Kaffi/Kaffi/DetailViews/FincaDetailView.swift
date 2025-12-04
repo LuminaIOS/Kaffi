@@ -7,157 +7,158 @@
 
 
 import SwiftUI
+
 struct FincaDetailView: View {
     @State private var vm = ProductorViewModel(productorService: ProductorService(), supabase: client)
     let finca: Finca
-    //let productor: Productor
+    
     var body: some View {
-        ScrollView{
-            VStack{
-                HStack(){
-                    AsyncImage(url: URL(string: finca.imagen ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 120)
-                            .clipped()
-                    } placeholder: {
-                        Color.gray
-                            .scaledToFill()
-                            .frame(height: 120)
-                            .clipped()
-                    }
+        ScrollView {
+            VStack(spacing: 20) {
+                
+                AsyncImage(url: URL(string: finca.imagen ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 180)
+                        .clipped()
+                        .cornerRadius(12)
+                } placeholder: {
+                    Color.gray
+                        .frame(height: 180)
+                        .cornerRadius(12)
                 }
                 
-                VStack {
-                    Text(finca.nombre_finca)
-                        .font(.title2)
-                        .font(.headline)
-                }
+                // Nombre de la finca
+                Text(finca.nombre_finca)
+                    .font(.title)
+                    .fontWeight(.bold)
                 
-                VStack(spacing: 4) {
-                    if let productor = vm.productorByID{
-                        VStack(alignment: .leading){
-                            HStack{
-                                Image(systemName:"star.fill")
-                                    .foregroundColor(.yellow)
-                                Text("Sobre el productor")
-                                    .font(.headline)
-                                Spacer()
+                // Sección Productor
+                if let productor = vm.productorByID {
+                    CardView {
+                        SectionHeader(icon: "person.fill", title: "Productor")
+                        
+                        HStack(alignment: .top, spacing: 12) {
+                            AsyncImage(url: URL(string: productor.Foto ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 90, height: 90)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            } placeholder: {
+                                Color.gray
+                                    .frame(width: 90, height: 90)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
                             
-                            VStack(alignment: .leading){
-                                HStack(){
-                                    Text("\(productor.Testimonio ?? "No hay testimonio disponible")")
-                                        .lineLimit(nil)
-                                        .multilineTextAlignment(.leading)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                    
-                                    Spacer()
-                                    AsyncImage(url: URL(string: productor.Foto ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 100, height: 100)
-                                            .clipped()
-                                    } placeholder: {
-                                        Color.gray
-                                            .scaledToFill()
-                                            .frame(width: 100, height: 100)
-                                            .clipped()
-                                    }
-                                    
-                                    .padding(.horizontal, 5)
-                                    .padding(.vertical,10)
-                                }
-                                Text("Nombre del productor: \(productor.Nombre)")
-                                Text("Edad: \(productor.Edad != nil ? String(productor.Edad!) : "Edad no disponible")")
-                                Text("Género: \(productor.Genero ?? "Género no disponible")")
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(productor.Testimonio ?? "No hay testimonio disponible")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                
+                                Divider()
+                                
+                                Text("Nombre: \(productor.Nombre)")
+                                Text("Edad: \(productor.Edad != nil ? String(productor.Edad!) : "No disponible")")
+                                Text("Género: \(productor.Genero ?? "No disponible")")
                                 if let gen = productor.Generacion {
                                     Text("Agricultor de \(gen) generación")
                                 }
-                                Text("Ubicacion: \(productor.Ubicacion ?? "Ubicacion no disponible")")
-                                Text("Comunidad: \(productor.Comunidad ?? "Comunidad no disponible")")
-                                
-                                
+                                Text("Ubicación: \(productor.Ubicacion ?? "No disponible")")
+                                Text("Comunidad: \(productor.Comunidad ?? "No disponible")")
                             }
-                            .padding(.horizontal, 15)
-                            
                         }
                     }
-                    Text(" ")
-                    VStack(alignment: .leading){
-                        HStack{
-                            Image(systemName:"star.fill")
-                                .foregroundColor(.yellow)
-                            Text("Sobre la Finca")
-                                .font(.headline)
-                            Spacer()
-                        }
-                        VStack(alignment: .leading){
-                            Text("Hectareas: \(finca.hectareas)")
-                            Text("Altitud: \(String(format: "%.2f", finca.altitud)) metros sobre el nivel del mar")
-                            
-                            //                        if let lat = productor.Latitud,
-                            //                           let lon = productor.Longitud{
-                            //                            Text("coordenadas: \(lat) y \(lon)")
-                            //                            Text("MAPA AQUI")
-                            //                        }
-                            Text("Variedades cultivadas:  \(finca.variedades_cult)")
-                            Text("Lotes: ")
-                            if let lotes = finca.lote, !lotes.isEmpty {
-                                ForEach(lotes, id: \.self) { lote in
-                                    Text(" - \(lote)")
-                                }
-                            } else {
-                                Text("No hay lotes registrados")
-                                    .italic()
-                                    .foregroundColor(.gray)
-                            }
-                            Text("Porte de plantas: \(finca.porte_planta)")
-                        }
-                        .padding(.horizontal, 15)
-                        
-                        Text(" ")
-                        if let som = finca.sombra_natural,
-                           let esp = finca.especies,
-                           let may = finca.arboles_mayores{
-                            VStack(alignment: .leading){
-                                HStack{
-                                    Image(systemName:"leaf.fill")
-                                        .foregroundColor(.green)
-                                    Text("Sistema Agroforestal")
-                                        .font(.headline)
-                                    Spacer()
-                                }
-                                Text("\(som)% de sombra natural")
-                                Text("Especies: \(esp)")
-                                Text("Arboles sombra mayores a 8 años \(may)")
-                            }
-                            
-                            .padding(.horizontal, 15)
-                        }
-                    }
-                    
-                    
                 }
-                .padding(5)
                 
+                CardView {
+                    SectionHeader(icon: "leaf.fill", title: "Detalles de la Finca")
+                    
+                    Text("Hectáreas: \(finca.hectareas)")
+                    Text("Altitud: \(String(format: "%.2f", finca.altitud)) msnm")
+                    Text("Variedades cultivadas: \(finca.variedades_cult)")
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Lotes activos:")
+                        if let lotes = finca.lote, !lotes.isEmpty {
+                            HStack {
+                                ForEach(lotes, id: \.self) { lote in
+                                    Text(lote)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(RoundedRectangle(cornerRadius: 6).fill(Color(.systemGray5)))
+                                }
+                            }
+                        } else {
+                            Text("No hay lotes registrados")
+                                .italic()
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    Text("Porte de plantas: \(finca.porte_planta)")
+                }
+                
+                if let sombra = finca.sombra_natural,
+                   let especies = finca.especies,
+                   let arboles = finca.arboles_mayores {
+                    CardView {
+                        SectionHeader(icon: "tree.fill", title: "Sistema Agroforestal")
+                        
+                        Text("\(sombra)% de sombra natural")
+                        Text("Especies: \(especies)")
+                        Text("Árboles mayores a 8 años: \(arboles)")
+                    }
+                }
             }
             .padding()
-            Spacer()
-                .task {
-                    if let proID = finca.id_productor {
-                        do{
-                            try await vm.getProByID(proID)
-                        }catch{
-                            print("Error fetching productor:", error)
-                        }
-                    }
+        }
+        .task {
+            if let proID = finca.id_productor {
+                do {
+                    try await vm.getProByID(proID)
+                } catch {
+                    print("Error fetching productor:", error)
                 }
+            }
         }
     }
 }
+
+struct SectionHeader: View {
+    let icon: String
+    let title: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(.green)
+            Text(title)
+                .font(.headline)
+            Spacer()
+        }
+    }
+}
+
+struct CardView<Content: View>: View {
+    let content: Content
+    
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            content
+        }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.systemGray6)))
+    }
+}
+
+
 
 #Preview {
     FincaDetailView(
