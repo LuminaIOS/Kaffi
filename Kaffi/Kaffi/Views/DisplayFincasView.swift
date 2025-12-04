@@ -9,12 +9,6 @@ import SwiftUI
 struct DisplayFincasView: View {
     @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
     var body: some View {
-                    Text("Registrar nueva finca")
-                    Spacer()
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(midColor1)
         VStack{
 
             if vm.isLoading {
