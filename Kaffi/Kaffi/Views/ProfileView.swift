@@ -214,7 +214,7 @@ struct ProfileView: View {
 
     private func loadTempData() {
         guard let u = auth.currentUser else {
-            print("⚠️ loadTempData: currentUser es nil")
+            print("loadTempData: currentUser es nil")
             return
         }
 
