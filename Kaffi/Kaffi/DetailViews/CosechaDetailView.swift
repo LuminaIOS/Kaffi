@@ -26,9 +26,17 @@ struct CosechaDetailView: View {
                 }
 
                 VStack(spacing: 4) {
-                    Text("AMANECER DE LA SIERRA")
-                        .font(.title2)
-                        .bold()
+                    if let finca = viewModel.fincaByID {
+                                    Text(finca.nombre_finca)
+                            .font(.title)
+                            .font(.headline)
+                                } else if viewModel.isLoading {
+                                    ProgressView()
+                                } else {
+                                    Text("No se encontro finca")
+                                        .font(.title)
+                                        .font(.headline)
+                                } 
                     Text("\(cosecha.inicio_cosecha ?? "") — \(cosecha.fin_cosecha ?? "")")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
