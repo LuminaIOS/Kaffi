@@ -1,4 +1,3 @@
-//
 //  FincaView.swift
 //  Trial
 //
@@ -296,7 +295,3 @@ struct RegisterFincaView: View {
 #Preview {
     RegisterFincaView()
 }
-
-
-
-
