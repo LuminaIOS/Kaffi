@@ -9,21 +9,7 @@ import SwiftUI
 struct DisplayFincasView: View {
     @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
     var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: RegisterFincaView()) {
-                    Spacer()
-                    Image(systemName: "plus.app.fill")
-                    Text("Registrar nueva finca")
-                    Spacer()
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(midColor1)
-                .cornerRadius(10)
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 10)
+        VStack{
 
             if vm.isLoading {
                 ProgressView("Cargando fincas...")

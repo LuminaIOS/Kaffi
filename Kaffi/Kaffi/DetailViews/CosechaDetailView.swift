@@ -30,21 +30,19 @@ struct CosechaDetailView: View {
 
                 VStack(spacing: 4) {
                     if let finca = viewModel.fincaByID {
-                        Text(finca.nombre_finca)
-                            .font(.title2)
-                            .bold()
-                    } else {
-                        Text("Finca no disponible")
-                            .font(.title2)
-                            .bold()
-                    }
-                    
-                    if let inicio = cosecha.inicio_cosecha,
-                       let fin = cosecha.fin_cosecha {
-                        Text("\(inicio) — \(fin)")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
+                                    Text(finca.nombre_finca)
+                            .font(.title)
+                            .font(.headline)
+                                } else if viewModel.isLoading {
+                                    ProgressView()
+                                } else {
+                                    Text("No se encontro finca")
+                                        .font(.title)
+                                        .font(.headline)
+                                } 
+                    Text("\(cosecha.inicio_cosecha ?? "") — \(cosecha.fin_cosecha ?? "")")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
                 
                
