@@ -1,5 +1,6 @@
 //
 //  PracticasProduccion.swift
+//  Kaffi
 //
 
 import Foundation
@@ -24,7 +25,7 @@ class PracticasProduccion: Codable, Identifiable {
     ) {
         self.idPractica = idPractica
         self.id_usuario = id_usuario
-        self.id_finca =  id_finca
+        self.id_finca = id_finca
         self.manejo_suelo = manejo_suelo
         self.control_plagas = control_plagas
         self.riego = riego

@@ -1,5 +1,6 @@
 //
 //  ProduccionViewModel.swift
+//  Kaffi
 //
 
 import Foundation
@@ -10,6 +11,7 @@ import Observation
 @MainActor
 class ProduccionViewModel {
     
+    // Campos del formulario (MISMO que antes)
     var manejoSuelo: [String] = []
     var nuevaPracticaSuelo: String = ""
     var controlPlagas: [String] = []
@@ -21,15 +23,18 @@ class ProduccionViewModel {
     
     var mostrarListaCertificaciones = false
     
+    // Para asociar con finca (NUEVO)
     var fincas: [Finca] = []
     var fincaSeleccionadaID: Int?
     var fincaSeleccionadaNombre: String = "Seleccionar finca"
     
+    // UI State
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
+    // Certificaciones disponibles (MISMO que antes)
     let certificacionesDisponibles: [String] = [
         "USDA Organic (NOP) – Certimex, vigente 2025",
         "Certificado LPO – México Orgánico",
@@ -41,16 +46,21 @@ class ProduccionViewModel {
     private let produccionService = ProduccionService()
     private let fincaService = FincaService()
     
+    // Cargar fincas del usuario
     func cargarFincas() async {
         isLoading = true
         
-        let userID = "22dfed14-863f-454c-985f-16d7bc4afc84"
+        let userID = obtenerIDUsuarioActual()
         
         do {
             let fincasCargadas = try await fincaService.fetchFincas(forUser: userID)
             self.fincas = fincasCargadas
+            
         } catch {
-            mostrarAlerta(titulo: "Error", mensaje: "No se pudieron cargar las fincas: \(error.localizedDescription)")
+            mostrarAlerta(
+                titulo: "Error",
+                mensaje: "No se pudieron cargar las fincas: \(error.localizedDescription)"
+            )
         }
         isLoading = false
     }
@@ -60,15 +70,34 @@ class ProduccionViewModel {
         tituloAlerta = ""
         mensajeAlerta = ""
         
-        guard !manejoSuelo.isEmpty,
-              !controlPlagas.isEmpty,
-              !riego.trimmingCharacters(in: .whitespaces).isEmpty,
-              !certificacionesSeleccionadas.isEmpty else {
-            mostrarAlerta(titulo: "Campos obligatorios",
-                         mensaje: "Por favor completa todos los campos obligatorios.")
+        let userID = obtenerIDUsuarioActual()
+        
+        // Validaciones (MISMAS que antes, más la finca)
+        guard !manejoSuelo.isEmpty else {
+            mostrarAlerta(titulo: "Campo requerido",
+                         mensaje: "Agrega al menos una práctica de manejo de suelos.")
             return
         }
         
+        guard !controlPlagas.isEmpty else {
+            mostrarAlerta(titulo: "Campo requerido",
+                         mensaje: "Agrega al menos una práctica de control de plagas.")
+            return
+        }
+        
+        guard !riego.trimmingCharacters(in: .whitespaces).isEmpty else {
+            mostrarAlerta(titulo: "Campo requerido",
+                         mensaje: "Ingresa el tipo de riego utilizado.")
+            return
+        }
+        
+        guard !certificacionesSeleccionadas.isEmpty else {
+            mostrarAlerta(titulo: "Campo requerido",
+                         mensaje: "Selecciona al menos una certificación.")
+            return
+        }
+        
+        // NUEVA validación: finca seleccionada
         guard let fincaID = fincaSeleccionadaID else {
             mostrarAlerta(titulo: "Finca requerida",
                          mensaje: "Por favor selecciona una finca para asociar las prácticas.")
@@ -78,9 +107,9 @@ class ProduccionViewModel {
         isLoading = true
         
         do {
-            let userID = "22dfed14-863f-454c-985f-16d7bc4afc84"
-            
             var certificacionesFinales = certificacionesSeleccionadas
+            
+            // Procesar "Otro" (MISMO que antes)
             if certificacionesFinales.contains("Otro"), !otraCertificacion.isEmpty {
                 if let index = certificacionesFinales.firstIndex(of: "Otro") {
                     certificacionesFinales[index] = otraCertificacion
@@ -100,27 +129,44 @@ class ProduccionViewModel {
             
             try await produccionService.insertPracticasProduccion(nuevasPracticas)
             
-            mostrarAlerta(titulo: "Éxito", mensaje: "Prácticas de producción registradas correctamente.")
+            mostrarAlerta(
+                titulo: "¡Éxito!",
+                mensaje: "Prácticas de producción registradas correctamente."
+            )
             resetFormulario()
             
         } catch {
-            mostrarAlerta(titulo: "Error",
-                         mensaje: "No se pudieron registrar las prácticas: \(error.localizedDescription)")
+            mostrarAlerta(
+                titulo: "Error",
+                mensaje: "No se pudieron registrar las prácticas: \(error.localizedDescription)"
+            )
         }
         
         isLoading = false
     }
     
+    private func obtenerIDUsuarioActual() -> String {
+        // Usar AuthManager para obtener el ID
+        if let authID = AuthManager.shared.getCurrentUserID() {
+            return authID
+        }
+        
+        // TEMPORAL: Si no hay usuario, usar ID por defecto
+        return "0a3c579d-5237-426f-8bba-182b0813bcea"
+    }
+    
     func agregarPracticaSuelo() {
-        if !nuevaPracticaSuelo.trimmingCharacters(in: .whitespaces).isEmpty {
-            manejoSuelo.append(nuevaPracticaSuelo.trimmingCharacters(in: .whitespaces))
+        let textoLimpio = nuevaPracticaSuelo.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !textoLimpio.isEmpty {
+            manejoSuelo.append(textoLimpio)
             nuevaPracticaSuelo = ""
         }
     }
     
     func agregarPracticaPlagas() {
-        if !nuevaPracticaPlagas.trimmingCharacters(in: .whitespaces).isEmpty {
-            controlPlagas.append(nuevaPracticaPlagas.trimmingCharacters(in: .whitespaces))
+        let textoLimpio = nuevaPracticaPlagas.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !textoLimpio.isEmpty {
+            controlPlagas.append(textoLimpio)
             nuevaPracticaPlagas = ""
         }
     }
@@ -138,7 +184,7 @@ class ProduccionViewModel {
     
     func seleccionarFinca(_ finca: Finca) {
         fincaSeleccionadaID = finca.id_finca
-        fincaSeleccionadaNombre = finca.nombre_finca
+        fincaSeleccionadaNombre = finca.nombre_finca ?? "Sin nombre"
     }
     
     private func mostrarAlerta(titulo: String, mensaje: String) {
