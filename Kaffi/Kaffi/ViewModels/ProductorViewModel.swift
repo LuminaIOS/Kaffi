@@ -146,10 +146,8 @@ class ProductorViewModel {
         isLoading = true
         do {
             let productor = try await productorService.getProByID(proID)
-            print("API returned:", productor as Any)
             self.productorByID = productor
         } catch {
-            print("Fetch error:", error)
             errorMessage = "Error al cargar el productor"
         }
         isLoading = false
