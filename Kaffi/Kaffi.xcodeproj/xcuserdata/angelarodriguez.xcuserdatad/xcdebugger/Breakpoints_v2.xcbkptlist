@@ -30,10 +30,10 @@
             filePath = "Kaffi/ViewModels/CosechaViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139"
-            landmarkName = "CosechaViewModel"
-            landmarkType = "3">
+            startingLineNumber = "154"
+            endingLineNumber = "154"
+            landmarkName = "mostrarAlerta(titulo:mensaje:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

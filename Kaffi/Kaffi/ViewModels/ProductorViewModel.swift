@@ -15,7 +15,7 @@ import PhotosUI
 @MainActor
 class ProductorViewModel {
     
-    // Campos del formulario
+
     var nombre: String = ""
     var edad: Int?
     var genero: String = ""
@@ -26,14 +26,14 @@ class ProductorViewModel {
     var longitud: Double?
     var testimonio: String = ""
     
-    // Multimedia
+
     var selectedImage: PhotosPickerItem?
     var selectedImageData: Data?
 
     var selectedVideo: PhotosPickerItem?
     var selectedVideoData: Data?
     
-    // Estado UI
+
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
@@ -53,30 +53,49 @@ class ProductorViewModel {
     
 
     func registrarProductor() async {
-        
-        guard validarCampos() else { return }
-        isLoading = true
-        
-        do {
 
+ 
+        mostrandoAlerta = false
+        tituloAlerta = ""
+        mensajeAlerta = ""
+
+
+        guard
+            !nombre.trimmingCharacters(in: .whitespaces).isEmpty,
+            let edad = edad, edad > 0,
+            !genero.trimmingCharacters(in: .whitespaces).isEmpty,
+            !generacion.trimmingCharacters(in: .whitespaces).isEmpty,
+            !ubicacion.trimmingCharacters(in: .whitespaces).isEmpty,
+            !comunidad.trimmingCharacters(in: .whitespaces).isEmpty,
+            let latitud = latitud,
+            let longitud = longitud,
+            !testimonio.trimmingCharacters(in: .whitespaces).isEmpty else {
+            mostrarAlerta("Campos obligatorios", "Por favor llena todos los campos obligatorios.")
+                return
+            }
+
+
+        
+
+        isLoading = true
+
+        do {
             let idTecnico = supabase.auth.currentUser!.id.uuidString
-            let idFinca: Int? = nil
-            
-            // Subir imagen
+
+   
             var fotoURL: String? = nil
             if let imgData = selectedImageData {
                 let fileName = "IMG-\(UUID().uuidString).jpg"
                 fotoURL = try await productorService.uploadImage(imgData, fileName: fileName)
             }
-            
-            // Subir video
+
+     
             var videoURL: String? = nil
             if let vidData = selectedVideoData {
                 let fileName = "VID-\(UUID().uuidString).mp4"
                 videoURL = try await productorService.uploadVideo(vidData, fileName: fileName)
             }
-            
-            // Construcción EXACTA según el MODEL
+
             let nuevo = Productor(
                 Nombre: nombre,
                 Edad: edad,
@@ -89,37 +108,26 @@ class ProductorViewModel {
                 Foto: fotoURL,
                 Video: videoURL,
                 Testimonio: testimonio,
-                idFinca: idFinca,
-                idTecnico: idTecnico   
+                idFinca: nil,
+                idTecnico: idTecnico
             )
-            
+
             try await productorService.insertProductor(nuevo)
-            
+
             mostrarAlerta("Éxito", "Productor registrado correctamente.")
             resetFormulario()
-            
+
         } catch {
             mostrarAlerta("Error", "No se pudo registrar el productor: \(error.localizedDescription)")
         }
-        
+
         isLoading = false
     }
+
+    
+
     
     
-    // MARK: Validación
-    private func validarCampos() -> Bool {
-        if nombre.isEmpty || edad == nil || genero.isEmpty || generacion.isEmpty ||
-            ubicacion.isEmpty || comunidad.isEmpty || latitud == nil ||
-            longitud == nil || testimonio.isEmpty {
-            
-            mostrarAlerta("Campos incompletos", "Debes llenar todos los campos obligatorios.")
-            return false
-        }
-        return true
-    }
-    
-    
-    // MARK: Alerta
     private func mostrarAlerta(_ titulo: String, _ mensaje: String) {
         tituloAlerta = titulo
         mensajeAlerta = mensaje
@@ -127,7 +135,7 @@ class ProductorViewModel {
     }
     
     
-    // MARK: Reset
+  
     func resetFormulario() {
         nombre = ""
         edad = nil
