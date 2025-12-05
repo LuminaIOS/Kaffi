@@ -11,7 +11,6 @@ import Observation
 @MainActor
 class ProduccionViewModel {
     
-    // Campos del formulario (MISMO que antes)
     var manejoSuelo: [String] = []
     var nuevaPracticaSuelo: String = ""
     var controlPlagas: [String] = []
@@ -23,7 +22,6 @@ class ProduccionViewModel {
     
     var mostrarListaCertificaciones = false
     
-    // Para asociar con finca (NUEVO)
     var fincas: [Finca] = []
     var fincaSeleccionadaID: Int?
     var fincaSeleccionadaNombre: String = "Seleccionar finca"
@@ -34,7 +32,6 @@ class ProduccionViewModel {
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
-    // Certificaciones disponibles (MISMO que antes)
     let certificacionesDisponibles: [String] = [
         "USDA Organic (NOP) – Certimex, vigente 2025",
         "Certificado LPO – México Orgánico",
@@ -46,7 +43,6 @@ class ProduccionViewModel {
     private let produccionService = ProduccionService()
     private let fincaService = FincaService()
     
-    // Cargar fincas del usuario
     func cargarFincas() async {
         isLoading = true
         
@@ -72,7 +68,6 @@ class ProduccionViewModel {
         
         let userID = obtenerIDUsuarioActual()
         
-        // Validaciones (MISMAS que antes, más la finca)
         guard !manejoSuelo.isEmpty else {
             mostrarAlerta(titulo: "Campo requerido",
                          mensaje: "Agrega al menos una práctica de manejo de suelos.")
@@ -97,7 +92,6 @@ class ProduccionViewModel {
             return
         }
         
-        // NUEVA validación: finca seleccionada
         guard let fincaID = fincaSeleccionadaID else {
             mostrarAlerta(titulo: "Finca requerida",
                          mensaje: "Por favor selecciona una finca para asociar las prácticas.")
@@ -109,7 +103,6 @@ class ProduccionViewModel {
         do {
             var certificacionesFinales = certificacionesSeleccionadas
             
-            // Procesar "Otro" (MISMO que antes)
             if certificacionesFinales.contains("Otro"), !otraCertificacion.isEmpty {
                 if let index = certificacionesFinales.firstIndex(of: "Otro") {
                     certificacionesFinales[index] = otraCertificacion

@@ -55,7 +55,6 @@ struct RegisterProduccionView: View {
                 }
                 .padding(.top, 8)
                 
-                // Manejo de suelos (EXACTAMENTE COMO ANTES)
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Manejo de suelos*")
                         .font(.body)
@@ -91,7 +90,6 @@ struct RegisterProduccionView: View {
                     .cornerRadius(8)
                 }
                 
-                // Control de plagas (EXACTAMENTE COMO ANTES)
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Control de plagas*")
                         .font(.body)
@@ -127,7 +125,6 @@ struct RegisterProduccionView: View {
                     .cornerRadius(8)
                 }
                 
-                // Riego (EXACTAMENTE COMO ANTES)
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Riego*")
                         .font(.body)
@@ -140,7 +137,6 @@ struct RegisterProduccionView: View {
                         .foregroundColor(.black)
                 }
                 
-                // Certificaciones (EXACTAMENTE COMO ANTES)
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Certificaciones*")
                         .font(.body)
@@ -211,7 +207,6 @@ struct RegisterProduccionView: View {
                 
                 .padding(.vertical)
                 
-                // Botón Registrar (EXACTAMENTE COMO ANTES, pero con funcionalidad)
                 Button {
                     Task {
                         await viewModel.registrarProduccion()
