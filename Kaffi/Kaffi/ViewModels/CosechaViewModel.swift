@@ -54,6 +54,7 @@ class CosechaViewModel {
     
     // Cosechas cargadas
     var cosechas: [Cosecha] = []
+    var cosechasByFinca: [Cosecha] = []
     var errorMessage: String?
     
     private let cosechaService: CosechaService
@@ -63,10 +64,8 @@ class CosechaViewModel {
         self.cosechaService = cosechaService
         self.supabase = supabase
     }
-    
 
     func registrarCosecha(fincaId: Int?) async {
-
         mostrandoAlerta = false
         tituloAlerta = ""
         mensajeAlerta = ""
@@ -135,14 +134,14 @@ class CosechaViewModel {
     }
 
     
-
+    
     private func mostrarAlerta(titulo: String, mensaje: String) {
         self.tituloAlerta = titulo
         self.mensajeAlerta = mensaje
         self.mostrandoAlerta = true
     }
     
-
+    
     func resetFormulario() {
         volumen = ""
         inicioCosecha = ""
@@ -185,6 +184,20 @@ class CosechaViewModel {
         } catch {
             errorMessage = "Error al cargar las cosechas"
         }
+    }
+    
+    func fetchCosechasByFinca(_ fincaID: Int) async{
+        isLoading = true
+        do{
+            let fetched = try await cosechaService.fetchCosechasByFinca(forFinca: fincaID)
+            self.cosechas = fetched
+            
+        }catch{
+            print("Fetch error: ", error)
+            errorMessage = "Error al cargar las cosechas"
+        }
+        isLoading = false
+        
     }
 }
 

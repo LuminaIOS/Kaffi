@@ -14,15 +14,15 @@ struct TabBarView: View {
     
     var body: some View {
         TabView {
-            NavigationStack {
-                DashboardView(vm:vm)
-                    .navigationTitle("Dashboard")
-                    .toolbarColorScheme(.dark, for: .navigationBar)
-                    .toolbarBackground(darkColor2, for: .navigationBar)
-                    .toolbarBackground(.visible, for: .navigationBar)
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-            .tabItem { Label("Dashboard", systemImage: "house.fill") }
+//            NavigationStack {
+//                DashboardView(vm:vm)
+//                    .navigationTitle("Dashboard")
+//                    .toolbarColorScheme(.dark, for: .navigationBar)
+//                    .toolbarBackground(darkColor2, for: .navigationBar)
+//                    .toolbarBackground(.visible, for: .navigationBar)
+//                    .navigationBarTitleDisplayMode(.inline)
+//            }
+//            .tabItem { Label("Dashboard", systemImage: "house.fill") }
             
             NavigationStack {
                 DisplayFincasView()
@@ -49,7 +49,7 @@ struct TabBarView: View {
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Cosechas", systemImage: "leaf.fill") }
-            
+             
             // configurations
             NavigationStack {
                 TPerfilView()

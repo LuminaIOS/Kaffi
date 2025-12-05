@@ -10,6 +10,7 @@ import SwiftUI
 
 struct FincaDetailView: View {
     @State private var vm = ProductorViewModel(productorService: ProductorService(), supabase: client)
+    @State private var cvm = CosechaViewModel(cosechaService: CosechaService(), supabase: client)
     let finca: Finca
     
     var body: some View {
@@ -110,6 +111,23 @@ struct FincaDetailView: View {
                         Text("Árboles mayores a 8 años: \(arboles)")
                     }
                 }
+                if !cvm.cosechas.isEmpty {
+                    CardView {
+                        SectionHeader(icon: "bag.fill", title: "Cosechas Registradas")
+                        
+                        ForEach(cvm.cosechas) { cosecha in
+                            NavigationLink(destination: CosechaDetailView(cosecha: cosecha)) {
+                                CosechaMiniBox(cosecha: cosecha)
+                                    .padding(.vertical, 3)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                } else {
+                    Text("No hay cosechas registradas para esta finca.")
+                        .foregroundColor(.secondary)
+                }
+                
             }
             .padding()
         }
@@ -119,6 +137,13 @@ struct FincaDetailView: View {
                     try await vm.getProByID(proID)
                 } catch {
                     print("Error fetching productor:", error)
+                }
+            }
+            if let fincaID = finca.id_finca{
+                do{
+                    try await cvm.fetchCosechasByFinca(fincaID)
+                }catch{
+                    print("Error fetching cosechas:", error)
                 }
             }
         }
@@ -161,7 +186,7 @@ struct CardView<Content: View>: View {
 #Preview {
     FincaDetailView(
         finca: Finca(
-            id_finca: 1,
+            id_finca: 42,
             id_usuario: "usuario1",
             //fecha_creacion: Date(1000000000),
             nombre_finca: "Finca Solecito",
