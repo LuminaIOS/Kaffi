@@ -63,7 +63,7 @@ class FincaViewModel {
               let sombra = sombra,
               !especieSeleccionadas.isEmpty,
               let arboles = arboles,
-              let productorId = productorId else { // <- aquí validamos el productor
+              let productorId = productorId else {
             mostrarAlerta(titulo: "Campos obligatorios", mensaje: "Por favor llena todos los campos obligatorios.")
             return
         }

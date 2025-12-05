@@ -52,7 +52,7 @@ struct TabBarView: View {
              
             // configurations
             NavigationStack {
-                TPerfilView()
+                ProfileView()
                     .navigationTitle("Perfil").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)

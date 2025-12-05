@@ -71,16 +71,31 @@ class CosechaViewModel {
         mensajeAlerta = ""
 
         guard !volumen.isEmpty,
+              !inicioCosecha.isEmpty,
+              !finCosecha.isEmpty,
               !procesamiento.isEmpty,
               fermentacion != nil,
               !secado.isEmpty,
               !subproductos.isEmpty,
               !tratamientoAgua.isEmpty,
-              let fincaId = fincaId else {
-            mostrarAlerta(titulo: "Campos obligatorios",
-                          mensaje: "Por favor completa los campos requeridos.")
+              emisiones != nil,
+              capturaArboles != nil,
+              emisionesNetas != nil,
+              aguaBeneficio != nil,
+              aguaRiego != nil,
+              !huellaTotal.isEmpty,
+              catacion != nil,
+              !sensorial.isEmpty,
+              !empaque.isEmpty,
+              !nutricional.isEmpty else {
+
+            mostrarAlerta(
+                titulo: "Campos obligatorios",
+                mensaje: "Por favor llena todos los campos obligatorios."
+            )
             return
         }
+
 
         isLoading = true
 
@@ -110,7 +125,7 @@ class CosechaViewModel {
                 agua_riego: aguaRiego,
                 agua_huella: huellaTotal,
                 id_usuario: userId,
-                id_finca: fincaId,     // <-- aquí se asigna la finca seleccionada
+                id_finca: fincaId,
                 id_coop: coopId,
                 puntaje_catacion: catacion,
                 perfil_sensorial: sensorial,

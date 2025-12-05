@@ -123,7 +123,7 @@ class ProduccionViewModel {
             try await produccionService.insertPracticasProduccion(nuevasPracticas)
             
             mostrarAlerta(
-                titulo: "¡Éxito!",
+                titulo: "Éxito",
                 mensaje: "Prácticas de producción registradas correctamente."
             )
             resetFormulario()
