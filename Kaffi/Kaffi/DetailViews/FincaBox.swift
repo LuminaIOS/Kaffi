@@ -10,51 +10,51 @@ struct FincaBox: View {
     let finca: Finca
     @State private var vm = ProductorViewModel(productorService: ProductorService(), supabase: client)
     var body: some View {
-        VStack {
-            VStack(){
-                Text(finca.nombre_finca)
-                    .font(.title2)
-                    .font(.headline)
-                if let productor = vm.productorByID{
-                    VStack(alignment: .leading){
-                        Text(productor.Nombre)
-                            .bold()
+        VStack{
+            VStack {
+                VStack(){
+                    Text(finca.nombre_finca)
+                        .font(.title2)
+                        .font(.headline)
+                    if let productor = vm.productorByID{
+                        VStack(alignment: .leading){
+                            Text(productor.Nombre)
+                                .bold()
+                        }
+                        
                     }
-                
                 }
+                AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrinnd.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 120)
+                        .clipped()
+                        .cornerRadius(10)
+                } placeholder: {
+                    Color.gray
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 120)
+                        .clipped()
+                        .cornerRadius(10)
+                }
+                .padding()
+                .padding(.vertical, 10)
             }
-            AsyncImage(url: URL(string: finca.imagen ?? "https://perfectdailygrinnd.com/es/wp-content/uploads/sites/2/2021/01/Lotes-de-Cafe%CC%81-3.jpg")) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 120)
-                    .clipped()
-                    .cornerRadius(10)
-            } placeholder: {
-                Color.gray
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 120)
-                    .clipped()
-                    .cornerRadius(10)
-            }
-            .padding(5)
+            .background(Color.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
+            .shadow(radius: 5)
             
-        }
-        .padding()
-        
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(radius: 5)
-        .frame(maxWidth: .infinity)
-        .padding()
-        .task {
-            if let proID = finca.id_productor {
-                do{
-                    try await vm.getProByID(proID)
-                }catch{
-                    print("Error fetching productor:", error)
+            .task {
+                if let proID = finca.id_productor {
+                    do{
+                        try await vm.getProByID(proID)
+                    }catch{
+                        print("Error fetching productor:", error)
+                    }
                 }
             }
         }

@@ -29,7 +29,7 @@ struct DisplayCosechasView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        ScrollView {
             VStack {
                 if vm.isLoading {
                     ProgressView("Cargando cosechas...")
@@ -52,15 +52,13 @@ struct DisplayCosechasView: View {
                 
                 Spacer()
             }
-            .navigationTitle("Cosechas")
-            .searchable(text: $searchText, prompt: "Buscar por nombre de finca")
+            .searchable(text: $searchText, prompt: "Buscar por nombre de finca...")
             .task {
                 await vm.fetchForSearch()
             }
         }
     }
 }
-
 
 #Preview {
     DisplayCosechasView()
