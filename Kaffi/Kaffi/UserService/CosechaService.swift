@@ -1,5 +1,5 @@
 //
-//  FincaService.swift
+//  CosechaService.swift
 //  Trial
 //
 //  Created by Angela Rodriguez on 26/11/25.
@@ -10,14 +10,14 @@ import Supabase
 import Combine
 
 
-class FincaService: ObservableObject {
-    @Published var fincas: [Finca] = []
+class CosechaService: ObservableObject {
+    @Published var cosecha: [Cosecha] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     
     
     func uploadImage(_ data: Data, fileName: String) async throws -> String {
-        let bucket = "Finca_imagenes"
+        let bucket = "Cosecha_imagenes"
         let path = "uploads/\(fileName)"
 
         try await client.storage
@@ -38,32 +38,29 @@ class FincaService: ObservableObject {
         return publicUrl
     }
     
-    func insertFinca(_ finca: Finca) async throws {
+    func insertCosecha(_ cosecha: Cosecha) async throws {
         _ = try await client
-            .from("Finca")
-            .insert([finca])
+            .from("Cosecha")
+            .insert([cosecha])
             .execute()
     }
-    
-    func fetchFincas(forUser userID: String) async throws -> [Finca] {
-        let response: PostgrestResponse<[Finca]> = try await client
-            .from("Finca")
+    func fetchCosechas (forUser userID: String) async throws -> [Cosecha] {
+        print(userID)
+        let response: PostgrestResponse<[Cosecha]> = try await client
+            .from("Cosecha")
             .select()
             .eq("id_usuario", value: userID)
-            .order("nombre_finca", ascending: true)
+            .order("id_cosecha", ascending: true)
             .execute()
         return response.value
-        
     }
     
-    func getFincaByID(_ fincaID: Int) async throws -> Finca? {
-        let response: PostgrestResponse<Finca> = try await client
-            .from("Finca")
+    func fetchCosechasByFinca (forFinca fincaID: Int) async throws -> [Cosecha] {
+        let response: PostgrestResponse<[Cosecha]> = try await client
+            .from("Cosecha")
             .select()
             .eq("id_finca", value: fincaID)
-            .single()
             .execute()
-        
         return response.value
     }
 }

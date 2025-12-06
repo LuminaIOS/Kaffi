@@ -5,49 +5,52 @@
 //  Created by Amparo Alcaraz Tonella on 22/10/25.
 //
 import SwiftUI
-import Supabase
 
 struct DisplayFincasView: View {
     @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
-    let supabase = client
-    var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: RegisterFincaView()) {
-                    Spacer()
-                    Image(systemName: "plus.app.fill")
-                    Text("Registrar nueva finca")
-                    Spacer()
-                }
-                .foregroundColor(.white)
-                .padding()
-                .background(midColor1)
-                .cornerRadius(10)
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 10)
-
-            if vm.isLoading {
-                ProgressView("Cargando fincas...")
-                    .padding()
-            } else if let error = vm.errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-                    .padding()
-            } else {
-                ScrollView {
-                    VStack(spacing: 15) {
-                        ForEach(vm.fincas) { finca in
-                            FincaBox(finca: finca)
-                        }
-                    }
-                    .padding()
-                }
-            }
-            Spacer()
+    @State private var searchText = ""
+    var filteredFincas: [Finca] {
+        if searchText.isEmpty {
+            return vm.fincas
         }
-        .task {
-            await vm.fetchFincas()
+        return vm.fincas.filter { finca in
+            finca.nombre_finca.lowercased().contains(searchText.lowercased())
+        }
+    }
+    var body: some View {
+        ScrollView{
+            VStack{
+                
+                if vm.isLoading {
+                    ProgressView("Cargando fincas...")
+                        .padding()
+                } else if let error = vm.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .padding()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 15) {
+                            ForEach(filteredFincas) { finca in
+                                NavigationLink(destination: FincaDetailView(finca: finca)){
+                                    FincaBox(finca: finca)
+                                }
+                            }
+                        }
+                        .padding()
+                    }
+                }
+                Spacer()
+            }
+            .searchable(text: $searchText, prompt: "Buscar finca…")
+            .task {
+                do{
+                    try await vm.fetchFincas()
+                }catch{
+                    print(vm.errorMessage)
+                }
+                
+            }
         }
     }
 }
@@ -55,4 +58,3 @@ struct DisplayFincasView: View {
 #Preview {
     DisplayFincasView()
 }
-

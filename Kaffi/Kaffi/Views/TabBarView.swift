@@ -10,20 +10,19 @@ import SwiftUI
 
 struct TabBarView: View {
     @State private var searchText = ""
-    //@Environment(AuthModel.self) private var vm
     @Bindable var vm: AuthModel
     
     var body: some View {
         TabView {
-            NavigationStack {
-                DashboardView(vm:vm)
-                    .navigationTitle("Dashboard")
-                    .toolbarColorScheme(.dark, for: .navigationBar)
-                    .toolbarBackground(darkColor2, for: .navigationBar)
-                    .toolbarBackground(.visible, for: .navigationBar)
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-            .tabItem { Label("Dashboard", systemImage: "house.fill") }
+//            NavigationStack {
+//                DashboardView(vm:vm)
+//                    .navigationTitle("Dashboard")
+//                    .toolbarColorScheme(.dark, for: .navigationBar)
+//                    .toolbarBackground(darkColor2, for: .navigationBar)
+//                    .toolbarBackground(.visible, for: .navigationBar)
+//                    .navigationBarTitleDisplayMode(.inline)
+//            }
+//            .tabItem { Label("Dashboard", systemImage: "house.fill") }
             
             NavigationStack {
                 DisplayFincasView()
@@ -33,19 +32,27 @@ struct TabBarView: View {
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem { Label("Fincas", systemImage: "map.fill") }
-            
             NavigationStack {
-                DisplayLotesView()
-                    .navigationTitle("Lotes").toolbarColorScheme(.dark, for: .navigationBar)
+                ScrollBarView()
+                    .navigationTitle("Registros").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
             }
-            .tabItem { Label("Lotes", systemImage: "mappin") }
+            .tabItem { Label("Registros", systemImage: "plus.app.fill") }
             
+            NavigationStack {
+                DisplayCosechasView()
+                    .navigationTitle("Cosechas").toolbarColorScheme(.dark, for: .navigationBar)
+                    .toolbarBackground(darkColor2, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .tabItem { Label("Cosechas", systemImage: "leaf.fill") }
+             
             // configurations
             NavigationStack {
-                TPerfilView()
+                ProfileView()
                     .navigationTitle("Perfil").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)

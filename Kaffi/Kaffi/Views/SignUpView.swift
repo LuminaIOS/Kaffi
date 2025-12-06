@@ -6,47 +6,61 @@
 //
 
 import SwiftUI
-	
 
 struct SignUpView: View {
     @State private var nombreUsuario: String = ""
     @State private var fechaDeNacimiento = Date()
-    @State private var nombreCompleto : String = ""
+    @State private var nombreCompleto: String = ""
+    @State private var cooperativa: String = "Cooperativa Central"
+    @State private var rol: String = "tecnico"
+    
+    let cooperativas = [
+        "Cooperativa Central",
+        "Cooperativa Norte",
+        "Cooperativa Sur",
+        "Cooperativa Productores",
+        "Otra"
+    ]
+    
+    let roles = ["tecnico", "admin"]
+    
     @Bindable var vm: AuthModel
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [Color.white, Color.lightColor1],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            LinearGradient(colors: [Color.white, Color.lightColor1],
+                           startPoint: .topLeading,
+                           endPoint: .bottomTrailing)
+                .ignoresSafeArea()
             
             VStack {
                 Spacer(minLength: 50)
-                
+
                 VStack(spacing: 25) {
                     Form {
+                        // -------------------------
+                        // NOMBRE COMPLETO
+                        // -------------------------
                         Section {
                             TextField("Nombre Completo", text: $nombreCompleto)
-                                .textContentType(.emailAddress)
-                                .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
                         } header: {
                             Label("Nombre completo", systemImage: "figure.stand")
                         }
-                        
-                        Section {	
+
+                        // -------------------------
+                        // EMAIL
+                        // -------------------------
+                        Section {
                             TextField("Email", text: $vm.userEmail)
-                                .textContentType(.emailAddress)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
+                                .keyboardType(.emailAddress)
                         } header: {
                             Label("Correo Electrónico", systemImage: "envelope")
                         }
-                        
+
                         Section {
                             SecureField("Password", text: $vm.userPassword)
                         } header: {
@@ -56,51 +70,73 @@ struct SignUpView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
-                        
+
                         Section {
                             TextField("Nombre de Usuario", text: $nombreUsuario)
                         } header: {
                             Label("Nombre de Usuario", systemImage: "person")
-                        } footer: {
-                            Text("Mínimo 3 caracteres")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                        }
+
+
+                        Section {
+                            DatePicker("Selecciona Fecha",
+                                       selection: $fechaDeNacimiento,
+                                       displayedComponents: .date)
+                        } header: {
+                            Label("Fecha de nacimiento", systemImage: "calendar")
+                        }
+
+
+
+                        Section {
+                            Picker("Rol", selection: $rol) {
+                                ForEach(roles, id: \.self) { role in
+                                    Text(role.capitalized)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                        } header: {
+                            Label("Rol", systemImage: "person.crop.circle.badge.checkmark")
                         }
                         
                         Section {
-                            DatePicker(
-                                "Selecciona Fecha",
-                                selection: $fechaDeNacimiento,
-                                displayedComponents: .date
-                            )
-                            .datePickerStyle(.compact)
+                            Picker("Cooperativa", selection: $cooperativa) {
+                                ForEach(cooperativas, id: \.self) { coop in
+                                    Text(coop)
+                                        .foregroundStyle(.black)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .disabled(rol == "admin")
+                            .opacity(rol == "admin" ? 0.4 : 1.0)
                         } header: {
-                            Label("Fecha de nacimiento", systemImage: "calendar")
+                            Label("Cooperativa", systemImage: "building.2")
                         }
                     }
                     .scrollContentBackground(.hidden)
                     .frame(maxWidth: 350, maxHeight: 650)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .shadow(radius: 5)
-                    
-                    // Mensaje de estado
+
+
                     if !vm.message.isEmpty {
                         Text(vm.message)
                             .font(.caption)
                             .foregroundColor(messageColor)
-                            .multilineTextAlignment(.center)
+                            .padding(8)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(messageBackgroundColor))
                             .padding(.horizontal)
-                            .padding(.vertical, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(messageBackgroundColor)
-                            )
                     }
-                    
-                    // Botón de registro
+
                     Button {
                         Task {
-                            await vm.signUp(nombreCompleto: nombreCompleto, username: nombreUsuario, fechaNacimiento: fechaDeNacimiento)
+                            await vm.signUp(
+                                nombreCompleto: nombreCompleto,
+                                username: nombreUsuario,
+                                fechaNacimiento: fechaDeNacimiento,
+                                cooperativa: cooperativa,
+                                rol: rol
+                            )
                             if vm.messageType == .success {
                                 dismiss()
                             }
@@ -119,14 +155,12 @@ struct SignUpView: View {
                     .foregroundStyle(.black)
                     .disabled(vm.isLoading || !isFormValid)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                
+
                 Spacer(minLength: 50)
             }
         }
     }
-    
+
     private var isFormValid: Bool {
         !vm.userEmail.isEmpty &&
         !vm.userPassword.isEmpty &&
@@ -135,7 +169,7 @@ struct SignUpView: View {
         nombreUsuario.count >= 3 &&
         vm.userPassword.count >= 6
     }
-    
+
     private var messageColor: Color {
         switch vm.messageType {
         case .success: return .green
@@ -143,7 +177,7 @@ struct SignUpView: View {
         case .info: return .blue
         }
     }
-    
+
     private var messageBackgroundColor: Color {
         switch vm.messageType {
         case .success: return .green.opacity(0.1)
@@ -152,6 +186,7 @@ struct SignUpView: View {
         }
     }
 }
+
 
 #Preview {
     SignUpView(vm: AuthModel())
