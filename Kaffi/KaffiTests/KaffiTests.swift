@@ -55,7 +55,7 @@ struct KaffiTests {
         vm.cargo = ""
         vm.visita = ""
         vm.resultado = ""
-        vm.fechaLevantamiento = Date()   
+    
         
 
         await vm.registrarTecnico(fincaId: nil)
