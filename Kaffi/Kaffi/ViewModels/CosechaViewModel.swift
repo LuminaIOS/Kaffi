@@ -69,7 +69,6 @@ class CosechaViewModel {
         mostrandoAlerta = false
         tituloAlerta = ""
         mensajeAlerta = ""
-
         guard !volumen.isEmpty,
               !inicioCosecha.isEmpty,
               !finCosecha.isEmpty,
@@ -95,7 +94,6 @@ class CosechaViewModel {
             )
             return
         }
-
 
         isLoading = true
 
@@ -148,7 +146,6 @@ class CosechaViewModel {
         isLoading = false
     }
 
-    
     
     private func mostrarAlerta(titulo: String, mensaje: String) {
         self.tituloAlerta = titulo

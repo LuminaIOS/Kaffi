@@ -27,13 +27,15 @@ struct FincaBox: View {
                 image
                     .resizable()
                     .scaledToFill()
-                    .frame(width:300, height: 120)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 120)
                     .clipped()
                     .cornerRadius(10)
             } placeholder: {
                 Color.gray
                     .scaledToFill()
-                    .frame(width:300, height: 120)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 120)
                     .clipped()
                     .cornerRadius(10)
             }
@@ -45,7 +47,8 @@ struct FincaBox: View {
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 5)
-        .frame(width: 320)
+        .frame(maxWidth: .infinity)
+        .padding()
         .task {
             if let proID = finca.id_productor {
                 do{
@@ -65,7 +68,6 @@ struct FincaBox: View {
         finca: Finca(
             id_finca: 1,
             id_usuario: "usuario1",
-            //fecha_creacion: Date(1000000000),
             nombre_finca: "Finca Solecito",
             id_productor: 1,
             hectareas: 10,
