@@ -18,25 +18,6 @@ struct CosechaMiniBox: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
-            //            HStack(){
-//                AsyncImage(url: URL(string: cosecha.imagen_cosecha ?? "https://cafeab.com/files/articles/image/1683892785-granos-de-cafe.png")) { image in
-//                    image
-//                        .resizable()
-//                        .scaledToFill()
-//                        .frame(maxWidth: .infinity)
-//                        .frame(height: 50)
-//                        .clipped()
-//                        .cornerRadius(10)
-//                } placeholder: {
-//                    Color.gray
-//                        .scaledToFill()
-//                        .frame(maxWidth: .infinity)
-//                        .frame(height: 50)
-//                        .clipped()
-//                        .cornerRadius(10)
-//                }
-//            }
-//            .padding(10)
         }
         .background(Color.white)
         .cornerRadius(20)

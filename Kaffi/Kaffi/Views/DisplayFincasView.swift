@@ -20,7 +20,6 @@ struct DisplayFincasView: View {
     var body: some View {
         ScrollView{
             VStack{
-                
                 if vm.isLoading {
                     ProgressView("Cargando fincas...")
                         .padding()
@@ -40,7 +39,6 @@ struct DisplayFincasView: View {
                         .padding()
                     }
                 }
-                Spacer()
             }
             .searchable(text: $searchText, prompt: "Buscar finca…")
             .task {

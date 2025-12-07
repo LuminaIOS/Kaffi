@@ -19,28 +19,28 @@ class MicRecognizer: NSObject, ObservableObject {
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
     
-    // MARK: - Start (Alias for startListening)
+    //Start (Alias for startListening)
     func start() throws {
         Task {
             await startListening()
         }
     }
     
-    // MARK: - Stop (Alias for stopListening)
+    //Stop (Alias for stopListening)
     func stop() {
         stopListening()
     }
     
-    // MARK: - Start Listening
+    //Start Listening
     func startListening() async {
         #if targetEnvironment(simulator)
-        print("⚠️ Mic disabled in Simulator")
+        print("Mic disabled in Simulator")
         return
         #endif
         
         let granted = await requestPermissions()
         guard granted else {
-            print("⚠️ Mic or Speech recognition permission denied")
+            print("Mic or Speech recognition permission denied")
             return
         }
         
@@ -71,7 +71,7 @@ class MicRecognizer: NSObject, ObservableObject {
             
             // Verify we have a valid format
             guard format.sampleRate > 0 && format.channelCount > 0 else {
-                print("⚠️ Invalid audio format")
+                print("Invalid audio format")
                 isRecording = false
                 return
             }
@@ -83,7 +83,7 @@ class MicRecognizer: NSObject, ObservableObject {
             audioEngine.prepare()
             try audioEngine.start()
             
-            print("🎤 Microphone started - speak now!")
+            print("Microphone started - speak now!")
             
             recognitionTask = recognizer?.recognitionTask(with: request!) { [weak self] result, error in
                 guard let self = self else { return }
@@ -91,7 +91,7 @@ class MicRecognizer: NSObject, ObservableObject {
                 Task { @MainActor in
                     if let result = result {
                         self.transcript = result.bestTranscription.formattedString
-                        print("📝 Transcript: \(self.transcript)")
+                        print("Transcript: \(self.transcript)")
                     }
                     
                     // Handle errors
@@ -101,21 +101,21 @@ class MicRecognizer: NSObject, ObservableObject {
                         // Ignore "No speech detected" if we already have a transcript
                         if nsError.domain == "kAFAssistantErrorDomain" && nsError.code == 1110 {
                             if !self.transcript.isEmpty {
-                                print("✅ Speech ended naturally")
+                                print("Speech ended naturally")
                             } else {
-                                print("⚠️ No speech detected - try speaking louder or closer to mic")
+                                print("No speech detected - try speaking louder or closer to mic")
                             }
                         } else if nsError.code == 1700 { // Recognition request was canceled
-                            print("ℹ️ Recognition canceled by user")
+                            print("Recognition canceled by user")
                         } else {
-                            print("❌ Recognition error: \(error.localizedDescription)")
+                            print("Recognition error: \(error.localizedDescription)")
                         }
                     }
                 }
             }
             
         } catch {
-            print("❌ Audio Engine error: \(error.localizedDescription)")
+            print("Audio Engine error: \(error.localizedDescription)")
             await MainActor.run {
                 isRecording = false
             }
@@ -126,7 +126,7 @@ class MicRecognizer: NSObject, ObservableObject {
     func stopListening() {
         guard isRecording else { return }
         
-        print("🛑 Stopping microphone...")
+        print("Stopping microphone...")
         
         isRecording = false
         
@@ -147,18 +147,18 @@ class MicRecognizer: NSObject, ObservableObject {
         do {
             try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         } catch {
-            print("⚠️ Failed to deactivate audio session: \(error.localizedDescription)")
+            print("Failed to deactivate audio session: \(error.localizedDescription)")
         }
         
-        print("✅ Microphone stopped. Final transcript: '\(transcript)'")
+        print("Microphone stopped. Final transcript: '\(transcript)'")
     }
     
-    // MARK: - Request Permissions
+    //Request Permissions
     private func requestPermissions() async -> Bool {
         return await withCheckedContinuation { continuation in
             AVAudioSession.sharedInstance().requestRecordPermission { micGranted in
                 if !micGranted {
-                    print("⚠️ Microphone permission denied")
+                    print("Microphone permission denied")
                     continuation.resume(returning: false)
                     return
                 }
@@ -166,7 +166,7 @@ class MicRecognizer: NSObject, ObservableObject {
                 SFSpeechRecognizer.requestAuthorization { authStatus in
                     let granted = authStatus == .authorized
                     if !granted {
-                        print("⚠️ Speech recognition permission denied: \(authStatus.rawValue)")
+                        print("Speech recognition permission denied: \(authStatus.rawValue)")
                     }
                     continuation.resume(returning: granted)
                 }

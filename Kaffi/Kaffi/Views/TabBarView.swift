@@ -14,15 +14,6 @@ struct TabBarView: View {
     
     var body: some View {
         TabView {
-//            NavigationStack {
-//                DashboardView(vm:vm)
-//                    .navigationTitle("Dashboard")
-//                    .toolbarColorScheme(.dark, for: .navigationBar)
-//                    .toolbarBackground(darkColor2, for: .navigationBar)
-//                    .toolbarBackground(.visible, for: .navigationBar)
-//                    .navigationBarTitleDisplayMode(.inline)
-//            }
-//            .tabItem { Label("Dashboard", systemImage: "house.fill") }
             
             NavigationStack {
                 DisplayFincasView()

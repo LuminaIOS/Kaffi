@@ -56,14 +56,6 @@ struct ScrollBarView: View {
         .navigationTitle("Registros")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
-//                .toolbar {
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        Button(action: { dismiss() }) {
-//                            Image(systemName: "chevron.left")
-//                                .foregroundColor(.black)
-//                        }
-//                    }
-//                }
             }
     
     
@@ -81,8 +73,6 @@ struct ScrollBarView: View {
             RegisterProduccionView()
         case "Cosecha y Producto Final":
             RegisterCosechaView()
-//        case "Certificaciones":
-//            RegisterCertificacionesView()
 
 
         default:

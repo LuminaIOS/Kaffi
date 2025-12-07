@@ -12,8 +12,6 @@ struct RegisterProduccionView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                
-                // Selector de Finca (NUEVO - pero manteniendo estilo)
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Seleccionar Finca*")
                         .font(.body)

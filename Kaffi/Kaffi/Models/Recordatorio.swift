@@ -31,7 +31,7 @@ class Recordatorio: Codable, Identifiable {
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        if let id = id_recordatorio {   // only encode if it exists
+        if let id = id_recordatorio {
             try container.encode(id, forKey: .id_recordatorio)
         }
         try container.encode(id_usuario, forKey: .id_usuario)

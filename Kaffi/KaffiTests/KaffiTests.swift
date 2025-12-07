@@ -11,15 +11,68 @@ import Supabase
 @testable import Kaffi
 
 struct KaffiTests {
-    
-    @Test func testAPIFetch() async throws {
-        let response = try await client
-            .from("Lote")
-            .select()
-            .limit(1)
-            .execute()
-        #expect(response.status == 200, "Expected status 200, got \(response.status)")
+    @Test @MainActor
+    func testFetchFincas() async {
+        let vm = FincaViewModel(fincaService: FincaService(),supabase: client)
+        
+        do {
+                try await vm.fetchFincas()
+            } catch {
+                //Solo esta este catch pq sino Xcode marca error
+            }
+
+        #expect(vm.errorMessage == "Sesión expirada. Inicia sesión nuevamente.")
+        #expect(vm.fincas.isEmpty)
+        #expect(vm.isLoading == false)
     }
+    
+    @Test @MainActor
+    func testFetchCosechas() async {
+        let vm = CosechaViewModel(cosechaService: CosechaService(), supabase: client)
+
+        await vm.fetchCosechas()
+
+        #expect(vm.errorMessage == "Sesión expirada. Inicia sesión nuevamente.")
+        #expect(vm.cosechas.isEmpty)
+        #expect(vm.isLoading == false)
+    }
+
+
+    @Test @MainActor
+    func testFilterCosechasByFincaName() async {
+        let vm = CosechaSearchViewModel(
+            cosechaService: CosechaService(),
+            fincaService: FincaService(),
+            supabase: client
+        )
+        vm.fincas = [
+            Finca(id_finca: 1,id_usuario: "usuario1",nombre_finca: "Finca Solecito",id_productor: 1,hectareas: 10, altitud: 1.2,variedades_cult: "Bourbon, Typica",porte_planta: "Medio",imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s", id_coop: 1,lote: ["A123", "A124", "A126"],sombra_natural: 10, especies: "Muchas", arboles_mayores: 0),
+            Finca(id_finca: 2,id_usuario: "usuario1",nombre_finca: "La Esperanza",id_productor: 1,hectareas: 10, altitud: 1.2,variedades_cult: "Bourbon, Typica",porte_planta: "Medio",imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP8PnhM1MNuiVPyxVkOFg45Vd1c3svVWwL8w&s", id_coop: 1,lote: ["A123", "A124", "A126"],sombra_natural: 10, especies: "Muchas", arboles_mayores: 0)
+        ]
+        
+        vm.cosechas = [
+            Cosecha(id_cosecha: 1, id_finca: 1),
+            Cosecha(id_cosecha: 2, id_finca: 2)
+        ]
+        var searchText = "esper"
+        
+        var filteredCosechas: [Cosecha] {
+            if searchText.isEmpty {
+                return vm.cosechas
+            }
+            
+            return vm.cosechas.filter { cosecha in
+                if let finca = vm.fincas.first(where: { $0.id_finca == cosecha.id_finca }) {
+                    return finca.nombre_finca.lowercased().contains(searchText.lowercased())
+                }
+                return false
+            }
+        }
+        #expect(filteredCosechas.count == 1)
+        #expect(filteredCosechas.first?.id_finca == 1)
+        
+    }
+
     
     @Test @MainActor
     func FincaCamposOb() async throws {
@@ -122,50 +175,3 @@ struct KaffiTests {
 
 
 }
-
-
-
-    
-//    @Test @MainActor func testDetailsViewWithMockData() async {
-//        let testLote = Lote(
-//            id_lote: 999,
-//            id_usuario: "test-user-123",
-//            id_finca: 888,
-//            nombre_finca: "Finca de Prueba",
-//            nombre: "Lote Test",
-//            cultivo: "Arabica",
-//            hectareas: 5,
-//            estatus: "Activo",
-//            imagen: "https://example.com/test.jpg"
-//        )
-//        
-//        let detailsView = DetailsView(lote: testLote)
-//        
-//        #expect(detailsView.lote.id_lote == 999)
-//        #expect(detailsView.lote.nombre == "Lote Test")
-//        #expect(detailsView.lote.cultivo == "Arabica")
-//        #expect(detailsView.lote.nombre_finca == "Finca de Prueba")
-//    }
-//    
-//    @Test @MainActor func testLoteDetailViewModel() async {
-//        let viewModel = LoteDetailViewModel()
-//        let testLote = Lote(
-//            id_lote: 1,
-//            id_usuario: "test-user",
-//            id_finca: 1,
-//            nombre_finca: "Test Finca",
-//            nombre: "Test Lote",
-//            cultivo: "Test",
-//            hectareas: 10,
-//            estatus: "En producción"
-//        )
-//        
-//        #expect(viewModel.isLoading == false)
-//        #expect(viewModel.loteDetail == nil)
-//        #expect(viewModel.errorMessage == nil)
-//        
-//        await viewModel.cargarDetalles(lote: testLote)
-//        
-//        #expect(viewModel.isLoading == false) 
-//    }
-//}

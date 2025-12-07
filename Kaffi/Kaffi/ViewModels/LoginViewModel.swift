@@ -186,7 +186,7 @@ final class AuthModel {
         isLoading = false
     }
 
-    // MARK: - SignOut
+    
     func signOut() async {
         isLoading = true
 
@@ -207,7 +207,6 @@ final class AuthModel {
         isLoading = false
     }
 
-    // MARK: - Update usuario
     func updateUser(
         nombreCompleto: String,
         username: String,
@@ -250,7 +249,6 @@ final class AuthModel {
         isLoading = false
     }
 
-    // MARK: - Subir imagen de perfil
     func uploadProfileImage(_ image: UIImage) async throws -> String {
         guard let data = image.jpegData(compressionQuality: 0.8) else {
             throw NSError(domain: "image-conversion", code: 0)

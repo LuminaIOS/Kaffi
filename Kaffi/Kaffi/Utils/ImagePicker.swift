@@ -8,7 +8,6 @@
 import SwiftUI
 import PhotosUI
 
-// MARK: - ImagePicker
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
     @Environment(\.dismiss) private var dismiss
@@ -57,7 +56,6 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
 }
 
-// MARK: - Vista de ejemplo completa con integración
 struct EditProfileView: View {
     @Environment(AuthModel.self) private var authModel
     
@@ -72,7 +70,7 @@ struct EditProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // MARK: - Imagen de perfil
+                
                 VStack {
                     // Mostrar la imagen seleccionada, la actual, o un placeholder
                     if let selectedImage = selectedImage {
@@ -135,7 +133,6 @@ struct EditProfileView: View {
                 }
                 .padding(.top, 20)
                 
-                // MARK: - Formulario
                 VStack(alignment: .leading, spacing: 15) {
                     VStack(alignment: .leading) {
                         Text("Nombre completo")
@@ -161,7 +158,6 @@ struct EditProfileView: View {
                 }
                 .padding(.horizontal)
                 
-                // MARK: - Botón guardar
                 Button(action: {
                     Task {
                         await saveProfile()
@@ -177,7 +173,6 @@ struct EditProfileView: View {
                 .padding(.horizontal)
                 .disabled(authModel.isLoading || isUploading)
                 
-                // Mensaje de estado
                 if !authModel.message.isEmpty {
                     Text(authModel.message)
                         .foregroundColor(authModel.messageType == .success ? .green : .red)
@@ -207,7 +202,6 @@ struct EditProfileView: View {
             nombreCompleto = user.nombreCompleto
             username = user.username
             
-            // Convertir String a Date
             if let birthdateString = user.birthdate {
                 let formatter = ISO8601DateFormatter()
                 formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -253,7 +247,6 @@ struct EditProfileView: View {
     }
 }
 
-// MARK: - Preview
 #Preview {
     NavigationStack {
         EditProfileView()

@@ -43,7 +43,7 @@ class FincaSpeechParser {
     func parseSpeech(_ text: String) async throws -> [String: String] {
         // Handle empty transcript
         guard !text.isEmpty else {
-            print("⚠️ Empty transcript provided")
+            print("Empty transcript provided")
             return [:]
         }
         

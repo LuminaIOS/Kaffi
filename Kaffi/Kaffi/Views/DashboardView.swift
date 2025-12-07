@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject var viewModel = DashboardViewModel()
     @State private var rvm = RecViewModel(RecordatorioService: RecordatorioService(), supabase: client)
     let supabase = client
     @Bindable var vm: AuthModel
@@ -37,19 +36,13 @@ struct DashboardView: View {
                             }
                             
                             // Search bar
-                            HStack(spacing: 5) {
-                                Image(systemName: "magnifyingglass")
-                                TextField("Buscar lote o finca", text: $viewModel.searchText)
-                            }
-                            .padding(10)
-                            .background(RoundedRectangle(cornerRadius: 12).fill(.white))
                         }
                         .padding(10)
                     }
                     .padding(.horizontal, 15)
                     
                     
-                    // ===== RECORDATORIOS SECTION =====
+                    // RECORDATORIOS SECTION 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Recordatorios")
                             .font(.headline)

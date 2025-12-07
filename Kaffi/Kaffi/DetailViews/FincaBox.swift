@@ -40,8 +40,8 @@ struct FincaBox: View {
                         .clipped()
                         .cornerRadius(10)
                 }
-                .padding()
-                .padding(.vertical, 10)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 20)
             }
             .background(Color.white)
             .cornerRadius(20)
