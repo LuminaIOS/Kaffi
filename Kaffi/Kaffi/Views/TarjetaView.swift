@@ -1,8 +1,5 @@
 //
-//  TarjetaView.swift
-//  Kaffi
 //
-//  Created by Magda on 22/10/25.
 //
 
 import SwiftUI
@@ -30,7 +27,6 @@ struct TarjetaView: View {
             .frame(maxWidth: 190, alignment: .bottom)
             .allowsHitTesting(false)
 
-            // Textos
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Text(title)

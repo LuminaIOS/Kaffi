@@ -1,8 +1,5 @@
 //
-//  CosechaMiniBox.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 04/12/25.
 //
 
 import SwiftUI
@@ -18,6 +15,8 @@ struct CosechaMiniBox: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
+//                }
+//            }
         }
         .background(Color.white)
         .cornerRadius(20)

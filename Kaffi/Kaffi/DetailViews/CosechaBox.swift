@@ -1,8 +1,5 @@
 //
-//  CosechaBox.swift
-//  Kaffi
 //
-//  Created by Amparo on 01/12/25.
 //
 import SwiftUI
 struct CosechaBox: View {

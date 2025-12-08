@@ -1,8 +1,5 @@
 //
-//  FincaDetailView.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 02/12/25.
 //
 
 
@@ -188,7 +185,6 @@ struct CardView<Content: View>: View {
         finca: Finca(
             id_finca: 42,
             id_usuario: "usuario1",
-            //fecha_creacion: Date(1000000000),
             nombre_finca: "Finca Solecito",
             id_productor: 1,
             hectareas: 10,
@@ -202,6 +198,5 @@ struct CardView<Content: View>: View {
             especies: "Muchas",
             arboles_mayores: 0
         ),
-       // productor: Productor(idProductor:1,Nombre:"Paco",Edad:67,Genero:"Masculino",Generacion:"3era",Ubicacion:"Chiapas",Latitud:12,Longitud:12,Comunidad:"algo", Foto: "https://twsylgrqwzncrqkioodg.supabase.co/storage/v1/object/public/Productor_imagenes/uploads/IMG-1F519C43-09A5-4D27-BD54-8712C37CF91E.jpg", Testimonio:"Una finca con una historia rica y larga con la que se llena un gran bloque de texto de la pantalla",idFinca:4,idTecnico:"id")
     )
 }

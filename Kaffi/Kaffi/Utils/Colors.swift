@@ -1,8 +1,5 @@
 //
-//  Colors.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 21/10/25.
 //
 
 import SwiftUI

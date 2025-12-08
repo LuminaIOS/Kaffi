@@ -1,8 +1,5 @@
 //
-//  TecnicoService.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 27/11/25.
 //
 
 import Foundation

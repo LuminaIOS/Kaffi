@@ -1,7 +1,4 @@
-//  FincaView.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 24/11/25.
 //
 
 import SwiftUI
@@ -9,18 +6,21 @@ import PhotosUI
 
 struct RegisterFincaView: View {
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var vm = FincaViewModel(fincaService: FincaService(), supabase: client)
     @State private var selectedImage: PhotosPickerItem?
-    
+
     @State private var showDropdown = false
     @State private var mostrarListaVariedades = false
     @State private var mostrarListaEspecies = false
-    
+
     @State private var productorSeleccionadoId: Int? = nil
     @State private var showDropdownProductor = false
     @State private var productorVM = ProductorViewModel(productorService: ProductorService(), supabase: client)
 
+    @StateObject private var mic = MicRecognizer()
+    @State private var isListening = false
+    @State private var speechParser = FincaSpeechParser()
 
     let variedadesDisponibles = ["Typica", "Bourbon", "Caturra"]
     let porte = ["Mixto", "Bajo", "Alto"]
@@ -31,7 +31,6 @@ struct RegisterFincaView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     
-                    // FOTO
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Foto del Finca")
                             .font(.body)
@@ -136,14 +135,12 @@ struct RegisterFincaView: View {
 
                     
                     
-                    // Nombre del Finca
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Nombre del Finca*")
                         TextField("Amanecer de la Sierra", text: $vm.finca)
                             .padding().background(Color(.systemGray6)).cornerRadius(8)
                     }
                     
-                    // Hectareas y Altitud
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Hectareas*")
@@ -159,7 +156,6 @@ struct RegisterFincaView: View {
                         }
                     }
                     
-                    // Variedades
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Variedad Cultivada*")
                             .font(.body)
@@ -212,7 +208,6 @@ struct RegisterFincaView: View {
                         }
                     }
 
-                    // Porte de la Planta
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Porte de plantas*")
                             .font(.body)
@@ -259,7 +254,6 @@ struct RegisterFincaView: View {
                         }
                     }
                     
-                    // Especies
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Especie*")
                             .font(.body)
@@ -312,7 +306,6 @@ struct RegisterFincaView: View {
                         }
                     }
                     
-                    // Sombra y Árboles
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Sombra Natural*")
@@ -330,11 +323,9 @@ struct RegisterFincaView: View {
                         }
                     }
                     
-                    // Botón registrar
                     Button {
                         Task {
                             await vm.registrarFinca(productorId: productorSeleccionadoId)
-                            // limpiar selección de imagen
                             selectedImage = nil
                             productorSeleccionadoId = nil
                         }
@@ -348,6 +339,7 @@ struct RegisterFincaView: View {
                     }
                     .disabled(vm.isLoading)
                 }
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 37)
                 .padding(.top, 20)
             }
@@ -358,6 +350,94 @@ struct RegisterFincaView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .overlay(alignment: .bottomTrailing) {
+            micButton
+                .padding(24)
+        }
+        .onDisappear {
+            if isListening {
+                mic.stop()
+            }
+        }
+    }
+
+    private var micButton: some View {
+        Button {
+            Task {
+                if isListening {
+                    mic.stop()
+                    isListening = false
+                    await processTranscript()
+                } else {
+                    await mic.startListening()
+                    isListening = mic.isRecording
+                }
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(isListening ? Color.red.opacity(0.9) : Color.blue.opacity(0.9))
+                    .frame(width: 64, height: 64)
+
+                Image(systemName: isListening ? "mic.fill" : "mic")
+                    .font(.system(size: 26))
+                    .foregroundColor(.white)
+            }
+            .shadow(radius: 6)
+        }
+        .scaleEffect(isListening ? 1.1 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isListening)
+    }
+
+    @MainActor
+    func processTranscript() async {
+        guard #available(iOS 18.1, *) else {
+            print("iOS 18.1+ required for AI parsing")
+            return
+        }
+
+        guard !mic.transcript.isEmpty else {
+            print("No transcript to process")
+            return
+        }
+
+        print("Processing transcript: '\(mic.transcript)'")
+
+        do {
+            let result = try await speechParser.parseSpeech(mic.transcript)
+            print("Parsed result: \(result)")
+
+            if let finca = result["finca"], !finca.isEmpty {
+                vm.finca = finca
+            }
+
+            if let hectareas = result["hectareas"], let val = Int(hectareas) {
+                vm.hectareas = val
+            }
+
+            if let altitud = result["altitud"], let val = Int(altitud) {
+                vm.altitud = val
+            }
+
+            if let variedades = result["variedades"], !variedades.isEmpty {
+                vm.variedadesSeleccionadas = variedades.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            }
+
+            if let especies = result["especies"], !especies.isEmpty {
+                vm.especieSeleccionadas = especies.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            }
+
+            if let sombra = result["sombra"], let val = Int(sombra) {
+                vm.sombra = val
+            }
+
+            if let arboles = result["arboles"], let val = Int(arboles) {
+                vm.arboles = val
+            }
+
+        } catch {
+            print("AI Parsing failed:", error.localizedDescription)
+        }
     }
 }
 

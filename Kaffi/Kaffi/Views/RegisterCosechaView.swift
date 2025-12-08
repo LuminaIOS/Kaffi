@@ -1,8 +1,5 @@
 //
-//  CosechaView.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import SwiftUI
@@ -24,6 +21,10 @@ struct RegisterCosechaView: View {
     @State private var fincaSeleccionadaId: Int? = nil
     @State private var showDropdownFinca = false
 
+    @StateObject private var mic = MicRecognizer()
+    @State private var isListening = false
+    @State private var speechParser = CosechaSpeechParser()
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -34,7 +35,6 @@ struct RegisterCosechaView: View {
 
                         VStack(spacing: 16) {
                     
-                            // foto
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Foto de la Cosecha")
                                     .font(.body)
@@ -102,7 +102,6 @@ struct RegisterCosechaView: View {
                                     .cornerRadius(8)
                                 }
 
-                                // Opciones desplegables
                                 if showDropdownFinca {
                                     VStack(alignment: .leading, spacing: 0) {
                                         ForEach(fincaVM.fincas) { finca in
@@ -137,7 +136,6 @@ struct RegisterCosechaView: View {
                                 }
                             }
 
-                            // Volumen
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Volumen Producido*")
                                     .font(.body)
@@ -149,7 +147,6 @@ struct RegisterCosechaView: View {
                                     .cornerRadius(8)
                             }
                             
-                            // Fecha
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Fecha de Cosecha*")
                                     .font(.body)
@@ -172,7 +169,6 @@ struct RegisterCosechaView: View {
                                     .cornerRadius(8)
                             }
                             
-                            // Método
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Método de procesamiento*")
                                     .font(.body)
@@ -184,7 +180,6 @@ struct RegisterCosechaView: View {
                                     .cornerRadius(8)
                             }
 
-                            // Fermentación
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Fermentación (hrs)*")
                                     .font(.body)
@@ -197,7 +192,6 @@ struct RegisterCosechaView: View {
                                     .keyboardType(.numberPad)
                             }
 
-                            // Secado
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Secado*")
                                     .font(.body)
@@ -209,7 +203,6 @@ struct RegisterCosechaView: View {
                                     .cornerRadius(8)
                             }
 
-                            // Subproductos
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Subproductos*")
                                     .font(.body)
@@ -221,7 +214,6 @@ struct RegisterCosechaView: View {
                                     .cornerRadius(8)
                             }
 
-                            // Agua
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Tratamiento de agua*")
                                     .font(.body)
@@ -283,7 +275,6 @@ struct RegisterCosechaView: View {
                                     .keyboardType(.decimalPad)
                             }
                             
-                            // Huella Hídrica
                             Text("Huella Hídrica")
                                 .font(.body)
                                 .bold()
@@ -399,8 +390,14 @@ struct RegisterCosechaView: View {
                     }
                     .disabled(vm.isLoading)
                 }
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 37)
                 .padding(.top, 20)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                micButton
+                    .padding(.trailing, 24)
+                    .padding(.bottom, 24)
             }
             .alert(vm.tituloAlerta, isPresented: $vm.mostrandoAlerta) {
                 Button("OK", role: .cancel) {}
@@ -409,6 +406,130 @@ struct RegisterCosechaView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+    }
+
+    @ViewBuilder
+    private var micButton: some View {
+        Button {
+            Task {
+                if isListening {
+                    mic.stop()
+                    isListening = false
+                    await processTranscript()
+                } else {
+                    await mic.startListening()
+                    isListening = mic.isRecording
+                }
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(isListening ? Color.red.opacity(0.9) : Color.blue.opacity(0.9))
+                    .frame(width: 64, height: 64)
+
+                Image(systemName: isListening ? "mic.fill" : "mic")
+                    .font(.system(size: 26))
+                    .foregroundColor(.white)
+            }
+            .shadow(radius: 6)
+        }
+        .scaleEffect(isListening ? 1.1 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isListening)
+    }
+
+    @MainActor
+    func processTranscript() async {
+        guard #available(iOS 18.1, *) else {
+            print("iOS 18.1+ required for AI parsing")
+            return
+        }
+
+        guard !mic.transcript.isEmpty else {
+            print("No transcript to process")
+            return
+        }
+
+        print("Processing transcript: '\(mic.transcript)'")
+
+        do {
+            let result = try await speechParser.parseSpeech(mic.transcript)
+            print("Parsed result: \(result)")
+
+            if let volumen = result["volumen"], !volumen.isEmpty {
+                vm.volumen = volumen
+            }
+
+            if let inicioCosecha = result["inicioCosecha"], !inicioCosecha.isEmpty {
+                vm.inicioCosecha = inicioCosecha
+            }
+
+            if let finCosecha = result["finCosecha"], !finCosecha.isEmpty {
+                vm.finCosecha = finCosecha
+            }
+
+            if let procesamiento = result["procesamiento"], !procesamiento.isEmpty {
+                vm.procesamiento = procesamiento
+            }
+
+            if let fermentacion = result["fermentacion"], let val = Int(fermentacion) {
+                vm.fermentacion = val
+            }
+
+            if let secado = result["secado"], !secado.isEmpty {
+                vm.secado = secado
+            }
+
+            if let subproductos = result["subproductos"], !subproductos.isEmpty {
+                vm.subproductos = subproductos
+            }
+
+            if let tratamientoAgua = result["tratamientoAgua"], !tratamientoAgua.isEmpty {
+                vm.tratamientoAgua = tratamientoAgua
+            }
+
+            if let emisiones = result["emisiones"], let val = Float(emisiones) {
+                vm.emisiones = val
+            }
+
+            if let capturaArboles = result["capturaArboles"], let val = Float(capturaArboles) {
+                vm.capturaArboles = val
+            }
+
+            if let emisionesNetas = result["emisionesNetas"], let val = Float(emisionesNetas) {
+                vm.emisionesNetas = val
+            }
+
+            if let aguaBeneficio = result["aguaBeneficio"], let val = Float(aguaBeneficio) {
+                vm.aguaBeneficio = val
+            }
+
+            if let aguaRiego = result["aguaRiego"], let val = Float(aguaRiego) {
+                vm.aguaRiego = val
+            }
+
+            if let huellaTotal = result["huellaTotal"], !huellaTotal.isEmpty {
+                vm.huellaTotal = huellaTotal
+            }
+
+            if let catacion = result["catacion"], let val = Float(catacion) {
+                vm.catacion = val
+            }
+
+            if let sensorial = result["sensorial"], !sensorial.isEmpty {
+                vm.sensorial = sensorial
+            }
+
+            if let empaque = result["empaque"], !empaque.isEmpty {
+                vm.empaque = empaque
+            }
+
+            if let nutricional = result["nutricional"], !nutricional.isEmpty {
+                vm.nutricional = nutricional
+            }
+
+        } catch {
+            print("AI Parsing failed:", error.localizedDescription)
+        }
     }
 }
 

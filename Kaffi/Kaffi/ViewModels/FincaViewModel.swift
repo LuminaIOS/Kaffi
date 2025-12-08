@@ -1,8 +1,5 @@
 //
-//  FincaViewModel.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import Foundation
@@ -14,7 +11,6 @@ import Supabase
 @MainActor
 class FincaViewModel {
     
-    // Campos del formulario
     var finca: String = ""
     var hectareas: Int?
     var altitud: Int?
@@ -24,16 +20,13 @@ class FincaViewModel {
     var especieSeleccionadas: [String] = []
     var arboles: Int?
     
-    // Imagen
     var selectedImageData: Data? = nil
     
-    // UI State
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
-    // Fincas cargadas
     var fincaByID: Finca?
     var fincas: [Finca] = []
     var errorMessage: String?
@@ -63,7 +56,7 @@ class FincaViewModel {
               let sombra = sombra,
               !especieSeleccionadas.isEmpty,
               let arboles = arboles,
-              let productorId = productorId else {
+              let productorId = productorId else { // <- aquí validamos el productor
             mostrarAlerta(titulo: "Campos obligatorios", mensaje: "Por favor llena todos los campos obligatorios.")
             return
         }

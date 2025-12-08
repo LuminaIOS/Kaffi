@@ -1,8 +1,5 @@
 //
-//  ScrollBarView.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 22/11/25.
 //
 
 import SwiftUI
@@ -56,6 +53,9 @@ struct ScrollBarView: View {
         .navigationTitle("Registros")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+//                        }
+//                    }
+//                }
             }
     
     

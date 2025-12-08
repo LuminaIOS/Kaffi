@@ -1,9 +1,6 @@
 
 //
-//  LoginViewModel.swift
-//  Kaffi
 //
-//  Created by Bernardo Torres on 28/10/25.
 //
 import SwiftUI
 import Supabase
@@ -186,7 +183,6 @@ final class AuthModel {
         isLoading = false
     }
 
-    
     func signOut() async {
         isLoading = true
 

@@ -1,8 +1,5 @@
 //
-//  TecnicoView.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 25/11/25.
 //
 
 import SwiftUI
@@ -10,7 +7,7 @@ import SwiftUI
 
 struct RegisterTecnicoView: View {
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var tecnico: String = ""
     @State private var cargo: String = ""
     @State private var visita: String = ""
@@ -18,12 +15,16 @@ struct RegisterTecnicoView: View {
     @State private var fechaLevantamiento = Date()
     @State private var showingDatePicker = false
     @State private var fechaSeleccionada = false
-    
+
     @State private var vm = TecnicoViewModel(tecnicoService: TecnicoService(),supabase: client)
-    
+
     @State private var fincaVM = FincaViewModel(fincaService: FincaService(), supabase: client)
     @State private var fincaSeleccionadaId: Int? = nil
     @State private var showDropdownFinca = false
+
+    @StateObject private var mic = MicRecognizer()
+    @State private var isListening = false
+    @State private var speechParser = TecnicoSpeechParser()
 
 
     
@@ -60,7 +61,6 @@ struct RegisterTecnicoView: View {
                             .cornerRadius(8)
                         }
 
-                        // Opciones desplegables
                         if showDropdownFinca {
                             VStack(alignment: .leading, spacing: 0) {
                                 ForEach(fincaVM.fincas) { finca in
@@ -192,7 +192,6 @@ struct RegisterTecnicoView: View {
                             .cornerRadius(8)
                     }
               
-                    // Botón registrar
                     Button {
                         Task {
                             await vm.registrarTecnico(fincaId: fincaSeleccionadaId)
@@ -220,6 +219,91 @@ struct RegisterTecnicoView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .overlay(alignment: .bottomTrailing) {
+            micButton
+                .padding(24)
+        }
+        .onDisappear {
+            if isListening {
+                mic.stop()
+            }
+        }
+    }
+
+    private var micButton: some View {
+        Button {
+            Task {
+                if isListening {
+                    mic.stop()
+                    isListening = false
+                    await processTranscript()
+                } else {
+                    await mic.startListening()
+                    isListening = mic.isRecording
+                }
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(isListening ? Color.red.opacity(0.9) : Color.blue.opacity(0.9))
+                    .frame(width: 64, height: 64)
+
+                Image(systemName: isListening ? "mic.fill" : "mic")
+                    .font(.system(size: 26))
+                    .foregroundColor(.white)
+            }
+            .shadow(radius: 6)
+        }
+        .scaleEffect(isListening ? 1.1 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isListening)
+    }
+
+    @MainActor
+    func processTranscript() async {
+        guard #available(iOS 18.1, *) else {
+            print("iOS 18.1+ required for AI parsing")
+            return
+        }
+
+        guard !mic.transcript.isEmpty else {
+            print("No transcript to process")
+            return
+        }
+
+        print("Processing transcript: '\(mic.transcript)'")
+
+        do {
+            let result = try await speechParser.parseSpeech(mic.transcript)
+            print("Parsed result: \(result)")
+
+            if let tecnico = result["tecnico"], !tecnico.isEmpty {
+                vm.tecnico = tecnico
+            }
+
+            if let cargo = result["cargo"], !cargo.isEmpty {
+                vm.cargo = cargo
+            }
+
+            if let visita = result["visita"], !visita.isEmpty {
+                vm.visita = visita
+            }
+
+            if let fechaStr = result["fechaLevantamiento"], !fechaStr.isEmpty {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "dd/MM/yyyy"
+                if let date = formatter.date(from: fechaStr) {
+                    vm.fechaLevantamiento = date
+                    fechaSeleccionada = true
+                }
+            }
+
+            if let resultado = result["resultado"], !resultado.isEmpty {
+                vm.resultado = resultado
+            }
+
+        } catch {
+            print("AI Parsing failed:", error.localizedDescription)
+        }
     }
 }
 

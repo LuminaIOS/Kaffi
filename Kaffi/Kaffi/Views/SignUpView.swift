@@ -1,8 +1,5 @@
 //
-//  SignUpView.swift
-//  Kaffi
 //
-//  Created by Bernardo Torres on 29/10/25.
 //
 
 import SwiftUI
@@ -40,7 +37,6 @@ struct SignUpView: View {
                 VStack(spacing: 25) {
                     Form {
                         // -------------------------
-                        // NOMBRE COMPLETO
                         // -------------------------
                         Section {
                             TextField("Nombre Completo", text: $nombreCompleto)
@@ -50,7 +46,6 @@ struct SignUpView: View {
                         }
 
                         // -------------------------
-                        // EMAIL
                         // -------------------------
                         Section {
                             TextField("Email", text: $vm.userEmail)

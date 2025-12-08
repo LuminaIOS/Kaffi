@@ -1,8 +1,5 @@
 //
-//  Usuario.swift
-//  Kaffi
 //
-//  Created by Bernardo Torres on 17/11/25.
 //
 
 import Foundation

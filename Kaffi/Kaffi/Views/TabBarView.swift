@@ -1,8 +1,5 @@
 //
-//  NavBar.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 21/10/25.
 //
 //
 
@@ -14,6 +11,7 @@ struct TabBarView: View {
     
     var body: some View {
         TabView {
+//            }
             
             NavigationStack {
                 DisplayFincasView()
@@ -41,9 +39,8 @@ struct TabBarView: View {
             }
             .tabItem { Label("Cosechas", systemImage: "leaf.fill") }
              
-            // configurations
             NavigationStack {
-                ProfileView()
+                TPerfilView()
                     .navigationTitle("Perfil").toolbarColorScheme(.dark, for: .navigationBar)
                     .toolbarBackground(darkColor2, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
@@ -51,14 +48,118 @@ struct TabBarView: View {
             }
             .tabItem { Label("Perfil", systemImage: "person") }
         }
+        .tabViewStyle(.automatic)
         .tint(midColor1)
     }
 }
 
 struct TPerfilView: View {
     @State private var searchText = ""
+    @State private var isEditing = false
+
     var body: some View {
-        Text("Perfil")
+        ScrollView {
+            VStack(spacing: 24) {
+                VStack(spacing: 12) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.lightColor1.opacity(0.3))
+                            .frame(width: 120, height: 120)
+
+                        Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .frame(width: 120, height: 120)
+                            .foregroundColor(Color.darkColor1.opacity(0.7))
+                    }
+
+                    Text("Don José García")
+                        .font(.title2)
+                        .bold()
+
+                    Text("@joseg_cafe")
+                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                }
+                .padding(.top, 20)
+
+                VStack(spacing: 0) {
+                    ProfileInfoRow(title: "Nombre completo", value: "Don José García")
+                    Divider().padding(.leading, 16)
+                    ProfileInfoRow(title: "Usuario", value: "@joseg_cafe")
+                    Divider().padding(.leading, 16)
+                    ProfileInfoRow(title: "Cooperativa", value: "Café Orgánico de Chiapas")
+                    Divider().padding(.leading, 16)
+                    ProfileInfoRow(title: "Rol", value: "Productor")
+                    Divider().padding(.leading, 16)
+                    ProfileInfoRow(title: "Fecha de nacimiento", value: "15 de marzo de 1967")
+                }
+                .background(Color(.systemBackground))
+                .cornerRadius(12)
+                .padding(.horizontal)
+
+                VStack(spacing: 12) {
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "person.fill")
+                            Text("Editar Perfil")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                    }
+                    .foregroundColor(.primary)
+
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "gearshape.fill")
+                            Text("Configuración")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                    }
+                    .foregroundColor(.primary)
+
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "arrow.right.square.fill")
+                            Text("Cerrar sesión")
+                            Spacer()
+                        }
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                    }
+                    .foregroundColor(.red)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 24)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+struct ProfileInfoRow: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .foregroundColor(.secondary)
+            Spacer()
+            Text(value)
+                .bold()
+        }
+        .padding()
     }
 }
 #Preview {

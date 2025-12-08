@@ -1,12 +1,11 @@
 //
-//  DashboardView.swift
 //
 //
-//  Created by Magda on 21/10/25.
 //
 import SwiftUI
 
 struct DashboardView: View {
+    @StateObject var viewModel = DashboardViewModel()
     @State private var rvm = RecViewModel(RecordatorioService: RecordatorioService(), supabase: client)
     let supabase = client
     @Bindable var vm: AuthModel
@@ -35,14 +34,18 @@ struct DashboardView: View {
                                     .padding(.horizontal, 5)
                             }
                             
-                            // Search bar
+                            HStack(spacing: 5) {
+                                Image(systemName: "magnifyingglass")
+                                TextField("Buscar lote o finca", text: $viewModel.searchText)
+                            }
+                            .padding(10)
+                            .background(RoundedRectangle(cornerRadius: 12).fill(.white))
                         }
                         .padding(10)
                     }
                     .padding(.horizontal, 15)
                     
                     
-                    // RECORDATORIOS SECTION 
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Recordatorios")
                             .font(.headline)
@@ -56,7 +59,6 @@ struct DashboardView: View {
                                 .padding()
                         } else {
                             
-                            // NUEVO RECORDATORIO
                             HStack {
                                 Text("Nuevo Recordatorio")
                                     .foregroundColor(.white)
@@ -79,7 +81,6 @@ struct DashboardView: View {
                             )
                             
                             
-                            // LISTA DE RECORDATORIOS
                             ForEach(rvm.recordatorios) { rec in
                                 RecordatorioBox(recordatorio: rec)
                             }

@@ -1,8 +1,5 @@
 //
-//  RecViewModel.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 18/11/25.
 //
 
 import Foundation
@@ -14,12 +11,10 @@ import Supabase
 @MainActor
 class RecViewModel {
     
-    // Campos del formulario
     
     var id_usuario = ""
     var texto = ""
     
-    // UI state
     var isLoading = false
     var errorMessage: String?
     var mostrandoAlerta = false
@@ -42,7 +37,6 @@ class RecViewModel {
         tituloAlerta = ""
         mensajeAlerta = ""
         
-        // Validaciones
         if texto.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty{
             tituloAlerta = "Campos obligatorios"
             mensajeAlerta = "Por favor llena los campos obligatorios."
@@ -64,7 +58,6 @@ class RecViewModel {
             
             let idUsuario = user.id.uuidString
             
-            // Crear nuevo recordatorio
             let nuevaRec = Recordatorio(
                 id_usuario: idUsuario,
                 texto: texto

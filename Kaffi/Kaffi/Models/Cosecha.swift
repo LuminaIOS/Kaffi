@@ -1,8 +1,5 @@
 //
-//  CosechaModel.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import Foundation

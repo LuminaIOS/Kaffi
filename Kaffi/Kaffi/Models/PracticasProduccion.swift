@@ -1,6 +1,4 @@
 //
-//  PracticasProduccion.swift
-//  Kaffi
 //
 
 import Foundation

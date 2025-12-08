@@ -1,8 +1,5 @@
 //
-//  RegisterRecView.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 17/11/25.
 //
 
 
@@ -23,7 +20,6 @@ struct RegisterRecView: View {
 
                     
                     
-                    // Descripcion
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Escriba su recordatorio*")
                             .font(.body)
@@ -37,7 +33,6 @@ struct RegisterRecView: View {
                             .cornerRadius(8)
                     }
                     
-                    // registrar
                     Button {
                         Task {
                             await vm.registrarRec()
@@ -53,6 +48,7 @@ struct RegisterRecView: View {
                     .disabled(vm.isLoading)
                     
                 }
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 37)
                 .padding(.top, 20)
                 

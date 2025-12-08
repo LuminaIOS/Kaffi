@@ -1,8 +1,5 @@
 //
-//  ProductorView.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 24/11/25.
 //
 
 import SwiftUI
@@ -11,17 +8,20 @@ import AVFoundation
 
 struct RegisterProductorView: View {
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var vm = ProductorViewModel(productorService: ProductorService(),supabase: client)
 
     @State private var selectedImage: PhotosPickerItem?
+
+    @StateObject private var mic = MicRecognizer()
+    @State private var isListening = false
+    @State private var speechParser = ProductorSpeechParser()
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
                     
-                    // FOTO
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Foto del Productor")
                             .font(.body)
@@ -65,7 +65,6 @@ struct RegisterProductorView: View {
                     }
                     
                     
-                    // VIDEO
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Video")
                             .font(.body)
@@ -108,7 +107,6 @@ struct RegisterProductorView: View {
                         }
                     }
 
-                    // Nombre
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Nombre*")
                             .font(.body)
@@ -120,7 +118,6 @@ struct RegisterProductorView: View {
                             .cornerRadius(8)
                     }
 
-                    // Edad
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Edad*")
                             .font(.body)
@@ -133,7 +130,6 @@ struct RegisterProductorView: View {
                             .keyboardType(.numberPad)
                     }
 
-                    // Género
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Género*")
                             .font(.body)
@@ -145,7 +141,6 @@ struct RegisterProductorView: View {
                             .cornerRadius(8)
                     }
 
-                    // Generación
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Generación Cafetalera*")
                             .font(.body)
@@ -157,7 +152,6 @@ struct RegisterProductorView: View {
                             .cornerRadius(8)
                     }
 
-                    // Ubicación
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Ubicación*")
                             .font(.body)
@@ -169,7 +163,6 @@ struct RegisterProductorView: View {
                             .cornerRadius(8)
                     }
 
-                    // Comunidad
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Comunidad*")
                             .font(.body)
@@ -181,7 +174,6 @@ struct RegisterProductorView: View {
                             .cornerRadius(8)
                     }
 
-                    // Coordenadas
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Latitud*")
@@ -224,11 +216,9 @@ struct RegisterProductorView: View {
                     }
 
               
-                    // Botón registrar
                     Button {
                         Task {
                             await vm.registrarProductor()
-                            // limpiar selección de imagen
                             selectedImage = nil
                         }
                     } label: {
@@ -241,6 +231,7 @@ struct RegisterProductorView: View {
                     }
                     .disabled(vm.isLoading)
                 }
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 37)
                 .padding(.top, 20)
             }
@@ -251,6 +242,102 @@ struct RegisterProductorView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .overlay(alignment: .bottomTrailing) {
+            micButton
+                .padding(24)
+        }
+        .onDisappear {
+            if isListening {
+                mic.stop()
+            }
+        }
+    }
+
+    private var micButton: some View {
+        Button {
+            Task {
+                if isListening {
+                    mic.stop()
+                    isListening = false
+                    await processTranscript()
+                } else {
+                    await mic.startListening()
+                    isListening = mic.isRecording
+                }
+            }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(isListening ? Color.red.opacity(0.9) : Color.blue.opacity(0.9))
+                    .frame(width: 64, height: 64)
+
+                Image(systemName: isListening ? "mic.fill" : "mic")
+                    .font(.system(size: 26))
+                    .foregroundColor(.white)
+            }
+            .shadow(radius: 6)
+        }
+        .scaleEffect(isListening ? 1.1 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isListening)
+    }
+
+    @MainActor
+    func processTranscript() async {
+        guard #available(iOS 18.1, *) else {
+            print("iOS 18.1+ required for AI parsing")
+            return
+        }
+
+        guard !mic.transcript.isEmpty else {
+            print("No transcript to process")
+            return
+        }
+
+        print("Processing transcript: '\(mic.transcript)'")
+
+        do {
+            let result = try await speechParser.parseSpeech(mic.transcript)
+            print("Parsed result: \(result)")
+
+            if let nombre = result["nombre"], !nombre.isEmpty {
+                vm.nombre = nombre
+            }
+
+            if let edad = result["edad"], let val = Int(edad) {
+                vm.edad = val
+            }
+
+            if let genero = result["genero"], !genero.isEmpty {
+                vm.genero = genero
+            }
+
+            if let generacion = result["generacion"], !generacion.isEmpty {
+                vm.generacion = generacion
+            }
+
+            if let ubicacion = result["ubicacion"], !ubicacion.isEmpty {
+                vm.ubicacion = ubicacion
+            }
+
+            if let comunidad = result["comunidad"], !comunidad.isEmpty {
+                vm.comunidad = comunidad
+            }
+
+            if let latitud = result["latitud"], let val = Double(latitud) {
+                vm.latitud = val
+            }
+
+            if let longitud = result["longitud"], let val = Double(longitud) {
+                vm.longitud = val
+            }
+
+            if let testimonio = result["testimonio"], !testimonio.isEmpty {
+                vm.testimonio = testimonio
+            }
+
+        } catch {
+            print("AI Parsing failed:", error.localizedDescription)
+        }
     }
 }
 

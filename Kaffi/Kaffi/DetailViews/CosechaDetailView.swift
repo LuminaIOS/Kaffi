@@ -1,8 +1,5 @@
 //
-//  CosechaDetailView.swift
-//  KaffiHelper
 //
-//  Created by Amparo Alcaraz Tonella on 02/12/25.
 //
 
 import SwiftUI

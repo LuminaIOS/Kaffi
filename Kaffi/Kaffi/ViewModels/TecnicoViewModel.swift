@@ -1,8 +1,5 @@
 //
-//  TecnicoViewModel.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 27/11/25.
 //
 
 import Foundation
@@ -14,20 +11,17 @@ import Supabase
 @MainActor
 class TecnicoViewModel {
     
-    // Campos del formulario
     var tecnico: String = ""
     var cargo: String = ""
     var visita: String = ""
     var resultado: String = ""
     var fechaLevantamiento: Date = Date()
     
-    // UI State
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
-    // Técnicos cargados
     var tecnicos: [Tecnico] = []
     var errorMessage: String?
     
@@ -44,7 +38,6 @@ class TecnicoViewModel {
         tituloAlerta = ""
         mensajeAlerta = ""
 
-        // Validación
         guard !tecnico.trimmingCharacters(in: .whitespaces).isEmpty,
               !cargo.trimmingCharacters(in: .whitespaces).isEmpty,
               !visita.trimmingCharacters(in: .whitespaces).isEmpty,

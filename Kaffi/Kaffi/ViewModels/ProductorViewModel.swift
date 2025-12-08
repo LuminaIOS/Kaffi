@@ -1,8 +1,5 @@
 //
-//  ProductorViewModel.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import Foundation
@@ -15,7 +12,6 @@ import PhotosUI
 @MainActor
 class ProductorViewModel {
     
-
     var nombre: String = ""
     var edad: Int?
     var genero: String = ""
@@ -26,14 +22,12 @@ class ProductorViewModel {
     var longitud: Double?
     var testimonio: String = ""
     
-
     var selectedImage: PhotosPickerItem?
     var selectedImageData: Data?
 
     var selectedVideo: PhotosPickerItem?
     var selectedVideoData: Data?
     
-
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
@@ -53,49 +47,27 @@ class ProductorViewModel {
     
 
     func registrarProductor() async {
-
- 
-        mostrandoAlerta = false
-        tituloAlerta = ""
-        mensajeAlerta = ""
-
-
-        guard
-            !nombre.trimmingCharacters(in: .whitespaces).isEmpty,
-            let edad = edad, edad > 0,
-            !genero.trimmingCharacters(in: .whitespaces).isEmpty,
-            !generacion.trimmingCharacters(in: .whitespaces).isEmpty,
-            !ubicacion.trimmingCharacters(in: .whitespaces).isEmpty,
-            !comunidad.trimmingCharacters(in: .whitespaces).isEmpty,
-            let latitud = latitud,
-            let longitud = longitud,
-            !testimonio.trimmingCharacters(in: .whitespaces).isEmpty else {
-            mostrarAlerta("Campos obligatorios", "Por favor llena todos los campos obligatorios.")
-                return
-            }
-
-
         
-
+        guard validarCampos() else { return }
         isLoading = true
-
+        
         do {
-            let idTecnico = supabase.auth.currentUser!.id.uuidString
 
-   
+            let idTecnico = supabase.auth.currentUser!.id.uuidString
+            let idFinca: Int? = nil
+            
             var fotoURL: String? = nil
             if let imgData = selectedImageData {
                 let fileName = "IMG-\(UUID().uuidString).jpg"
                 fotoURL = try await productorService.uploadImage(imgData, fileName: fileName)
             }
-
-     
+            
             var videoURL: String? = nil
             if let vidData = selectedVideoData {
                 let fileName = "VID-\(UUID().uuidString).mp4"
                 videoURL = try await productorService.uploadVideo(vidData, fileName: fileName)
             }
-
+            
             let nuevo = Productor(
                 Nombre: nombre,
                 Edad: edad,
@@ -108,24 +80,33 @@ class ProductorViewModel {
                 Foto: fotoURL,
                 Video: videoURL,
                 Testimonio: testimonio,
-                idFinca: nil,
-                idTecnico: idTecnico
+                idFinca: idFinca,
+                idTecnico: idTecnico   
             )
-
+            
             try await productorService.insertProductor(nuevo)
-
+            
             mostrarAlerta("Éxito", "Productor registrado correctamente.")
             resetFormulario()
-
+            
         } catch {
             mostrarAlerta("Error", "No se pudo registrar el productor: \(error.localizedDescription)")
         }
-
+        
         isLoading = false
     }
-
     
-
+    
+    private func validarCampos() -> Bool {
+        if nombre.isEmpty || edad == nil || genero.isEmpty || generacion.isEmpty ||
+            ubicacion.isEmpty || comunidad.isEmpty || latitud == nil ||
+            longitud == nil || testimonio.isEmpty {
+            
+            mostrarAlerta("Campos incompletos", "Debes llenar todos los campos obligatorios.")
+            return false
+        }
+        return true
+    }
     
     
     private func mostrarAlerta(_ titulo: String, _ mensaje: String) {
@@ -135,7 +116,6 @@ class ProductorViewModel {
     }
     
     
-  
     func resetFormulario() {
         nombre = ""
         edad = nil
@@ -154,8 +134,10 @@ class ProductorViewModel {
         isLoading = true
         do {
             let productor = try await productorService.getProByID(proID)
+            print("API returned:", productor as Any)
             self.productorByID = productor
         } catch {
+            print("Fetch error:", error)
             errorMessage = "Error al cargar el productor"
         }
         isLoading = false

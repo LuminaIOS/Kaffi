@@ -1,8 +1,5 @@
 //
-//  Supabase.swift
-//  Kaffi
 //
-//  Created by Bernardo Torres on 27/10/25.
 
 
 import Supabase

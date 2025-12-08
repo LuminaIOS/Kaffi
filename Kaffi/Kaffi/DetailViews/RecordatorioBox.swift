@@ -1,8 +1,5 @@
 //
-//  RecordatorioBox.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 17/11/25.
 //
 
 import SwiftUI
@@ -17,7 +14,6 @@ struct RecordatorioBox: View {
             }
             .padding(8)
             Spacer()
-            //Boton de borrar
             Button(action: {
                 Task {
                     await recService.deleteRecordatorio(recordatorio)

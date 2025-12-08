@@ -1,8 +1,5 @@
 //
-//  ImagePicker.swift
-//  Kaffi
 //
-//  Created by Bernardo Torres on 26/11/25.
 //
 
 import SwiftUI
@@ -70,9 +67,7 @@ struct EditProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                
                 VStack {
-                    // Mostrar la imagen seleccionada, la actual, o un placeholder
                     if let selectedImage = selectedImage {
                         Image(uiImage: selectedImage)
                             .resizable()

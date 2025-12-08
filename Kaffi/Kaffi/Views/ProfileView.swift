@@ -1,8 +1,5 @@
 //
-//  ProfileView.swift
-//  Kaffi
 //
-//  Created by Bernardo Torres on 21/11/25.
 //
 
 import SwiftUI
@@ -218,8 +215,6 @@ struct ProfileView: View {
             return
         }
 
-//        tempNombre = u.nombreCompleto ?? "Sin nombre"
-//        tempUsername = u.username ?? "usuario"
 
         let isoFormatter = ISO8601DateFormatter()
 
@@ -232,12 +227,11 @@ struct ProfileView: View {
             } else if let d = simpleFormatter.date(from: birthStr) {
                 tempBirthdate = d
             } else {
-                print("⚠️ No se pudo parsear la fecha con ningún formato: \(birthStr)")
+                print("No se pudo parsear la fecha con ningún formato: \(birthStr)")
             }
         }
     }
 
-    // MARK: - Formatear fecha para mostrar
     private func formattedDate(_ iso: String) -> String {
         guard !iso.isEmpty else { return "-" }
 

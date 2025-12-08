@@ -1,8 +1,5 @@
 //
-//  RecordatorioService.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 18/11/25.
 //
 import Foundation
 import Supabase

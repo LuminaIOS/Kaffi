@@ -1,8 +1,5 @@
 //
-//  Dashboard.swift
-//  Kaffi
 //
-//  Created by Magda on 21/10/25.
 //
 
 protocol DashboardService {

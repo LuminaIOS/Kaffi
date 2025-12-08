@@ -1,8 +1,5 @@
 //
-//  CertificacionesView.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import SwiftUI
@@ -20,7 +17,6 @@ struct RegisterCertificacionesView: View {
             ScrollView {
                 VStack(spacing: 16) {
 
-                    // USDA Organic
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Certificado USDA Organic (NOP)*")
                             .font(.body)
@@ -34,7 +30,6 @@ struct RegisterCertificacionesView: View {
                             .cornerRadius(8)
                     }
 
-                    // Certimex México Orgánico
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Certificado Certimex México Orgánico*")
                             .font(.body)
@@ -48,7 +43,6 @@ struct RegisterCertificacionesView: View {
                             .cornerRadius(8)
                     }
 
-                    // Fairtrade
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Certificado Fairtrade*")
                             .font(.body)
@@ -62,7 +56,6 @@ struct RegisterCertificacionesView: View {
                             .cornerRadius(8)
                     }
 
-                    // ODS Contribuidos
                     VStack(alignment: .leading, spacing: 4) {
                         Text("ODS Contribuidos*")
                             .font(.body)

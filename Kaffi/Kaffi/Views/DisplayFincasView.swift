@@ -1,8 +1,5 @@
 //
-//  DisplayFincasView.swift
-//  Kaffi
 //
-//  Created by Amparo Alcaraz Tonella on 22/10/25.
 //
 import SwiftUI
 
@@ -20,6 +17,7 @@ struct DisplayFincasView: View {
     var body: some View {
         ScrollView{
             VStack{
+                
                 if vm.isLoading {
                     ProgressView("Cargando fincas...")
                         .padding()
@@ -36,9 +34,11 @@ struct DisplayFincasView: View {
                                 }
                             }
                         }
+                        .frame(maxWidth: .infinity)
                         .padding()
                     }
                 }
+                Spacer()
             }
             .searchable(text: $searchText, prompt: "Buscar finca…")
             .task {

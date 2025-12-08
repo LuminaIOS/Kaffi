@@ -1,8 +1,5 @@
 //
-//  CosechaViewModel.swift
-//  Trial
 //
-//  Created by Angela Rodriguez on 26/11/25.
 //
 
 import Foundation
@@ -14,7 +11,6 @@ import Supabase
 @MainActor
 class CosechaViewModel {
     
-    // Campos del formulario
     var volumen: String = ""
     var inicioCosecha: String = ""
     var finCosecha: String = ""
@@ -25,34 +21,27 @@ class CosechaViewModel {
     var subproductos: String = ""
     var tratamientoAgua: String = ""
     
-    // Emisiones
     var emisiones: Float?
     var capturaArboles: Float?
     var emisionesNetas: Float?
     
-    // Agua
     var aguaBeneficio: Float?
     var aguaRiego: Float?
     var huellaTotal: String = ""
     
-    // Calidad
     var catacion: Float?
     var sensorial: String = ""
     
-    // Otros
     var empaque: String = ""
     var nutricional: String = ""
     
-    // Imagen
     var selectedImageData: Data? = nil
     
-    // UI State
     var isLoading = false
     var mostrandoAlerta = false
     var tituloAlerta = ""
     var mensajeAlerta = ""
     
-    // Cosechas cargadas
     var cosechas: [Cosecha] = []
     var cosechasByFinca: [Cosecha] = []
     var errorMessage: String?
@@ -69,29 +58,16 @@ class CosechaViewModel {
         mostrandoAlerta = false
         tituloAlerta = ""
         mensajeAlerta = ""
+
         guard !volumen.isEmpty,
-              !inicioCosecha.isEmpty,
-              !finCosecha.isEmpty,
               !procesamiento.isEmpty,
               fermentacion != nil,
               !secado.isEmpty,
               !subproductos.isEmpty,
               !tratamientoAgua.isEmpty,
-              emisiones != nil,
-              capturaArboles != nil,
-              emisionesNetas != nil,
-              aguaBeneficio != nil,
-              aguaRiego != nil,
-              !huellaTotal.isEmpty,
-              catacion != nil,
-              !sensorial.isEmpty,
-              !empaque.isEmpty,
-              !nutricional.isEmpty else {
-
-            mostrarAlerta(
-                titulo: "Campos obligatorios",
-                mensaje: "Por favor llena todos los campos obligatorios."
-            )
+              let fincaId = fincaId else {
+            mostrarAlerta(titulo: "Campos obligatorios",
+                          mensaje: "Por favor completa los campos requeridos.")
             return
         }
 
@@ -123,7 +99,7 @@ class CosechaViewModel {
                 agua_riego: aguaRiego,
                 agua_huella: huellaTotal,
                 id_usuario: userId,
-                id_finca: fincaId,
+                id_finca: fincaId,     // <-- aquí se asigna la finca seleccionada
                 id_coop: coopId,
                 puntaje_catacion: catacion,
                 perfil_sensorial: sensorial,
@@ -146,6 +122,7 @@ class CosechaViewModel {
         isLoading = false
     }
 
+    
     
     private func mostrarAlerta(titulo: String, mensaje: String) {
         self.tituloAlerta = titulo
