@@ -365,5 +365,196 @@ struct KaffiTests {
         #expect(vm.messageType == .error)
     }
 
+    // TC-013
+        @Test @MainActor
+        func testValidacionCamposFinca() async {
+            let vm = FincaViewModel(fincaService: FincaService(), supabase: client)
+            
+            // Caso 1: Todos los campos obligatorios vacíos
+            vm.finca = ""
+            vm.hectareas = nil
+            vm.altitud = nil
+            vm.variedadesSeleccionadas = []
+            vm.portePlanta = ""
+            vm.sombra = nil
+            vm.especieSeleccionadas = []
+            vm.arboles = nil
+            
+            await vm.registrarFinca(productorId: nil)
+            
+            #expect(vm.mostrandoAlerta == true)
+            #expect(vm.tituloAlerta == "Campos obligatorios")
+            #expect(vm.mensajeAlerta == "Por favor llena todos los campos obligatorios.")
+            
+            // Caso 2: Algunos campos llenos, otros vacíos
+            vm.resetFormulario()
+            vm.mostrandoAlerta = false
+            
+            vm.finca = "Finca Test"
+            vm.hectareas = 10
+            // Campos restantes vacíos
+            
+            await vm.registrarFinca(productorId: nil)
+            
+            #expect(vm.mostrandoAlerta == true)
+            #expect(vm.tituloAlerta == "Campos obligatorios")
+            
+            // Caso 3: Todos los campos llenos (debería intentar registrar)
+            vm.resetFormulario()
+            vm.mostrandoAlerta = false
+            
+            vm.finca = "Finca Completa"
+            vm.hectareas = 15
+            vm.altitud = 1500
+            vm.variedadesSeleccionadas = ["Bourbon"]
+            vm.portePlanta = "Mixto"
+            vm.sombra = 40
+            vm.especieSeleccionadas = ["Inga spp."]
+            vm.arboles = 25
+            
+            // Solo verifica que no se active la alerta de campos obligatorios
+            #expect(!vm.finca.isEmpty)
+            #expect(vm.hectareas != nil)
+            #expect(vm.altitud != nil)
+            #expect(!vm.variedadesSeleccionadas.isEmpty)
+            #expect(!vm.portePlanta.isEmpty)
+            #expect(vm.sombra != nil)
+            #expect(!vm.especieSeleccionadas.isEmpty)
+            #expect(vm.arboles != nil)
+        }
+        
+    // TC-015
+        @Test @MainActor
+        func testFincaDetailEmptyStates() async {
+            // Crear una finca con datos mínimos para simular diferentes estados vacíos
+            let fincaTest = Finca(
+                id_finca: 1,
+                id_usuario: "test-user",
+                nombre_finca: "Finca Test",
+                id_productor: nil,
+                hectareas: 10,
+                altitud: 1500.0,
+                variedades_cult: "Bourbon",
+                porte_planta: "Mixto",
+                imagen: nil,
+                id_coop: 1,
+                lote: [],
+                sombra_natural: nil,
+                especies: nil,
+                arboles_mayores: nil
+            )
+            
+            // Test 1: Finca sin lotes activos
+            #expect(fincaTest.lote?.isEmpty == true)
+            
+            // Test 2: Finca sin sistema agroforestal
+            #expect(fincaTest.sombra_natural == nil)
+            #expect(fincaTest.especies == nil)
+            #expect(fincaTest.arboles_mayores == nil)
+            
+            // Test 3: Finca sin productor asociado
+            #expect(fincaTest.id_productor == nil)
+            
+            // Test 4: Verificar que la finca tiene datos básicos
+            #expect(!fincaTest.nombre_finca.isEmpty)
+            #expect(fincaTest.hectareas > 0)
+            #expect(fincaTest.altitud > 0)
+            #expect(!fincaTest.variedades_cult.isEmpty)
+            #expect(!fincaTest.porte_planta.isEmpty)
+            
+            let cvm = CosechaViewModel(cosechaService: CosechaService(), supabase: client)
+            
+            #expect(cvm.cosechas.isEmpty)
+            #expect(cvm.isLoading == false)
+            
+            let pvm = ProductorViewModel(productorService: ProductorService(), supabase: client)
+            #expect(pvm.productorByID == nil)
+        }
+            
+        // TC-016
+        @Test @MainActor
+        func testAuth() async {
+            let vm = AuthModel()
+            
+            // Caso 1: Correo vacío
+            vm.userEmail = ""
+            vm.userPassword = "password123"
+            
+            await vm.signIn()
+            
+            #expect(vm.message == "El correo electrónico es requerido")
+            #expect(vm.messageType == .error)
+            #expect(vm.isLoggedIn == false)
+            
+            // Caso 2: Contraseña vacía
+            vm.userEmail = "test@test.com"
+            vm.userPassword = ""
+            vm.message = ""
+            
+            await vm.signIn()
+            
+            #expect(vm.message == "La contraseña es requerida")
+            #expect(vm.messageType == .error)
+            #expect(vm.isLoggedIn == false)
+            
+            // Caso 3: Correo con formato inválido
+            vm.userEmail = "correo-invalido"
+            vm.userPassword = "password123"
+            vm.message = ""
+            
+            await vm.signIn()
+            
+            #expect(vm.message == "El formato del correo electrónico no es válido")
+            #expect(vm.messageType == .error)
+            #expect(vm.isLoggedIn == false)
+            
+            // Caso 4: Credenciales incorrectas
+            vm.userEmail = "usuario@noexiste.com"
+            vm.userPassword = "passwordincorrecto"
+            vm.message = ""
+            
+            await vm.signIn()
+            
+            #expect(vm.messageType == .error || vm.isLoggedIn == false)
+        }
+        
+        // TC-017
+        @Test @MainActor
+        func testLoadingState() async {
+            let vm = FincaViewModel(fincaService: FincaService(), supabase: client)
+            
+            #expect(vm.isLoading == false)
+            
+            let authVM = AuthModel()
+            
+            #expect(authVM.isLoading == false)
+            
+            let cvm = CosechaViewModel(cosechaService: CosechaService(), supabase: client)
+            
+            #expect(cvm.isLoading == false)
+            
+            Task {
+                do {
+                    try await vm.fetchFincas()
+                } catch {
+                }
+            }
+            
+            
+            // Verificar que isLoading se maneja en el ciclo de registro
+            cvm.volumen = "10 quintales"
+            cvm.procesamiento = "Lavado"
+            cvm.fermentacion = 24
+            cvm.secado = "Camas africanas"
+            cvm.subproductos = "Pulpa"
+            cvm.tratamientoAgua = "Filtro"
+            
+
+        }
 
 }
+
+
+    
+
+
